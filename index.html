@@ -257,6 +257,7 @@
         const chatBox = document.getElementById('chatBox');
         let memory = JSON.parse(localStorage.getItem('verityMemory')) || {};
         let notes = JSON.parse(localStorage.getItem('verityNotes')) || [];
+        let tasks = JSON.parse(localStorage.getItem('verityTasks')) || [];
         let stats = JSON.parse(localStorage.getItem('verityStats')) || {};
         let chatLog = JSON.parse(localStorage.getItem('verityChatLog')) || [];
         let userName = localStorage.getItem('verityUserName') || 'Ты';
@@ -277,7 +278,7 @@
                 forget: '🧹 Я всё забыл. Мой разум чист.',
                 export_done: '📥 История скачана!',
                 theme_sw: '🎨 Тема переключена!',
-                games_menu: '🎮 <b>Меню игр:</b><br>1. Угадай число (guess)<br>2. Камень-ножницы-бумага (rps)<br>3. Викторина (trivia)<br>4. Крестики-нолики (tictactoe)<br>5. Быки и коровы (bulls)<br>6. Сапёр 5x5 (sapper)<br><br>Введи название игры или выбери цифру.',
+                games_menu: '🎮 **Меню игр:**\n1. Угадай число (guess)\n2. Камень-ножницы-бумага (rps)\n3. Викторина (trivia)\n4. Крестики-нолики (tictactoe)\n5. Быки и коровы (bulls)\n6. Сапёр 5x5 (sapper)\n\nВведи название игры или выбери цифру.',
                 guess_start: '🎲 Я загадал число от 1 до 100. Попробуй угадать!',
                 rps_start: '✊ Камень, ножницы или бумага? Введи: камень, ножницы, бумага',
                 trivia_start: '🎯 Викторина! Отвечай буквой a/b/c или "выход".',
@@ -285,7 +286,7 @@
                 lose: '💻 Я выиграл!',
                 draw: 'Ничья!',
                 boom: '💥 Ты наступил на мину! Конец игры.',
-                ach_menu: '🏆 <b>Твои достижения:</b><br>'
+                ach_menu: '🏆 **Твои достижения:**\n'
             },
             en: {
                 hi: 'Hello, {name}! How are you?', sub: 'Your AI assistant', status: 'online', send: 'Send',
@@ -296,7 +297,7 @@
                 forget: '🧹 I forgot everything. My mind is clean.',
                 export_done: '📥 History downloaded!',
                 theme_sw: '🎨 Theme toggled!',
-                games_menu: '🎮 <b>Game Menu:</b><br>1. Guess Number (guess)<br>2. Rock-Paper-Scissors (rps)<br>3. Trivia (trivia)<br>4. Tic-Tac-Toe (tictactoe)<br>5. Bulls and Cows (bulls)<br>6. Minesweeper 5x5 (sapper)<br><br>Enter game name or number.',
+                games_menu: '🎮 **Game Menu:**\n1. Guess Number (guess)\n2. Rock-Paper-Scissors (rps)\n3. Trivia (trivia)\n4. Tic-Tac-Toe (tictactoe)\n5. Bulls and Cows (bulls)\n6. Minesweeper 5x5 (sapper)\n\nEnter game name or number.',
                 guess_start: '🎲 I guessed a number from 1 to 100. Try to guess!',
                 rps_start: '✊ Rock, paper or scissors? Enter: rock, paper, scissors',
                 trivia_start: '🎯 Trivia! Answer with a/b/c or "exit".',
@@ -304,7 +305,7 @@
                 lose: '💻 I won!',
                 draw: 'Draw!',
                 boom: '💥 You stepped on a mine! Game over.',
-                ach_menu: '🏆 <b>Your achievements:</b><br>'
+                ach_menu: '🏆 **Your achievements:**\n'
             }
         };
 
@@ -314,7 +315,7 @@
             return str;
         }
 
-        // --- ФИЛЬТР МАТА ПОЛНОСТЬЮ УДАЛЁН ---
+        // --- ФИЛЬТР МАТА УДАЛЁН ---
         function addMessage(sender, text, isSystem = false) {
             const div = document.createElement('div');
             if (isSystem) { div.className = 'message bot'; div.style.alignSelf = 'center'; div.style.fontSize = '0.8em'; div.style.opacity = '0.6'; div.style.textAlign = 'center'; }
@@ -494,7 +495,7 @@
                 let ach = JSON.parse(localStorage.getItem('verityAchievements')) || {};
                 let msg = t('ach_menu');
                 let has = false;
-                for (let key in ach) { if (ach[key]) { msg += '✔️ ' + key + ': ' + ach[key] + '<br>'; has = true; } }
+                for (let key in ach) { if (ach[key]) { msg += '✔️ ' + key + ': ' + ach[key] + '\n'; has = true; } }
                 if (!has) msg += '😴 Пока нет достижений. Играй в игры!';
                 addMessage('bot', msg);
                 return;
@@ -502,9 +503,9 @@
 
             // --- Статистика игр ---
             if (lower === 'статистика' || lower === 'stats') {
-                let msg = '📊 <b>Статистика побед:</b><br>';
+                let msg = '📊 **Статистика побед:**\n';
                 let has = false;
-                for (let g in stats) { msg += '🎮 ' + g + ': ' + stats[g] + ' побед<br>'; has = true; }
+                for (let g in stats) { msg += '🎮 ' + g + ': ' + stats[g] + ' побед\n'; has = true; }
                 if (!has) msg += '😴 Пока нет статистики. Выигрывай в игры!';
                 addMessage('bot', msg);
                 return;
@@ -512,8 +513,7 @@
 
             // --- Игры ---
             if (lower === 'игры' || lower === 'games') {
-                let menu = '🎮 **Меню игр:**\n1. Угадай число (guess)\n2. Камень-ножницы-бумага (rps)\n3. Викторина (trivia)\n4. Крестики-нолики (tictactoe)\n5. Быки и коровы (bulls)\n6. Сапёр 5x5 (sapper)\n\nВведи название игры или выбери цифру.';
-                addMessage('bot', menu);
+                addMessage('bot', t('games_menu'));
                 return;
             }
             if (lower === '1' || lower === 'guess') { gameMode = 'guess'; gameData = {}; addMessage('bot', t('guess_start')); return; }
@@ -535,7 +535,7 @@
                     }
                 }
                 addMessage('bot', `🌤 Запрашиваю погоду для ${city}...`);
-                fetch(`https://wttr.in/${encodeURIComponent(city)}?format=%C+%t+%w+%h&m`)
+                fetch(`https://wttr.in/${encodeURIComponent(city)}?format=%C+%t+%w+%h&m&lang=ru`)
                     .then(res => res.text())
                     .then(data => {
                         addMessage('bot', `🌤 Погода в ${city}: ${data}`);
@@ -562,6 +562,30 @@
                     })
                     .catch(() => {
                         addMessage('bot', '❌ Ошибка получения курса валют.');
+                    });
+                return;
+            }
+
+            // --- Конвертер валют ---
+            if (lower.startsWith('конверт')) {
+                let parts = text.replace(/конверт/i, '').trim().split(' ');
+                let amount = parseFloat(parts[0]);
+                let from = parts[1] ? parts[1].toUpperCase() : 'USD';
+                let to = parts[3] ? parts[3].toUpperCase() : 'RUB';
+                if (isNaN(amount) || amount <= 0) { addMessage('bot', '📉 Пример: конверт 100 usd в rub'); return; }
+                addMessage('bot', `🔄 Конвертирую ${amount} ${from} в ${to}...`);
+                fetch(`https://api.exchangerate-api.com/v4/latest/${from}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.rates && data.rates[to]) {
+                            let result = amount * data.rates[to];
+                            addMessage('bot', `💱 ${amount} ${from} = ${result.toFixed(2)} ${to}`);
+                        } else {
+                            addMessage('bot', '❌ Не удалось конвертировать. Проверь валюты.');
+                        }
+                    })
+                    .catch(() => {
+                        addMessage('bot', '❌ Ошибка конвертации.');
                     });
                 return;
             }
@@ -616,6 +640,61 @@
                 return;
             }
 
+            // --- Калькулятор ипотеки ---
+            if (lower.startsWith('ипотека') || lower.startsWith('mortgage')) {
+                let parts = text.replace(/ипотека|mortgage/i, '').trim().split(' ');
+                let amount = parseFloat(parts[0]);
+                let years = parseFloat(parts[1]);
+                let percent = parseFloat(parts[2]);
+                if (isNaN(amount) || isNaN(years) || isNaN(percent)) {
+                    addMessage('bot', '🏠 Пример: ипотека 1000000 5 12 (сумма, лет, процент)');
+                    return;
+                }
+                let monthlyRate = percent / 100 / 12;
+                let months = years * 12;
+                let payment = amount * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+                let total = payment * months;
+                let overpay = total - amount;
+                addMessage('bot', `🏠 **Ипотека:**\n💰 Сумма: ${amount} руб.\n📅 Срок: ${years} лет\n📊 Ставка: ${percent}%\n💳 Ежемесячный платёж: ${payment.toFixed(2)} руб.\n📈 Переплата: ${overpay.toFixed(2)} руб.\n💸 Всего: ${total.toFixed(2)} руб.`);
+                return;
+            }
+
+            // --- Генератор мемов (Canvas) ---
+            if (lower.startsWith('мем') || lower.startsWith('meme')) {
+                let memeText = text.replace(/мем|meme/i, '').trim();
+                if (!memeText) { addMessage('bot', '🖼️ Пример: мем Пойми меня, если сможешь'); return; }
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 600; canvas.height = 400;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 600, 400);
+                    ctx.fillStyle = '#000000'; ctx.font = 'bold 32px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    
+                    // Разбиваем текст на строки, если длинный
+                    let lines = [];
+                    let words = memeText.split(' ');
+                    let currentLine = '';
+                    for (let w of words) {
+                        let test = currentLine + w + ' ';
+                        if (ctx.measureText(test).width > 500) { lines.push(currentLine); currentLine = w + ' '; }
+                        else { currentLine = test; }
+                    }
+                    lines.push(currentLine);
+                    
+                    let startY = 200 - (lines.length * 20);
+                    lines.forEach((line, i) => {
+                        ctx.fillText(line, 300, startY + i * 40);
+                    });
+                    
+                    const link = document.createElement('a');
+                    link.download = 'meme.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    addMessage('bot', '🖼️ Мем сгенерирован! Проверь папку "Загрузки".');
+                } catch(e) { addMessage('bot', '❌ Ошибка генерации мема.'); }
+                return;
+            }
+
             // --- Заметки ---
             if (lower === 'заметки' || lower === 'notes') {
                 if (notes.length === 0) { addMessage('bot', '📒 Заметок пока нет. Напиши "заметка текст" чтобы добавить.'); return; }
@@ -638,6 +717,38 @@
                 let removed = notes.splice(idx-1, 1);
                 localStorage.setItem('verityNotes', JSON.stringify(notes));
                 addMessage('bot', `🗑️ Заметка "${removed[0]}" удалена.`);
+                return;
+            }
+
+            // --- Планировщик задач ---
+            if (lower === 'задачи' || lower === 'tasks') {
+                if (tasks.length === 0) { addMessage('bot', '📋 Задач пока нет. Добавь через "задача текст"'); return; }
+                let msg = '📋 **Список задач:**\n';
+                tasks.forEach((t, i) => { msg += `${i+1}. ${t.text} [${t.done ? '✅' : '⬜'}]\n`; });
+                addMessage('bot', msg);
+                return;
+            }
+            if (lower.startsWith('задача') || lower.startsWith('task')) {
+                let taskText = text.replace(/задача|task/i, '').trim();
+                if (!taskText) { addMessage('bot', '📋 Укажи текст задачи. Пример: задача купить хлеб'); return; }
+                tasks.push({text: taskText, done: false});
+                localStorage.setItem('verityTasks', JSON.stringify(tasks));
+                addMessage('bot', `📋 Задача добавлена: "${taskText}"`);
+                return;
+            }
+            if (lower.startsWith('выполнить') || lower.startsWith('done')) {
+                let idx = parseInt(text.replace(/выполнить|done/i, '').trim());
+                if (isNaN(idx) || idx < 1 || idx > tasks.length) { addMessage('bot', '⚠️ Укажи номер задачи. Пример: выполнить 1'); return; }
+                tasks[idx-1].done = true;
+                localStorage.setItem('verityTasks', JSON.stringify(tasks));
+                addMessage('bot', `✅ Задача #${idx} выполнена!`);
+                return;
+            }
+
+            // --- Очистка чата (Пофикшено!) ---
+            if (lower === 'очистить' || lower === 'clear') {
+                chatBox.innerHTML = '';
+                addMessage('bot', '🧹 Чат очищен.');
                 return;
             }
 
@@ -957,7 +1068,7 @@
                 chatBox.appendChild(div);
             });
         }
-        addMessage('bot', '🚀 Привет! Я Verity. Теперь у меня есть погода, курс валют, генератор паролей, заметки, таймер и 3 новые темы! (кислотная, оранжевая, лесная).');
+        addMessage('bot', '🚀 Привет! Я Verity. Теперь у меня есть генератор мемов, ипотечный калькулятор, конвертер валют и планировщик задач!');
     </script>
 </body>
 </html>
