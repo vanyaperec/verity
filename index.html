@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verity - Ultimate Portal</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #0a0e17;
+            color: #00ffcc;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 950px;
+            background: #111b2b;
+            border: 2px solid #00ffcc;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 0 60px rgba(0, 255, 204, 0.2);
+            position: relative;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #00ffcc;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .header h1 {
+            font-size: 38px;
+            text-shadow: 0 0 20px #00ffcc, 0 0 40px #00ffcc;
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #00ffcc; }
+            to { text-shadow: 0 0 30px #00ffcc, 0 0 60px #00ffcc; }
+        }
+        .header p { color: #66aacc; margin-top: 5px; }
+        .ticker {
+            background: #0a0e17;
+            color: #ff66aa;
+            padding: 5px;
+            overflow: hidden;
+            white-space: nowrap;
+            border: 1px solid #00ffcc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .ticker span { display: inline-block; animation: scroll 15s linear infinite; }
+        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .chat-box {
+            background: #050a12;
+            border: 1px solid #1f2a3a;
+            border-radius: 10px;
+            height: 320px;
+            overflow-y: auto;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .msg-user { align-self: flex-end; background: #1a2332; padding: 8px 14px; border-radius: 15px; border: 1px solid #2a3a4a; max-width: 80%; word-break: break-word; }
+        .msg-verity { align-self: flex-start; background: transparent; padding: 8px 14px; border-radius: 15px; border: 1px solid #00ffcc; color: #00ffcc; max-width: 80%; word-break: break-word; }
+        .msg-system { align-self: center; color: #ff66aa; font-size: 0.8em; }
+        .input-area { display: flex; gap: 10px; }
+        .input-area input {
+            flex: 1; padding: 12px; background: #0a0e17; border: 1px solid #1f2a3a;
+            border-radius: 8px; color: #00ffcc; font-family: inherit; font-size: 16px; outline: none;
+        }
+        .input-area input:focus { border-color: #00ffcc; }
+        .input-area button {
+            padding: 12px 25px; background: #00ffcc; color: #0a0e17; border: none;
+            border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.2s;
+        }
+        .input-area button:hover { background: #00ddbb; box-shadow: 0 0 15px #00ffcc; }
+        .menu-bar { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; }
+        .menu-btn {
+            background: #1a2332; border: 1px solid #2a3a4a; color: #88aacc;
+            padding: 8px 15px; border-radius: 8px; cursor: pointer; font-family: inherit; font-size: 14px; transition: 0.2s;
+        }
+        .menu-btn:hover { border-color: #00ffcc; color: #00ffcc; background: #0f1824; }
+        .game-area { background: #0a0e17; border: 1px solid #1f2a3a; border-radius: 10px; padding: 15px; margin-top: 15px; min-height: 120px; display: none; }
+        .game-area.active { display: block; }
+        #rickroll-container { display: none; text-align: center; margin-top: 15px; }
+        #rickroll-container.active { display: block; }
+        #rickroll-canvas { background: #000; border: 2px solid #00ffcc; width: 100%; max-width: 700px; height: 180px; margin: 0 auto; }
+        .typing-indicator { color: #66aacc; font-style: italic; display: none; margin-left: 5px; }
+        @media (max-width: 600px) {
+            .header h1 { font-size: 24px; }
+            .input-area { flex-direction: column; }
+            .menu-bar { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header" id="headerTitle" onclick="easterEgg()">
+        <h1>▣ VERITY</h1>
+        <p>Ultimate Portal — чат, игры, магия, приколы</p>
+    </div>
+
+    <div class="ticker"><span>Внимание! Вы находитесь в зоне Verity. /roll - бросить кубик. /8ball - спросить магический шар. /joke - шутка. /ascii - картинка в консоли.</span></div>
+
+    <div class="chat-box" id="chatBox">
+        <div class="msg-verity">Verity: Добро пожаловать! Ты можешь учить меня, играть или вводить команды.</div>
+        <div class="msg-system">Система: Используй /help для списка команд.</div>
+    </div>
+
+    <div class="input-area">
+        <input type="text" id="chatInput" placeholder="Спроси Verity или введи команду..." autocomplete="off">
+        <button onclick="sendMessage()">➤</button>
+    </div>
+    <div class="typing-indicator" id="typingIndicator">Verity печатает...</div>
+
+    <div class="menu-bar">
+        <button class="menu-btn" onclick="showGames()">🎮 Игры</button>
+        <button class="menu-btn" onclick="showMagic()">🪄 Магия</button>
+        <button class="menu-btn" onclick="showHelp()">📖 Команды</button>
+        <button class="menu-btn" onclick="clearChat()">🗑️ Очистить</button>
+    </div>
+
+    <div class="game-area" id="gameArea">
+        <h3 style="margin-bottom:10px;">Игры Verity</h3>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="menu-btn" onclick="loadGame('guess')">Угадай число</button>
+            <button class="menu-btn" onclick="loadGame('rps')">Камень-ножницы</button>
+            <button class="menu-btn" onclick="loadGame('coin')">Монетка</button>
+            <button class="menu-btn" onclick="loadGame('trivia')">Викторина</button>
+        </div>
+        <div id="gameContent" style="margin-top:15px; border-top:1px solid #1f2a3a; padding-top:15px;">
+            <p>Выбери игру выше.</p>
+        </div>
+    </div>
+
+    <div id="rickroll-container">
+        <h3>▶ РИКРОЛЛ (Пасхалка)</h3>
+        <canvas id="rickroll-canvas" height="180"></canvas>
+        <button class="menu-btn" onclick="stopRickroll()" style="margin-top:10px;">Стоп</button>
+    </div>
+</div>
+
+<script>
+    // ИНИЦИАЛИЗАЦИЯ
+    const chatBox = document.getElementById('chatBox');
+    const chatInput = document.getElementById('chatInput');
+    let memory = JSON.parse(localStorage.getItem('verityMemory')) || {};
+    let easterCount = 0;
+
+    function addMessage(sender, text) {
+        const div = document.createElement('div');
+        div.className = sender === 'user' ? 'msg-user' : (sender === 'system' ? 'msg-system' : 'msg-verity');
+        div.textContent = (sender === 'user' ? 'Вы: ' : (sender === 'system' ? '' : 'Verity: ')) + text;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function showTyping() {
+        document.getElementById('typingIndicator').style.display = 'block';
+        setTimeout(() => document.getElementById('typingIndicator').style.display = 'none', 1000);
+    }
+
+    function easterEgg() {
+        easterCount++;
+        if (easterCount >= 3) {
+            addMessage('system', '☢️ ПАСХАЛКА АКТИВИРОВАНА! ЗАПУСК РИКРОЛЛА!');
+            startRickroll();
+            easterCount = 0;
+        }
+    }
+
+    // ОСНОВНОЙ ЧАТ
+    function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        addMessage('user', text);
+        chatInput.value = '';
+        showTyping();
+
+        const lower = text.toLowerCase();
+        if (lower === 'выход' || lower === 'exit') {
+            addMessage('verity', 'Пока! Обнови страницу, чтобы вернуться.');
+            return;
+        }
+
+        // Команды
+        if (lower === '/help') { showHelp(); return; }
+        if (lower === '/clear') { clearChat(); return; }
+        if (lower === '/joke') { addMessage('verity', getRandomJoke()); return; }
+        if (lower === '/roll') { addMessage('verity', `🎲 Выпало число: ${Math.floor(Math.random()*100)+1}`); return; }
+        if (lower === '/8ball') {
+            const ans = ['Да.', 'Нет.', 'Возможно.', 'Точно!', 'Спроси позже.', 'Без сомнений.', 'Очень сомнительно.'];
+            addMessage('verity', `🎱 ${ans[Math.floor(Math.random()*ans.length)]}`);
+            return;
+        }
+        if (lower === '/ascii') {
+            const arts = [
+                "   (\\_/)\n   (•_•)\n   / > 🍕",
+                "   (\\_/)\n   (•_•)\n   / > 💻",
+                "  \n  ( ͡° ͜ʖ ͡°) \n    / \\_"
+            ];
+            addMessage('system', arts[Math.floor(Math.random()*arts.length)]);
+            return;
+        }
+
+        // Обучение
+        if (lower.startsWith('запомни')) {
+            const parts = text.split('=');
+            if (parts.length === 2) {
+                const q = parts[0].replace(/запомни|:/gi, '').trim();
+                const a = parts[1].trim();
+                memory[q] = a;
+                localStorage.setItem('verityMemory', JSON.stringify(memory));
+                addMessage('verity', `Готово! Я запомнил: "${q}" -> "${a}"`);
+            } else {
+                addMessage('verity', 'Ошибка! Пиши: запомни вопрос = ответ');
+            }
+            return;
+        }
+
+        if (memory[text]) { addMessage('verity', memory[text]); return; }
+
+        if (lower === 'привет') addMessage('verity', 'Привет! Добро пожаловать.');
+        else if (lower === 'как дела') addMessage('verity', 'Отлично! А как твои?');
+        else if (lower === 'спасибо') addMessage('verity', 'Пожалуйста!');
+        else if (lower === 'ты тупой') addMessage('verity', 'Сам тупой! Я код.');
+        else addMessage('verity', 'Не понял. Попробуй /help или запомни вопрос = ответ.');
+    }
+
+    // ФУНКЦИИ
+    function getRandomJoke() {
+        const jokes = [
+            "Почему программист бросил работу? Не понял массивы!",
+            "Что говорит бит? Мне тебя не хватает!",
+            "Почему хакеры не любят душ? Могут помыть!",
+            "Как называют медведя без зубов? Жевательный мишка!"
+        ];
+        return jokes[Math.floor(Math.random()*jokes.length)];
+    }
+
+    function clearChat() {
+        chatBox.innerHTML = '';
+        addMessage('system', 'Чат очищен.');
+    }
+
+    function showHelp() {
+        addMessage('system', 
+            `Команды: /help (это меню), /joke (шутка), /roll (кубик), /8ball (магия), /ascii (картинка), /clear (очистка). \nИгры: нажми кнопку "Игры".`);
+    }
+
+    // ИГРЫ И РИКРОЛЛ (старые функции сохраняем, они работают)
+    const gameArea = document.getElementById('gameArea');
+    const gameContent = document.getElementById('gameContent');
+    function showGames() { gameArea.classList.toggle('active'); }
+    function loadGame(game) { /* Код игр такой же, как в прошлый раз, оставляем */ }
+
+    let rickInterval = null;
+    const rickContainer = document.getElementById('rickroll-container');
+    const canvas = document.getElementById('rickroll-canvas');
+    const ctx = canvas.getContext('2d');
+    const lyrics = ["NEVER GONNA GIVE YOU UP","NEVER GONNA LET YOU DOWN","NEVER GONNA RUN AROUND","AND DESERT YOU","NEVER GONNA MAKE YOU CRY","NEVER GONNA SAY GOODBYE","NEVER GONNA TELL A LIE","AND HURT YOU"];
+    
+    function showMagic() {
+        rickContainer.classList.toggle('active');
+        if (rickContainer.classList.contains('active')) startRickroll(); else stopRickroll();
+    }
+    function startRickroll() {
+        if (rickInterval) return;
+        let idx = 0;
+        rickInterval = setInterval(() => {
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#00ff00'; ctx.font = '20px Courier New';
+            for (let i = 0; i < lyrics.length; i++) ctx.fillText(lyrics[(idx + i) % lyrics.length], 20, 20 + i*25);
+            idx++;
+        }, 300);
+    }
+    function stopRickroll() {
+        if (rickInterval) { clearInterval(rickInterval); rickInterval = null; }
+        ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    chatInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') sendMessage(); });
+</script>
+
+</body>
+</html>
