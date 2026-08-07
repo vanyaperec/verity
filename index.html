@@ -1,444 +1,721 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" id="htmlLang">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verity - Portal with Chat</title>
+    <title>Verity AI — Ultimate Pro</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0a0a1a;
+            --chat-bg: rgba(0, 0, 0, 0.3);
+            --header-bg: linear-gradient(135deg, #0d0d2b, #1a1a4e);
+            --border: rgba(0, 200, 255, 0.15);
+            --text: #e0f0ff;
+            --subtext: #88bbdd;
+            --user-msg: linear-gradient(135deg, #0077ff, #0055cc);
+            --bot-msg-bg: rgba(255, 255, 255, 0.06);
+            --bot-msg-border: rgba(0, 200, 255, 0.15);
+            --btn-border: rgba(0, 200, 255, 0.2);
+            --btn-bg: rgba(0, 200, 255, 0.05);
+            --btn-hover: rgba(0, 200, 255, 0.15);
+            --input-border: rgba(0, 200, 255, 0.15);
+            --input-bg: rgba(255, 255, 255, 0.04);
+            --send-btn: linear-gradient(135deg, #00ccff, #0077ff);
+            --canvas-z: -1;
+        }
+
+        .light-theme {
+            --bg: #f0f4f8;
+            --chat-bg: rgba(255, 255, 255, 0.7);
+            --header-bg: linear-gradient(135deg, #ffffff, #e0e8f0);
+            --border: rgba(0, 0, 0, 0.15);
+            --text: #1a1a2e;
+            --subtext: #445566;
+            --user-msg: linear-gradient(135deg, #0077ff, #0055cc);
+            --bot-msg-bg: rgba(0, 0, 0, 0.04);
+            --bot-msg-border: rgba(0, 0, 0, 0.1);
+            --btn-border: rgba(0, 0, 0, 0.2);
+            --btn-bg: rgba(0, 0, 0, 0.04);
+            --btn-hover: rgba(0, 0, 0, 0.1);
+            --input-border: rgba(0, 0, 0, 0.2);
+            --input-bg: #ffffff;
+            --send-btn: linear-gradient(135deg, #0077ff, #0055cc);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #0b0f19;
-            color: #00ffcc;
-            font-family: 'Courier New', monospace;
-            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
             padding: 20px;
+            transition: background 0.4s;
         }
-        .container {
-            width: 100%;
-            max-width: 900px;
-            background: #131c2b;
-            border: 1px solid #00ffcc;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 0 40px rgba(0, 255, 204, 0.15);
+        #bgCanvas {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: var(--canvas-z); pointer-events: none; opacity: 0.4;
         }
-        .header {
-            text-align: center;
-            border-bottom: 2px solid #00ffcc;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            font-size: 32px;
-            text-shadow: 0 0 15px #00ffcc;
-            letter-spacing: 2px;
-        }
-        .header p {
-            color: #88aacc;
-            margin-top: 5px;
-        }
-        .chat-box {
-            background: #0a0f18;
-            border: 1px solid #1f2a3a;
-            border-radius: 10px;
-            height: 300px;
-            overflow-y: auto;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .msg-user {
-            align-self: flex-end;
-            background: #1a2332;
-            padding: 8px 14px;
-            border-radius: 15px;
-            border: 1px solid #2a3a4a;
-            max-width: 75%;
-            word-break: break-word;
-        }
-        .msg-verity {
-            align-self: flex-start;
-            background: transparent;
-            padding: 8px 14px;
-            border-radius: 15px;
-            border: 1px solid #00ffcc;
-            color: #00ffcc;
-            max-width: 75%;
-            word-break: break-word;
-        }
-        .input-area {
-            display: flex;
-            gap: 10px;
-        }
-        .input-area input {
-            flex: 1;
-            padding: 12px;
-            background: #0a0f18;
-            border: 1px solid #1f2a3a;
-            border-radius: 8px;
-            color: #00ffcc;
-            font-family: inherit;
-            font-size: 16px;
-            outline: none;
-        }
-        .input-area input:focus {
-            border-color: #00ffcc;
-        }
-        .input-area button {
-            padding: 12px 25px;
-            background: #00ffcc;
-            color: #0b0f19;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .input-area button:hover {
-            background: #00ddbb;
-            box-shadow: 0 0 15px #00ffcc;
-        }
-        .menu-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
-        }
-        .menu-btn {
-            background: #1a2332;
-            border: 1px solid #2a3a4a;
-            color: #88aacc;
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-        .menu-btn:hover {
-            border-color: #00ffcc;
-            color: #00ffcc;
-            background: #0f1824;
-        }
-        .game-area {
-            background: #0a0f18;
-            border: 1px solid #1f2a3a;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            min-height: 120px;
-            display: none;
-        }
-        .game-area.active {
-            display: block;
-        }
-        #rickroll-container {
-            display: none;
-            text-align: center;
-            margin-top: 15px;
-        }
-        #rickroll-container.active {
-            display: block;
-        }
-        #rickroll-canvas {
-            background: #000;
-            border: 2px solid #00ffcc;
+        .chat-container {
             width: 100%;
             max-width: 700px;
-            height: 180px;
-            margin: 0 auto;
+            background: var(--chat-bg);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            max-height: 750px;
+            backdrop-filter: blur(6px);
+            z-index: 10; position: relative;
         }
-        @media (max-width: 600px) {
-            .header h1 { font-size: 24px; }
-            .input-area { flex-direction: column; }
-            .menu-bar { justify-content: center; }
+        .header {
+            background: var(--header-bg);
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+        }
+        .avatar {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: linear-gradient(135deg, #00d4ff, #0077ff);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: bold; color: #fff;
+            box-shadow: 0 0 20px rgba(0, 200, 255, 0.3);
+            cursor: pointer;
+        }
+        .header .info { flex: 1; }
+        .header .info h1 { font-size: 20px; color: var(--text); font-weight: 600; }
+        .header .info p { font-size: 13px; color: var(--subtext); }
+        .status { font-size: 12px; color: #66dd88; padding: 4px 14px; border-radius: 20px; border: 1px solid rgba(0,255,100,0.2); background: rgba(0,255,100,0.12); }
+        
+        .header-controls { display: flex; align-items: center; gap: 6px; }
+        .theme-toggle, .lang-toggle {
+            font-size: 18px; cursor: pointer; background: none; border: none; color: var(--text);
+            padding: 4px 6px; border-radius: 8px; transition: 0.2s;
+        }
+        .theme-toggle:hover, .lang-toggle:hover { background: var(--btn-bg); }
+
+        .chat-box {
+            flex: 1; padding: 20px 24px; overflow-y: auto;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex; flex-direction: column; gap: 8px; scroll-behavior: smooth;
+        }
+        .chat-box::-webkit-scrollbar { width: 5px; }
+        .chat-box::-webkit-scrollbar-thumb { background: rgba(0, 200, 255, 0.3); border-radius: 10px; }
+        
+        .message {
+            padding: 12px 18px; border-radius: 16px; max-width: 85%;
+            word-wrap: break-word; line-height: 1.5; font-size: 15px;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .message.user { align-self: flex-end; background: var(--user-msg); color: #fff; border-bottom-right-radius: 4px; }
+        .message.bot { align-self: flex-start; background: var(--bot-msg-bg); color: var(--text); border: 1px solid var(--bot-msg-border); border-bottom-left-radius: 4px; }
+        .message.bot .bot-name { font-size: 12px; color: #66ccff; font-weight: 600; margin-bottom: 4px; display: block; }
+        .message .time { font-size: 10px; opacity: 0.4; margin-top: 6px; display: block; text-align: right; }
+
+        .input-area {
+            padding: 16px 20px; background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid var(--border);
+            display: flex; gap: 12px; align-items: center; flex-shrink: 0; flex-wrap: wrap;
+        }
+        .input-area input {
+            flex: 1; padding: 12px 18px; border: 2px solid var(--input-border);
+            border-radius: 30px; background: var(--input-bg); color: var(--text);
+            font-size: 15px; outline: none; transition: 0.3s; min-width: 140px;
+        }
+        .input-area input:focus { border-color: #00ccff; box-shadow: 0 0 20px rgba(0,200,255,0.1); }
+        .input-area input::placeholder { color: var(--subtext); }
+        .input-area button {
+            padding: 12px 28px; border: none; border-radius: 30px;
+            background: var(--send-btn); color: #fff; font-weight: 600; font-size: 15px;
+            cursor: pointer; transition: 0.3s; white-space: nowrap;
+        }
+        .input-area button:hover { transform: scale(1.02); box-shadow: 0 6px 25px rgba(0,200,255,0.35); }
+        
+        .quick-commands {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            padding: 8px 20px 16px 20px; background: rgba(0, 0, 0, 0.1);
+            border-top: 1px solid var(--border); justify-content: center; flex-shrink: 0;
+        }
+        .quick-commands button {
+            padding: 6px 16px; border: 1px solid var(--btn-border);
+            border-radius: 20px; background: var(--btn-bg); color: var(--subtext);
+            font-size: 12px; cursor: pointer; transition: 0.3s;
+        }
+        .quick-commands button:hover { background: var(--btn-hover); border-color: #00ccff; color: var(--text); transform: translateY(-1px); }
+
+        @media (max-width: 500px) {
+            .chat-container { height: 95vh; max-height: none; border-radius: 16px; }
+            .chat-box { padding: 14px 16px; }
+            .message { max-width: 92%; font-size: 14px; padding: 10px 14px; }
+            .quick-commands { gap: 5px; padding: 6px 12px 12px 12px; }
+            .quick-commands button { padding: 4px 12px; font-size: 11px; }
         }
     </style>
 </head>
 <body>
+    <!-- Анимированный фон -->
+    <canvas id="bgCanvas"></canvas>
 
-<div class="container">
-    <div class="header">
-        <h1>▣ VERITY</h1>
-        <p>Портал — чат, игры и магия</p>
-    </div>
-
-    <div class="chat-box" id="chatBox">
-        <div class="msg-verity">Verity: Добро пожаловать! Ты можешь учить меня, играть или вводить команды.</div>
-        <div class="msg-system" style="color: #ff66aa; font-size: 0.8em; align-self: center;">Система: Используй /help для списка команд.</div>
-    </div>
-
-    <div class="input-area">
-        <input type="text" id="chatInput" placeholder="Напиши Verity..." autocomplete="off">
-        <button onclick="sendMessage()">➤</button>
-    </div>
-
-    <div class="menu-bar">
-        <button class="menu-btn" onclick="showGames()">🎮 Игры</button>
-        <button class="menu-btn" onclick="showMagic()">🪄 Магия</button>
-        <button class="menu-btn" onclick="clearChat()">🗑️ Очистить</button>
-    </div>
-
-    <div class="game-area" id="gameArea">
-        <h3 style="margin-bottom:10px;">Игры Verity</h3>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="menu-btn" onclick="loadGame('guess')">Угадай число</button>
-            <button class="menu-btn" onclick="loadGame('rps')">Камень-ножницы</button>
-            <button class="menu-btn" onclick="loadGame('coin')">Монетка</button>
-            <button class="menu-btn" onclick="loadGame('trivia')">Викторина</button>
+    <div class="chat-container">
+        <div class="header">
+            <div class="avatar" id="avatarBtn" onclick="triggerEasterEgg()">V</div>
+            <div class="info"><h1 id="uiTitle">Verity AI</h1><p id="uiSubtitle">Твой ИИ-помощник</p></div>
+            <div class="status">● <span id="uiStatus">онлайн</span></div>
+            <div class="header-controls">
+                <button class="lang-toggle" onclick="toggleLang()" id="langBtn">RU</button>
+                <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+            </div>
         </div>
-        <div id="gameContent" style="margin-top:15px; border-top:1px solid #1f2a3a; padding-top:15px;">
-            <p>Выбери игру выше.</p>
+        <div class="chat-box" id="chatBox"></div>
+        <div class="quick-commands">
+            <button onclick="sendCommand('привет')" id="cmdHi">👋 Привет</button>
+            <button onclick="sendCommand('шутка')" id="cmdJoke">😂 Шутка</button>
+            <button onclick="sendCommand('игры')" id="cmdGames">🎮 Игры</button>
+            <button onclick="sendCommand('озвучить')" id="cmdVoice">🔊 Голос</button>
+            <button onclick="sendCommand('скачать')" id="cmdExport">📥 Экспорт</button>
+            <button onclick="sendCommand('достижения')" id="cmdAch">🏆 Достижения</button>
+            <button onclick="sendCommand('очистить')" id="cmdClear">🗑 Очистить</button>
+        </div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Напиши что-нибудь..." onkeydown="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()">➤ <span id="btnSend">Отправить</span></button>
         </div>
     </div>
 
-    <div id="rickroll-container">
-        <h3>▶ РИКРОЛЛ</h3>
-        <canvas id="rickroll-canvas" height="180"></canvas>
-        <button class="menu-btn" onclick="stopRickroll()" style="margin-top:10px;">Стоп (Ctrl+C)</button>
-    </div>
-</div>
+    <!-- Tawk.to (GPT-чат для друзей) -->
+    <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/6a75bf3e127d961d429d5854/1jvdv62v5';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
 
-<script>
-    // ==========================================
-    //  ИНИЦИАЛИЗАЦИЯ
-    // ==========================================
-    const chatBox = document.getElementById('chatBox');
-    const chatInput = document.getElementById('chatInput');
-    let memory = JSON.parse(localStorage.getItem('verityMemory')) || {};
+    <script>
+        // ==========================================================
+        //  ЯДРО
+        // ==========================================================
+        const chatBox = document.getElementById('chatBox');
+        let memory = JSON.parse(localStorage.getItem('verityMemory')) || {};
+        let chatLog = JSON.parse(localStorage.getItem('verityChatLog')) || [];
+        let userName = localStorage.getItem('verityUserName') || 'Ты';
+        let gameMode = null;
+        let gameData = {};
+        let eggCount = 0;
+        let currentLang = localStorage.getItem('verityLang') || 'ru';
 
-    function addMessage(sender, text) {
-        const div = document.createElement('div');
-        if (sender === 'system') {
-            div.className = 'msg-system';
-            div.textContent = text;
-        } else {
-            div.className = sender === 'user' ? 'msg-user' : 'msg-verity';
-            div.textContent = (sender === 'user' ? 'Вы: ' : 'Verity: ') + text;
-        }
-        chatBox.appendChild(div);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    // ==========================================
-    //  ЧАТ И ОБУЧЕНИЕ
-    // ==========================================
-    function sendMessage() {
-        const text = chatInput.value.trim();
-        if (!text) return;
-        addMessage('user', text);
-        chatInput.value = '';
-
-        const lower = text.toLowerCase();
-
-        // ВЫХОД (БЛОКИРУЕМ ВСЁ)
-        if (lower === 'выход' || lower === 'exit') {
-            addMessage('verity', 'Пока! Сайт заблокирован до перезагрузки страницы.');
-            chatInput.disabled = true;
-            document.querySelector('.input-area button').disabled = true;
-            return;
-        }
-
-        if (lower === '/help') {
-            addMessage('system', 'Команды: /help, /clear, /roll, /joke, /8ball. Также: запомни вопрос = ответ.');
-            return;
-        }
-
-        if (lower.startsWith('запомни')) {
-            const parts = text.split('=');
-            if (parts.length === 2) {
-                const q = parts[0].replace(/запомни|:/gi, '').trim();
-                const a = parts[1].trim();
-                memory[q] = a;
-                localStorage.setItem('verityMemory', JSON.stringify(memory));
-                addMessage('verity', `Готово! Я запомнил: "${q}" -> "${a}"`);
-            } else {
-                addMessage('verity', 'Ошибка! Пиши: запомни вопрос = ответ');
+        // --- Переводы ---
+        const LANG = {
+            ru: {
+                hi: 'Привет, {name}! Как дела?', sub: 'Твой ИИ-помощник', status: 'онлайн', send: 'Отправить',
+                cmdHi: '👋 Привет', cmdJoke: '😂 Шутка', cmdGames: '🎮 Игры', cmdVoice: '🔊 Голос',
+                cmdExport: '📥 Экспорт', cmdAch: '🏆 Достижения', cmdClear: '🗑 Очистить',
+                placeholder: 'Напиши что-нибудь...', title: 'Verity AI',
+                unknown: '🤔 Не понимаю. Попробуй "помощь" или научи меня "запомни вопрос = ответ".',
+                exit: '🚪 Пока! Страница заблокирована.',
+                forget: '🧹 Я всё забыл. Мой разум чист.',
+                export_done: '📥 История скачана!',
+                theme_sw: '🎨 Тема переключена!',
+                games_menu: '🎮 <b>Меню игр:</b><br>1. Угадай число (guess)<br>2. Камень-ножницы-бумага (rps)<br>3. Викторина (trivia)<br>4. Крестики-нолики (tictactoe)<br>5. Быки и коровы (bulls)<br>6. Сапёр 5x5 (sapper)<br><br>Введи название игры или выбери цифру.',
+                guess_start: '🎲 Я загадал число от 1 до 100. Попробуй угадать!',
+                rps_start: '✊ Камень, ножницы или бумага? Введи: камень, ножницы, бумага',
+                trivia_start: '🎯 Викторина! Отвечай буквой a/b/c или "выход".',
+                win: '🏆 Ты выиграл!',
+                lose: '💻 Я выиграл!',
+                draw: 'Ничья!',
+                boom: '💥 Ты наступил на мину! Конец игры.',
+                ach_menu: '🏆 <b>Твои достижения:</b><br>'
+            },
+            en: {
+                hi: 'Hello, {name}! How are you?', sub: 'Your AI assistant', status: 'online', send: 'Send',
+                cmdHi: '👋 Hello', cmdJoke: '😂 Joke', cmdGames: '🎮 Games', cmdVoice: '🔊 Voice',
+                cmdExport: '📥 Export', cmdAch: '🏆 Achievements', cmdClear: '🗑 Clear',
+                placeholder: 'Type something...', title: 'Verity AI',
+                unknown: '🤔 I don\'t understand. Try "help" or teach me "remember question = answer".',
+                exit: '🚪 Bye! Page locked.',
+                forget: '🧹 I forgot everything. My mind is clean.',
+                export_done: '📥 History downloaded!',
+                theme_sw: '🎨 Theme toggled!',
+                games_menu: '🎮 <b>Game Menu:</b><br>1. Guess Number (guess)<br>2. Rock-Paper-Scissors (rps)<br>3. Trivia (trivia)<br>4. Tic-Tac-Toe (tictactoe)<br>5. Bulls and Cows (bulls)<br>6. Minesweeper 5x5 (sapper)<br><br>Enter game name or number.',
+                guess_start: '🎲 I guessed a number from 1 to 100. Try to guess!',
+                rps_start: '✊ Rock, paper or scissors? Enter: rock, paper, scissors',
+                trivia_start: '🎯 Trivia! Answer with a/b/c or "exit".',
+                win: '🏆 You won!',
+                lose: '💻 I won!',
+                draw: 'Draw!',
+                boom: '💥 You stepped on a mine! Game over.',
+                ach_menu: '🏆 <b>Your achievements:</b><br>'
             }
-            return;
+        };
+
+        function t(key, name) {
+            let str = LANG[currentLang][key] || LANG['ru'][key];
+            if (name && str.includes('{name}')) str = str.replace('{name}', name);
+            return str;
         }
 
-        if (memory[text]) {
-            addMessage('verity', memory[text]);
-            return;
+        // Фильтр мата
+        const badWords = ['хуй','пизда','бля','сука','еба','хер','мудак','пидор','гандон'];
+        function filterBadWords(text) {
+            let t = text;
+            badWords.forEach(w => { let regex = new RegExp(w, 'gi'); t = t.replace(regex, '****'); });
+            return t;
         }
 
-        if (lower === 'привет') addMessage('verity', 'Привет! Рад видеть тебя здесь.');
-        else if (lower === 'как дела') addMessage('verity', 'Отлично! А как у тебя?');
-        else if (lower === 'спасибо') addMessage('verity', 'Пожалуйста!');
-        else if (lower === 'ты тупой') addMessage('verity', 'Сам тупой! Я код.');
-        else addMessage('verity', 'Не понял. Попробуй /help или запомни вопрос = ответ.');
-    }
+        function addMessage(sender, text, isSystem = false) {
+            const div = document.createElement('div');
+            if (isSystem) { div.className = 'message bot'; div.style.alignSelf = 'center'; div.style.fontSize = '0.8em'; div.style.opacity = '0.6'; div.style.textAlign = 'center'; }
+            else { div.className = sender === 'user' ? 'message user' : 'message bot'; }
+            
+            const filteredText = filterBadWords(text);
+            if (sender === 'user' || isSystem) { div.innerHTML = filteredText + '<span class="time">' + getTime() + '</span>'; }
+            else {
+                div.innerHTML = '<span class="bot-name">🤖 Verity</span>' + 
+                    '<span class="typing-text">' + filteredText + '</span>' +
+                    '<span class="time">' + getTime() + '</span>';
+                chatBox.appendChild(div);
+                typeWriterEffect(div.querySelector('.typing-text'), filteredText);
+                return;
+            }
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
 
-    function clearChat() {
-        chatBox.innerHTML = '';
-        addMessage('system', 'Чат очищен.');
-    }
+        function getTime() { const n = new Date(); return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0'); }
 
-    // ==========================================
-    //  ИГРЫ
-    // ==========================================
-    const gameArea = document.getElementById('gameArea');
-    const gameContent = document.getElementById('gameContent');
+        function typeWriterEffect(el, text) {
+            el.textContent = '';
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < text.length) { el.textContent += text.charAt(i); i++; }
+                else { clearInterval(interval); }
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 20);
+        }
 
-    function showGames() {
-        gameArea.classList.toggle('active');
-    }
+        function playClick() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.frequency.value = 800; gain.gain.value = 0.1;
+                osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+            } catch(e) {}
+        }
 
-    function loadGame(game) {
-        gameContent.innerHTML = '';
-        if (game === 'guess') {
-            const num = Math.floor(Math.random() * 100) + 1;
-            let attempts = 0;
-            gameContent.innerHTML = `
-                <p>Угадай число от 1 до 100.</p>
-                <input type="number" id="guessInput" placeholder="Число" style="padding:8px; background:#0a0f18; border:1px solid #1f2a3a; color:#0ff; width:80px;">
-                <button class="menu-btn" onclick="checkGuess(${num})">Проверить</button>
-                <p id="guessResult"></p>
-            `;
-            window.checkGuess = function(target) {
-                const val = parseInt(document.getElementById('guessInput').value);
-                const res = document.getElementById('guessResult');
-                attempts++;
-                if (val === target) res.innerHTML = `🎉 Угадал за ${attempts} попыток!`;
-                else if (val < target) res.innerHTML = '⬆️ Больше!';
-                else res.innerHTML = '⬇️ Меньше!';
-            };
-        } else if (game === 'rps') {
-            gameContent.innerHTML = `
-                <p>Камень, ножницы, бумага:</p>
-                <button class="menu-btn" onclick="playRPS('камень')">✊ Камень</button>
-                <button class="menu-btn" onclick="playRPS('ножницы')">✌️ Ножницы</button>
-                <button class="menu-btn" onclick="playRPS('бумага')">✋ Бумага</button>
-                <p id="rpsResult"></p>
-            `;
-            window.playRPS = function(choice) {
-                const opts = ['камень', 'ножницы', 'бумага'];
-                const ai = opts[Math.floor(Math.random() * 3)];
-                let res = `Я выбрал: ${ai}. `;
-                if (choice === ai) res += 'Ничья!';
-                else if (
-                    (choice === 'камень' && ai === 'ножницы') ||
-                    (choice === 'ножницы' && ai === 'бумага') ||
-                    (choice === 'бумага' && ai === 'камень')
-                ) res += 'Ты выиграл!';
-                else res += 'Я выиграл!';
-                document.getElementById('rpsResult').textContent = res;
-            };
-        } else if (game === 'coin') {
-            gameContent.innerHTML = `<button class="menu-btn" onclick="flipCoin()">🪙 Бросить монетку</button><p id="coinResult"></p>`;
-            window.flipCoin = function() {
-                document.getElementById('coinResult').textContent = Math.random() < 0.5 ? 'Орёл!' : 'Решка!';
-            };
-        } else if (game === 'trivia') {
-            let score = 0;
-            const questions = [
-                { q: 'Столица Франции?', options: ['Лондон', 'Париж', 'Берлин'], correct: 1 },
-                { q: 'Сколько 2+2?', options: ['3', '4', '5'], correct: 1 },
-                { q: 'Какая планета самая большая?', options: ['Земля', 'Юпитер', 'Сатурн'], correct: 1 },
-                { q: 'Кто написал "Гамлет"?', options: ['Шекспир', 'Гёте', 'Данте'], correct: 0 }
+        function playBoom() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth'; osc.frequency.value = 150;
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+            } catch(e) {}
+        }
+
+        // ==========================================================
+        //  ОТПРАВКА И КОМАНДЫ
+        // ==========================================================
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            let text = input.value.trim();
+            if (!text) return;
+            playClick();
+            addMessage('user', text);
+            input.value = '';
+            chatLog.push({sender: 'user', text: text, time: getTime()});
+            localStorage.setItem('verityChatLog', JSON.stringify(chatLog));
+            processCommand(text);
+        }
+        function sendCommand(cmd) { document.getElementById('userInput').value = cmd; sendMessage(); }
+
+        function processCommand(text) {
+            const lower = text.toLowerCase().trim();
+
+            // --- Игровые режимы ---
+            if (gameMode) {
+                if (lower === 'выход' || lower === 'exit') { gameMode = null; addMessage('bot', '🚪 Игра завершена.'); return; }
+                if (gameMode === 'guess') { processGuess(text); return; }
+                if (gameMode === 'trivia') { processTrivia(text); return; }
+                if (gameMode === 'rps') { processRPS(text); return; }
+                if (gameMode === 'tictactoe') { processTicTacToe(text); return; }
+                if (gameMode === 'bulls') { processBulls(text); return; }
+                if (gameMode === 'sapper') { processSapper(text); return; }
+            }
+
+            // --- Выход ---
+            if (lower === 'выход' || lower === 'exit') {
+                addMessage('bot', t('exit'));
+                document.getElementById('userInput').disabled = true;
+                document.querySelector('.input-area button').disabled = true;
+                return;
+            }
+
+            // --- Запомни ---
+            if (lower.startsWith('запомни') || lower.startsWith('remember')) {
+                const parts = text.split('=');
+                if (parts.length===2) {
+                    const q = parts[0].replace(/запомни|remember|:/gi,'').trim();
+                    const a = parts[1].trim();
+                    memory[q] = a;
+                    localStorage.setItem('verityMemory', JSON.stringify(memory));
+                    addMessage('bot', '🧠 Запомнил: "'+q+'" -> "'+a+'"');
+                } else addMessage('bot', '❌ Используй: запомни вопрос = ответ');
+                return;
+            }
+
+            // --- Имя ---
+            if (lower.startsWith('меня зовут') || lower.startsWith('my name is')) {
+                userName = text.replace(/меня зовут|my name is/i,'').trim();
+                localStorage.setItem('verityUserName', userName);
+                addMessage('bot', '👋 Приятно познакомиться, '+userName+'!');
+                return;
+            }
+
+            // --- Очистка памяти ---
+            if (lower === 'забудь всё' || lower === 'forget all' || lower === 'забудь') {
+                localStorage.removeItem('verityMemory'); memory = {};
+                addMessage('bot', t('forget'));
+                return;
+            }
+
+            // --- Экспорт чата ---
+            if (lower === 'скачать' || lower === 'download' || lower === 'export') {
+                let content = '=== История чата Verity ===\n';
+                chatLog.forEach(m => { content += '['+m.time+'] '+m.sender+': '+m.text+'\n'; });
+                const blob = new Blob([content], {type: 'text/plain'});
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'verity_chat.txt';
+                a.click(); URL.revokeObjectURL(a.href);
+                addMessage('bot', t('export_done'));
+                return;
+            }
+
+            // --- Достижения ---
+            if (lower === 'достижения' || lower === 'achievements' || lower === 'ach') {
+                let ach = JSON.parse(localStorage.getItem('verityAchievements')) || {};
+                let msg = t('ach_menu');
+                let has = false;
+                for (let key in ach) { if (ach[key]) { msg += '✔️ ' + key + ': ' + ach[key] + '<br>'; has = true; } }
+                if (!has) msg += '😴 Пока нет достижений. Играй в игры!';
+                addMessage('bot', msg);
+                return;
+            }
+
+            // --- Игры ---
+            if (lower === 'игры' || lower === 'games') {
+                addMessage('bot', t('games_menu'));
+                return;
+            }
+            if (lower === '1' || lower === 'guess') { gameMode = 'guess'; gameData = {}; addMessage('bot', t('guess_start')); return; }
+            if (lower === '2' || lower === 'rps') { gameMode = 'rps'; addMessage('bot', t('rps_start')); return; }
+            if (lower === '3' || lower === 'trivia') { startTrivia(); return; }
+            if (lower === '4' || lower === 'tictactoe') { startTicTacToe(); return; }
+            if (lower === '5' || lower === 'bulls') { startBulls(); return; }
+            if (lower === '6' || lower === 'sapper') { startSapper(); return; }
+
+            // --- Магия и пасхалки ---
+            if (lower === 'звездопад' || lower === 'starfall') { triggerStars(); addMessage('bot', '🌠 Смотри на небо! Звёзды падают!'); return; }
+            if (lower === 'консоль' || lower === 'console') { console.log('🔥 Ты нашёл меня! Verity внутри.'); addMessage('bot', '🕵️ Секретный код активирован! Смотри в консоль (F12).'); return; }
+            if (lower === 'озвучить' || lower === 'speak') {
+                const msg = currentLang === 'ru' ? 'Привет, я Верути. Я могу говорить голосом.' : 'Hello, I am Verity. I can speak.';
+                speakText(msg);
+                addMessage('bot', '🔊 Говорю: "'+msg+'"');
+                return;
+            }
+            if (lower === 'тема' || lower === 'theme') { toggleTheme(); addMessage('bot', t('theme_sw')); return; }
+            
+            // --- Проверка памяти ---
+            if (memory[text]) { addMessage('bot', memory[text]); return; }
+
+            // --- Базовые ответы ---
+            if (lower === 'привет' || lower === 'hi' || lower === 'hello') addMessage('bot', t('hi', userName));
+            else if (lower === 'шутка' || lower === 'joke') addMessage('bot', jokes[Math.floor(Math.random()*jokes.length)]);
+            else if (lower === 'факт' || lower === 'fact') addMessage('bot', facts[Math.floor(Math.random()*facts.length)]);
+            else if (lower === 'совет' || lower === 'advice') addMessage('bot', advices[Math.floor(Math.random()*advices.length)]);
+            else if (lower === 'цитата' || lower === 'quote') addMessage('bot', quotes[Math.floor(Math.random()*quotes.length)]);
+            else addMessage('bot', t('unknown'));
+        }
+
+        // ==========================================================
+        //  ИГРЫ
+        // ==========================================================
+        function addAchievement(name) {
+            let ach = JSON.parse(localStorage.getItem('verityAchievements')) || {};
+            if (!ach[name]) ach[name] = 1; else ach[name]++;
+            localStorage.setItem('verityAchievements', JSON.stringify(ach));
+        }
+
+        // --- Trivia ---
+        function startTrivia() {
+            gameMode = 'trivia';
+            gameData = { score: 0, qIndex: 0 };
+            gameData.questions = [
+                { q: 'Столица Франции?', o: ['a) Лондон', 'b) Париж', 'c) Берлин'], a: 'b' },
+                { q: '2+2?', o: ['a) 3', 'b) 4', 'c) 5'], a: 'b' },
+                { q: 'Самая большая планета?', o: ['a) Земля', 'b) Юпитер', 'c) Сатурн'], a: 'b' },
+                { q: 'Кто написал "Война и мир"?', o: ['a) Пушкин', 'b) Толстой', 'c) Достоевский'], a: 'b' }
             ];
-            let qi = 0;
-            const renderTrivia = () => {
-                if (qi >= questions.length) {
-                    gameContent.innerHTML = `<h3>Викторина окончена!</h3><p>Твой счёт: ${score}/${questions.length}</p>`;
-                    return;
-                }
-                const q = questions[qi];
-                let html = `<p>${q.q}</p>`;
-                q.options.forEach((opt, i) => {
-                    html += `<button class="menu-btn" onclick="answerTrivia(${i})">${opt}</button> `;
-                });
-                html += `<p id="triviaResult"></p>`;
-                gameContent.innerHTML = html;
-                window.answerTrivia = function(idx) {
-                    const res = document.getElementById('triviaResult');
-                    if (idx === q.correct) { res.innerHTML = '✅ Верно!'; score++; }
-                    else { res.innerHTML = '❌ Неверно.'; }
-                    qi++;
-                    setTimeout(renderTrivia, 1000);
-                };
-            };
-            renderTrivia();
+            addMessage('bot', t('trivia_start'));
+            setTimeout(() => showTriviaQ(), 500);
         }
-    }
-
-    // ==========================================
-    //  МАГИЯ — РИКРОЛЛ
-    // ==========================================
-    let rickInterval = null;
-    const rickContainer = document.getElementById('rickroll-container');
-    const canvas = document.getElementById('rickroll-canvas');
-    const ctx = canvas.getContext('2d');
-    const lyrics = [
-        "NEVER GONNA GIVE YOU UP",
-        "NEVER GONNA LET YOU DOWN",
-        "NEVER GONNA RUN AROUND",
-        "AND DESERT YOU",
-        "NEVER GONNA MAKE YOU CRY",
-        "NEVER GONNA SAY GOODBYE",
-        "NEVER GONNA TELL A LIE",
-        "AND HURT YOU"
-    ];
-
-    function showMagic() {
-        rickContainer.classList.toggle('active');
-        if (rickContainer.classList.contains('active')) {
-            startRickroll();
-        } else {
-            stopRickroll();
-        }
-    }
-
-    function startRickroll() {
-        if (rickInterval) return;
-        let idx = 0, y = 20;
-        rickInterval = setInterval(() => {
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#00ff00';
-            ctx.font = '20px Courier New';
-            for (let i = 0; i < lyrics.length; i++) {
-                ctx.fillText(lyrics[(idx + i) % lyrics.length], 20, y + i * 25);
+        function showTriviaQ() {
+            if (gameData.qIndex >= gameData.questions.length) {
+                addAchievement('Викторина');
+                const r = gameData.score + ' из ' + gameData.questions.length;
+                addMessage('bot', '🏆 Викторина окончена! Счёт: '+r);
+                gameMode = null; return;
             }
-            idx++;
-        }, 300);
-    }
-
-    function stopRickroll() {
-        if (rickInterval) {
-            clearInterval(rickInterval);
-            rickInterval = null;
+            const q = gameData.questions[gameData.qIndex];
+            addMessage('bot', '📌 Вопрос '+(gameData.qIndex+1)+': '+q.q+'<br>'+q.o.join('<br>'));
         }
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
+        function processTrivia(text) {
+            const q = gameData.questions[gameData.qIndex];
+            if (text.toLowerCase() === q.a) { gameData.score++; addMessage('bot', '✅ Верно!'); }
+            else addMessage('bot', '❌ Неверно. Ответ: '+q.a.toUpperCase());
+            gameData.qIndex++;
+            setTimeout(showTriviaQ, 600);
+        }
 
-    // ==========================================
-    //  ГРУППОВОЙ ЧАТ Tawk.to
-    // ==========================================
-    // КОД ВСТАВЛЕН В НИЗ СТРАНИЦЫ, ПЕРЕД </body>
-</script>
+        // --- Guess ---
+        function processGuess(text) {
+            if (!gameData.target) { gameData.target = Math.floor(Math.random()*100)+1; gameData.attempts=0; }
+            const g = parseInt(text);
+            if (isNaN(g)) { addMessage('bot', '⚠️ Введи число!'); return; }
+            gameData.attempts++;
+            if (g < gameData.target) addMessage('bot', '📈 Мало!');
+            else if (g > gameData.target) addMessage('bot', '📉 Много!');
+            else { addAchievement('Угадай число'); addMessage('bot', '🎉 Угадал за '+gameData.attempts+' попыток!'); gameMode=null; }
+        }
 
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/6a75bf3e127d961d429d5854/1jvdv62v5';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
+        // --- RPS ---
+        function processRPS(text) {
+            const choices = ['камень','ножницы','бумага'];
+            const ai = choices[Math.floor(Math.random()*3)];
+            if (!choices.includes(text.toLowerCase())) { addMessage('bot', '⚠️ Выбери: камень, ножницы или бумага'); return; }
+            let res = 'Я выбрал: '+ai+'. ';
+            if (text.toLowerCase() === ai) res += t('draw');
+            else if ((text.toLowerCase()==='камень'&&ai==='ножницы')||(text.toLowerCase()==='ножницы'&&ai==='бумага')||(text.toLowerCase()==='бумага'&&ai==='камень')) res += t('win');
+            else res += t('lose');
+            addMessage('bot', res);
+            gameMode = null;
+        }
 
+        // --- TicTacToe ---
+        function startTicTacToe() {
+            gameMode = 'tictactoe';
+            gameData = { board: [' ',' ',' ',' ',' ',' ',' ',' ',' '], turn: 'X' };
+            addMessage('bot', '⭕ Крестики-нолики. Ты X, я O. Введи номер клетки (1-9).');
+            renderTicTacToe();
+        }
+        function renderTicTacToe() {
+            const b = gameData.board; let s = '';
+            for (let i=0; i<9; i++) { s += (i%3===0?'\n':'') + (b[i]===' '?i+1:b[i]) + ' '; }
+            addMessage('bot', '```\n'+s+'\n```');
+        }
+        function processTicTacToe(text) {
+            const idx = parseInt(text)-1;
+            if (isNaN(idx) || idx<0 || idx>8 || gameData.board[idx]!==' ') { addMessage('bot', '⚠️ Неверный ход!'); return; }
+            gameData.board[idx] = 'X';
+            if (checkWin(gameData.board, 'X')) { addAchievement('Крестики-нолики'); addMessage('bot', t('win')); gameMode=null; return; }
+            let empty = gameData.board.map((v,i)=>v===' '?i:null).filter(v=>v!==null);
+            if (empty.length===0) { addMessage('bot', t('draw')); gameMode=null; return; }
+            let move = empty[Math.floor(Math.random()*empty.length)];
+            gameData.board[move] = 'O';
+            if (checkWin(gameData.board, 'O')) { addMessage('bot', t('lose')); gameMode=null; return; }
+            renderTicTacToe();
+        }
+        function checkWin(b, p) { const w=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return w.some(l=>b[l[0]]===p&&b[l[1]]===p&&b[l[2]]===p); }
+
+        // --- Bulls ---
+        function startBulls() {
+            gameMode = 'bulls';
+            let num = '';
+            while(num.length<4) { let d = Math.floor(Math.random()*10); if(!num.includes(d) && !(num.length===0&&d===0)) num += d; }
+            gameData.target = num; gameData.attempts = 0;
+            addMessage('bot', '🐂 Быки и коровы. Угадай 4-значное число (цифры не повторяются).');
+        }
+        function processBulls(text) {
+            if (text.length!==4 || isNaN(text)) { addMessage('bot', '⚠️ Введи 4 цифры!'); return; }
+            let bulls=0, cows=0, t=gameData.target;
+            for(let i=0;i<4;i++){ if(text[i]===t[i]) bulls++; else if(t.includes(text[i])) cows++; }
+            gameData.attempts++;
+            addMessage('bot', '🐂 Быки: '+bulls+' | 🐄 Коровы: '+cows);
+            if (bulls===4) { addAchievement('Быки и коровы'); addMessage('bot', '🎉 Угадал за '+gameData.attempts+' попыток!'); gameMode=null; }
+        }
+
+        // --- Sapper ---
+        function startSapper() {
+            gameMode = 'sapper';
+            const size=5, mines=4;
+            let board=[], minesPos=[];
+            for(let i=0;i<size*size;i++) board.push(0);
+            for(let i=0;i<mines;i++){ let p; do{ p=Math.floor(Math.random()*(size*size)); }while(board[p]===-1); board[p]=-1; minesPos.push(p); }
+            minesPos.forEach(p=>{ for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++){ let nx=Math.floor(p%size)+dx, ny=Math.floor(p/size)+dy; if(nx>=0&&nx<size&&ny>=0&&ny<size){ let idx=ny*size+nx; if(board[idx]!==-1) board[idx]++; } } });
+            gameData = { board: board, size: size, mines: mines, revealed: [], gameOver: false };
+            addMessage('bot', '💣 Сапёр 5x5. Введи координаты (например: 2,3). Или "выход" чтобы выйти.');
+            renderSapper();
+        }
+        function renderSapper() {
+            let s='```\n  0 1 2 3 4\n';
+            for(let y=0;y<5;y++){ s+=y+' '; for(let x=0;x<5;x++){ let idx=y*5+x; s+=gameData.revealed.includes(idx)?(gameData.board[idx]===-1?'💣':gameData.board[idx]||' '):'█'; s+=' '; } s+='\n'; } s+='```';
+            addMessage('bot', s);
+        }
+        function processSapper(text) {
+            if(text.toLowerCase()==='выход'){ gameMode=null; addMessage('bot','🚪 Выход из сапёра.'); return; }
+            let parts=text.split(',').map(Number);
+            if(parts.length!==2||isNaN(parts[0])||isNaN(parts[1])||parts[0]<0||parts[0]>4||parts[1]<0||parts[1]>4){ addMessage('bot','⚠️ Введи x,y через запятую (0-4).'); return; }
+            let idx=parts[1]*5+parts[0];
+            if(gameData.revealed.includes(idx)){ addMessage('bot','⚠️ Уже открыто!'); return; }
+            if(gameData.board[idx]===-1){ playBoom(); addAchievement('Сапёр'); addMessage('bot', t('boom')); gameMode=null; return; }
+            gameData.revealed.push(idx);
+            renderSapper();
+            if(gameData.revealed.length===25-gameData.mines){ addAchievement('Сапёр'); addMessage('bot','🎉 Ты выиграл!'); gameMode=null; }
+        }
+
+        // ==========================================================
+        //  ПАСХАЛКИ, ТЕМЫ, ЯЗЫК
+        // ==========================================================
+        function triggerEasterEgg() {
+            eggCount++;
+            if (eggCount >= 3) { triggerStars(); addMessage('bot', '🌠 Пасхалка! Звёздопад!'); eggCount=0; }
+        }
+
+        function triggerStars() {
+            const container = document.createElement('div'); container.className = 'stars-container';
+            container.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden;';
+            document.body.appendChild(container);
+            for (let i=0; i<100; i++) {
+                const star = document.createElement('div'); star.className = 'star';
+                star.style.cssText = 'position:absolute;background:#fff;border-radius:50%;box-shadow:0 0 10px #fff;';
+                star.style.left = Math.random()*100 + '%';
+                star.style.width = star.style.height = Math.random()*3 + 2 + 'px';
+                star.style.animation = 'fall '+(Math.random()*2+2)+'s linear forwards';
+                star.style.animationDelay = Math.random()*2 + 's';
+                container.appendChild(star);
+            }
+            setTimeout(() => container.remove(), 4000);
+        }
+
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                const utt = new SpeechSynthesisUtterance(text);
+                utt.lang = currentLang === 'ru' ? 'ru-RU' : 'en-US';
+                utt.rate = 0.9;
+                speechSynthesis.cancel(); speechSynthesis.speak(utt);
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            localStorage.setItem('verityTheme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
+        }
+        if (localStorage.getItem('verityTheme') === 'light') document.body.classList.add('light-theme');
+
+        function toggleLang() {
+            currentLang = currentLang === 'ru' ? 'en' : 'ru';
+            localStorage.setItem('verityLang', currentLang);
+            document.getElementById('htmlLang').lang = currentLang;
+            document.getElementById('langBtn').textContent = currentLang.toUpperCase();
+            document.getElementById('uiTitle').textContent = t('title');
+            document.getElementById('uiSubtitle').textContent = t('sub');
+            document.getElementById('uiStatus').textContent = t('status');
+            document.getElementById('btnSend').textContent = t('send');
+            document.getElementById('userInput').placeholder = t('placeholder');
+            document.getElementById('cmdHi').textContent = t('cmdHi');
+            document.getElementById('cmdJoke').textContent = t('cmdJoke');
+            document.getElementById('cmdGames').textContent = t('cmdGames');
+            document.getElementById('cmdVoice').textContent = t('cmdVoice');
+            document.getElementById('cmdExport').textContent = t('cmdExport');
+            document.getElementById('cmdAch').textContent = t('cmdAch');
+            document.getElementById('cmdClear').textContent = t('cmdClear');
+        }
+        // Apply language on load
+        if (localStorage.getItem('verityLang') === 'en') toggleLang();
+
+        // ==========================================================
+        //  БАЗЫ ДАННЫХ
+        // ==========================================================
+        const jokes = ['😂 Почему программист бросил работу? Не понял массивы!','😂 Что говорит бит? Мне тебя не хватает!','😂 Почему хакеры не любят душ? Могут помыть!','😂 Как называют медведя без зубов? Жевательный мишка!'];
+        const facts = ['🧠 У осьминогов три сердца.','🧠 Мёд никогда не портится.','🧠 Бананы — это ягоды.','🧠 Слоны не умеют прыгать.'];
+        const advices = ['💡 Будь добр к себе.','💡 Цени маленькие вещи.','💡 Не сравнивай себя с другими.','💡 Практикуй благодарность.'];
+        const quotes = ['📝 "Будь собой." — Оскар Уайльд','📝 "Жизнь продолжается." — Роберт Фрост','📝 "Люби то, что делаешь." — Стив Джобс','📝 "Главное — не останавливаться." — Конфуций'];
+
+        // ==========================================================
+        //  АНИМИРОВАННЫЙ ФОН (CANVAS)
+        // ==========================================================
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset();
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+        function animateBg() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateBg);
+        }
+        animateBg();
+
+        // ==========================================================
+        //  ВОССТАНОВЛЕНИЕ ЧАТА И ЗАПУСК
+        // ==========================================================
+        if (chatLog.length > 0) {
+            chatLog.forEach(m => {
+                const div = document.createElement('div');
+                div.className = m.sender === 'user' ? 'message user' : 'message bot';
+                div.innerHTML = (m.sender === 'bot' ? '<span class="bot-name">🤖 Verity</span>' : '') + 
+                    m.text + '<span class="time">' + m.time + '</span>';
+                chatBox.appendChild(div);
+            });
+        }
+        addMessage('bot', '🚀 Привет! Я Verity. У меня теперь есть анимированный фон, звуки, достижения и английский язык! Попробуй "достижения"!');
+    </script>
 </body>
 </html>
