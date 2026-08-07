@@ -523,7 +523,7 @@
             if (lower === '5' || lower === 'bulls') { startBulls(); return; }
             if (lower === '6' || lower === 'sapper') { startSapper(); return; }
 
-            // --- Погода ---
+            // --- НОВАЯ ПОГОДА (переписана нахуй, чтобы не бесила) ---
             if (lower.startsWith('погода') || lower.startsWith('weather')) {
                 let city = text.replace(/погода|weather/i, '').trim();
                 if (!city) {
@@ -535,13 +535,34 @@
                     }
                 }
                 addMessage('bot', `🌤 Запрашиваю погоду для ${city}...`);
+                // Новый URL: без форматирования, берём чистый текст и парсим сами
                 fetch(`https://wttr.in/${encodeURIComponent(city)}?format=%C+%t+%w+%h&m&lang=ru`)
-                    .then(res => res.text())
+                    .then(res => {
+                        if (!res.ok) throw new Error('Ошибка сети');
+                        return res.text();
+                    })
                     .then(data => {
-                        addMessage('bot', `🌤 Погода в ${city}: ${data}`);
+                        // Если ответ содержит HTML — вырезаем и отдаём чистыми данными
+                        if (data.includes('<html') || data.includes('<')) {
+                            // Простейший парсинг: ищем температуру, ветер, влажность
+                            let tempMatch = data.match(/([-+]?\d+)\s*°C/);
+                            let windMatch = data.match(/(\d+)\s*км\/ч/);
+                            let humidMatch = data.match(/(\d+)\s*%/);
+                            let descMatch = data.match(/([А-Яа-яA-Za-z]+)/);
+                            let result = `🌤 ${city}: `;
+                            if (descMatch) result += descMatch[0] + ', ';
+                            if (tempMatch) result += tempMatch[0] + ', ';
+                            if (windMatch) result += 'ветер ' + windMatch[0] + ', ';
+                            if (humidMatch) result += 'влажность ' + humidMatch[0];
+                            if (result === `🌤 ${city}: `) result += 'данные не распознаны, но сайт ответил.';
+                            addMessage('bot', result);
+                        } else {
+                            // Если текст чистый — отдаём как есть
+                            addMessage('bot', `🌤 Погода в ${city}: ${data}`);
+                        }
                     })
                     .catch(() => {
-                        addMessage('bot', '❌ Не удалось получить погоду. Проверь название города.');
+                        addMessage('bot', '❌ Не удалось получить погоду. Проверь город или попробуй позже.');
                     });
                 return;
             }
