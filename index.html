@@ -382,45 +382,47 @@
             if (lower === '5' || lower === 'bulls') { startBulls(); return; }
             if (lower === '6' || lower === 'sapper') { startSapper(); return; }
 
-            // --- Погода ---
-            if (lower.startsWith('погода') || lower.startsWith('weather')) {
-                let city = text.replace(/погода|weather/i, '').trim();
-                if (!city) {
-                    if (memory['мой город'] || memory['my city']) {
-                        city = memory['мой город'] || memory['my city'];
-                    } else {
-                        addMessage('bot', '🌍 Укажи город: напиши "погода Москва" или запомни город через "запомни мой город = Москва"');
-                        return;
-                    }
-                }
-                addMessage('bot', `🌤 Запрашиваю погоду для ${city}...`);
-                fetch(`https://wttr.in/${encodeURIComponent(city)}?format=%C+%t+%w+%h&m&lang=ru`)
-                    .then(res => {
-                        if (!res.ok) throw new Error('Ошибка сети');
-                        return res.text();
-                    })
-                    .then(data => {
-                        if (data.includes('<html') || data.includes('<')) {
-                            let tempMatch = data.match(/([-+]?\d+)\s*°C/);
-                            let windMatch = data.match(/(\d+)\s*км\/ч/);
-                            let humidMatch = data.match(/(\d+)\s*%/);
-                            let descMatch = data.match(/(?!DOCTYPE)([А-Яа-яA-Za-z]+)/);
-                            let result = `🌤 ${city}: `;
-                            if (descMatch) result += descMatch[0] + ', ';
-                            if (tempMatch) result += tempMatch[0] + ', ';
-                            if (windMatch) result += 'ветер ' + windMatch[0] + ', ';
-                            if (humidMatch) result += 'влажность ' + humidMatch[0];
-                            if (result === `🌤 ${city}: `) result += 'данные не распознаны.';
-                            addMessage('bot', result);
+          // --- Погода (надёжная, без парсинга) ---
+if (lower.startsWith('погода') || lower.startsWith('weather')) {
+    let city = text.replace(/погода|weather/i, '').trim();
+    if (!city) {
+        if (memory['мой город'] || memory['my city']) {
+            city = memory['мой город'] || memory['my city'];
+        } else {
+            addMessage('bot', '🌍 Укажи город: напиши "погода Москва" или запомни город через "запомни мой город = Москва"');
+            return;
+        }
+    }
+    addMessage('bot', `🌤 Запрашиваю погоду для ${city}...`);
+    // Используем другой формат, который точно отдаёт читаемый текст
+    fetch(`https://wttr.in/${encodeURIComponent(city)}?format=%c+%t+%w+%h+%m&lang=ru`)
+        .then(res => {
+            if (!res.ok) throw new Error('Ошибка сети');
+            return res.text();
+        })
+        .then(data => {
+            // Если пришла дичь (содержит HTML или слишком длинная), пробуем альтернативный запрос
+            if (data.includes('<html') || data.includes('<!DOCTYPE') || data.length > 100) {
+                // Альтернативный запрос с другим форматом
+                return fetch(`https://wttr.in/${encodeURIComponent(city)}?format=+%c+%t+&lang=ru`)
+                    .then(res => res.text())
+                    .then(fallbackData => {
+                        if (fallbackData.includes('<html') || fallbackData.length > 50) {
+                            // Если даже fallback сломался — просто показываем "не удалось"
+                            addMessage('bot', `🌤 ${city}: ❌ Не удалось получить погоду. Попробуй позже.`);
                         } else {
-                            addMessage('bot', `🌤 Погода в ${city}: ${data}`);
+                            addMessage('bot', `🌤 ${city}: ${fallbackData.trim()}`);
                         }
-                    })
-                    .catch(() => {
-                        addMessage('bot', '❌ Не удалось получить погоду. Проверь город или попробуй позже.');
                     });
-                return;
             }
+            // Если всё ок — показываем чистый текст
+            addMessage('bot', `🌤 ${city}: ${data.trim()}`);
+        })
+        .catch(() => {
+            addMessage('bot', '❌ Не удалось получить погоду. Проверь город или попробуй позже.');
+        });
+    return;
+}
 
             // --- Курс валют ---
             if (lower.startsWith('курс') || lower.startsWith('rate')) {
