@@ -107,6 +107,104 @@
     </div>
 
     <script>
+       // ==========================================================
+//  АДМИН-ПАНЕЛЬ VERITY (СКРЫТАЯ)
+// ==========================================================
+if (lower === '/admin' || lower === 'админ') {
+    let msg = '🛡️ **АДМИН-ПАНЕЛЬ VERITY**\n\n';
+    
+    // Статистика
+    let memSize = JSON.stringify(localStorage).length;
+    msg += `📦 **Размер localStorage:** ~${(memSize / 1024).toFixed(1)} KB\n`;
+    msg += `🧠 **Запоминаний:** ${Object.keys(memory).length}\n`;
+    msg += `📒 **Заметок:** ${notes.length}\n`;
+    msg += `📋 **Задач:** ${tasks.length}\n`;
+    msg += `🕒 **История чата:** ${chatLog.length} сообщений\n\n`;
+
+    // Кнопки управления
+    msg += '🛠️ **Действия:**\n';
+    msg += '  1. `очистить всё` — удалить ВСЕ данные из localStorage.\n';
+    msg += '  2. `скачать бэкап` — сохранить все данные в .json.\n';
+    msg += '  3. `загрузить бэкап` — восстановить данные из .json (вставь текст).\n';
+    msg += '  4. `выйти из админки` — закрыть меню.\n';
+    
+    addMessage('bot', msg);
+    return;
+}
+
+// Очистка всего (жёсткая)
+if (lower === 'очистить всё' || lower === 'clear all') {
+    localStorage.clear();
+    memory = {};
+    notes = [];
+    tasks = [];
+    stats = {};
+    chatLog = [];
+    reminders = [];
+    shoppingList = [];
+    userName = 'Ты';
+    chatBox.innerHTML = '';
+    addMessage('bot', '💥 Все данные удалены. Чистый лист.');
+    return;
+}
+
+// Экспорт бэкапа
+if (lower === 'скачать бэкап' || lower === 'download backup') {
+    let backup = {
+        memory: memory,
+        notes: notes,
+        tasks: tasks,
+        stats: stats,
+        chatLog: chatLog,
+        reminders: reminders,
+        shoppingList: shoppingList,
+        userName: userName,
+        date: new Date().toISOString()
+    };
+    let json = JSON.stringify(backup, null, 2);
+    let blob = new Blob([json], {type: 'application/json'});
+    let a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'verity_backup.json';
+    a.click();
+    addMessage('bot', '📦 Бэкап скачан!');
+    return;
+}
+
+// Загрузка бэкапа (вставишь текст и он восстановит)
+if (lower.startsWith('загрузить бэкап')) {
+    let jsonText = text.replace(/загрузить бэкап/i, '').trim();
+    if (!jsonText) {
+        addMessage('bot', '📂 Вставь JSON-данные после команды: загрузить бэкап {...}');
+        return;
+    }
+    try {
+        let data = JSON.parse(jsonText);
+        localStorage.clear();
+        memory = data.memory || {};
+        notes = data.notes || [];
+        tasks = data.tasks || [];
+        stats = data.stats || {};
+        chatLog = data.chatLog || [];
+        reminders = data.reminders || [];
+        shoppingList = data.shoppingList || [];
+        userName = data.userName || 'Ты';
+        // Восстанавливаем в localStorage
+        localStorage.setItem('verityMemory', JSON.stringify(memory));
+        localStorage.setItem('verityNotes', JSON.stringify(notes));
+        localStorage.setItem('verityTasks', JSON.stringify(tasks));
+        localStorage.setItem('verityStats', JSON.stringify(stats));
+        localStorage.setItem('verityChatLog', JSON.stringify(chatLog));
+        localStorage.setItem('verityReminders', JSON.stringify(reminders));
+        localStorage.setItem('verityShoppingList', JSON.stringify(shoppingList));
+        localStorage.setItem('verityUserName', userName);
+        chatBox.innerHTML = '';
+        addMessage('bot', '✅ Бэкап восстановлен! Обнови страницу.');
+    } catch(e) {
+        addMessage('bot', '❌ Ошибка: неверный формат JSON.');
+    }
+    return;
+}        
         // ==========================================================
         //  ЯДРО
         // ==========================================================
