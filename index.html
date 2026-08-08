@@ -77,33 +77,37 @@
 <body>
     <canvas id="bgCanvas"></canvas>
 
-    <div class="chat-container">
-        <div class="header">
-            <div class="avatar" id="avatarBtn" onclick="triggerEasterEgg()">V</div>
-            <div class="info"><h1 id="uiTitle">Verity AI</h1><p id="uiSubtitle">Твой ИИ-помощник</p></div>
-            <div class="status">● <span id="uiStatus">онлайн</span></div>
-            <div class="header-controls">
-                <button class="lang-toggle" onclick="toggleLang()" id="langBtn">RU</button>
-                <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-            </div>
-        </div>
-        <div class="chat-box" id="chatBox"></div>
-        <div class="quick-commands">
-            <button onclick="sendCommand('привет')">👋 Привет</button>
-            <button onclick="sendCommand('погода москва')">🌤 Погода</button>
-            <button onclick="sendCommand('игры')">🎮 Игры</button>
-            <button onclick="sendCommand('пароль 12')">🔑 Пароль</button>
-            <button onclick="sendCommand('курс usd')">💵 Курс</button>
-            <button onclick="sendCommand('заметки')">📒 Заметки</button>
-            <button onclick="sendCommand('калории')">📊 Калории</button>
-            <button onclick="sendCommand('монетка')">🪙 Монетка</button>
-            <button onclick="sendCommand('список')">📋 Список</button>
-            <button onclick="sendCommand('очистить')">🗑 Очистить</button>
-        </div>
-        <div class="input-area">
-            <input type="text" id="userInput" placeholder="Напиши что-нибудь..." onkeydown="if(event.key==='Enter') sendMessage()">
-            <button onclick="sendMessage()">➤ Отправить</button>
-        </div>
+       <!-- ========================================== -->
+    <!--  БЫСТРЫЕ КОМАНДЫ (КНОПКИ)                  -->
+    <!-- ========================================== -->
+    <div class="quick-commands">
+        <button onclick="sendCommand('привет')">👋 Привет</button>
+        <button onclick="sendCommand('погода москва')">🌤 Погода</button>
+        <button onclick="sendCommand('игры')">🎮 Игры</button>
+        <button onclick="sendCommand('пароль 12')">🔑 Пароль</button>
+        <button onclick="sendCommand('курс usd')">💵 Курс</button>
+        <button onclick="sendCommand('заметки')">📒 Заметки</button>
+        <button onclick="sendCommand('калории')">📊 Калории</button>
+        <button onclick="sendCommand('монетка')">🪙 Монетка</button>
+        <button onclick="sendCommand('список')">📋 Список</button>
+        <button onclick="sendCommand('очистить')">🗑 Очистить</button>
+    </div>
+
+    <!-- ========================================== -->
+    <!--  ЗАГРУЗКА ВИДЕО (ВСТАВЬ ЭТОТ БЛОК СЮДА)    -->
+    <!-- ========================================== -->
+    <div style="padding: 0 20px 12px 20px; display: flex; gap: 10px; align-items: center; justify-content: flex-start; flex-wrap: wrap;">
+        <input type="file" id="videoUpload" accept="video/*" style="display: none;">
+        <button class="menu-btn" onclick="document.getElementById('videoUpload').click()">📁 Загрузить видео</button>
+        <span id="videoStatus" style="color: #88bbdd; font-size: 13px;">Файл не выбран</span>
+    </div>
+
+    <!-- ========================================== -->
+    <!--  ПОЛЕ ВВОДА                                 -->
+    <!-- ========================================== -->
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Напиши что-нибудь..." onkeydown="if(event.key==='Enter') sendMessage()">
+        <button onclick="sendMessage()">➤ Отправить</button>
     </div>
 
     <script>
@@ -1040,7 +1044,42 @@
         }
         if (chatBox.children.length === 0) {
             addMessage('bot', '🚀 Привет! Я Verity. Теперь у меня есть игры, погода, мемы, монетка и админ-панель!');
-        }
+        }        // ==========================================================
+        //  ЗАГРУЗКА И ПРОИГРЫВАНИЕ ВИДЕО ЧЕРЕЗ ЧАТ
+        // ==========================================================
+        document.getElementById('videoUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('video/')) {
+                addMessage('bot', '❌ Это не видеофайл! Загрузи .mp4, .webm или .mov');
+                return;
+            }
+
+            if (file.size > 50 * 1024 * 1024) {
+                addMessage('bot', '❌ Файл слишком большой (больше 50 МБ).');
+                return;
+            }
+
+            const url = URL.createObjectURL(file);
+            
+            const videoContainer = document.createElement('div');
+            videoContainer.style.margin = '10px 0';
+            videoContainer.innerHTML = `
+                <video width="100%" controls autoplay style="border-radius: 10px; border: 1px solid #00ffcc;">
+                    <source src="${url}" type="${file.type}">
+                    Твой браузер не поддерживает видео.
+                </video>
+                <div style="font-size: 12px; color: #88bbdd; margin-top: 5px;">📁 ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} МБ)</div>
+            `;
+            
+            document.getElementById('chatBox').appendChild(videoContainer);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            document.getElementById('videoStatus').textContent = `✅ Загружено: ${file.name}`;
+            
+            e.target.value = '';
+        });
     </script>
 </body>
 </html>
