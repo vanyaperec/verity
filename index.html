@@ -471,10 +471,12 @@
                 addMessage('bot', '👋 Приятно познакомиться, '+userName+'!');
                 return;
             }
-
-            // --- Очистка памяти ---
+                        // --- Очистка памяти ---
             if (lower === 'забудь всё' || lower === 'forget all' || lower === 'забудь') {
-                localStorage.removeItem('verityMemory'); memory = {};
+                localStorage.removeItem('verityMemory');
+                localStorage.removeItem('verityUserName'); // Стираем имя
+                memory = {};
+                userName = 'Ты'; // Возвращаем стандартное имя
                 addMessage('bot', t('forget'));
                 return;
             }
