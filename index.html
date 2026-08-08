@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verity AI — Боевая версия</title>
+    <title>Verity AI — Финальный комбайн v2</title>
     <style>
         :root {
             --bg: #0a0a1a;
@@ -64,6 +64,7 @@
         .quick-commands { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 20px 16px 20px; background: rgba(0, 0, 0, 0.1); border-top: 1px solid var(--border); justify-content: center; flex-shrink: 0; }
         .quick-commands button { padding: 6px 16px; border: 1px solid var(--btn-border); border-radius: 20px; background: var(--btn-bg); color: var(--subtext); font-size: 12px; cursor: pointer; transition: 0.3s; }
         .quick-commands button:hover { background: var(--btn-hover); border-color: #00ccff; color: var(--text); transform: translateY(-1px); }
+        #videoUpload { display: none; }
 
         @media (max-width: 500px) {
             .chat-container { height: 95vh; max-height: none; border-radius: 16px; }
@@ -77,37 +78,38 @@
 <body>
     <canvas id="bgCanvas"></canvas>
 
-       <!-- ========================================== -->
-    <!--  БЫСТРЫЕ КОМАНДЫ (КНОПКИ)                  -->
-    <!-- ========================================== -->
-    <div class="quick-commands">
-        <button onclick="sendCommand('привет')">👋 Привет</button>
-        <button onclick="sendCommand('погода москва')">🌤 Погода</button>
-        <button onclick="sendCommand('игры')">🎮 Игры</button>
-        <button onclick="sendCommand('пароль 12')">🔑 Пароль</button>
-        <button onclick="sendCommand('курс usd')">💵 Курс</button>
-        <button onclick="sendCommand('заметки')">📒 Заметки</button>
-        <button onclick="sendCommand('калории')">📊 Калории</button>
-        <button onclick="sendCommand('монетка')">🪙 Монетка</button>
-        <button onclick="sendCommand('список')">📋 Список</button>
-        <button onclick="sendCommand('очистить')">🗑 Очистить</button>
-    </div>
-
-    <!-- ========================================== -->
-    <!--  ЗАГРУЗКА ВИДЕО (ВСТАВЬ ЭТОТ БЛОК СЮДА)    -->
-    <!-- ========================================== -->
-    <div style="padding: 0 20px 12px 20px; display: flex; gap: 10px; align-items: center; justify-content: flex-start; flex-wrap: wrap;">
-        <input type="file" id="videoUpload" accept="video/*" style="display: none;">
-        <button class="menu-btn" onclick="document.getElementById('videoUpload').click()">📁 Загрузить видео</button>
-        <span id="videoStatus" style="color: #88bbdd; font-size: 13px;">Файл не выбран</span>
-    </div>
-
-    <!-- ========================================== -->
-    <!--  ПОЛЕ ВВОДА                                 -->
-    <!-- ========================================== -->
-    <div class="input-area">
-        <input type="text" id="userInput" placeholder="Напиши что-нибудь..." onkeydown="if(event.key==='Enter') sendMessage()">
-        <button onclick="sendMessage()">➤ Отправить</button>
+    <div class="chat-container">
+        <div class="header">
+            <div class="avatar" id="avatarBtn" onclick="triggerEasterEgg()">V</div>
+            <div class="info"><h1 id="uiTitle">Verity AI</h1><p id="uiSubtitle">Твой ИИ-помощник</p></div>
+            <div class="status">● <span id="uiStatus">онлайн</span></div>
+            <div class="header-controls">
+                <button class="lang-toggle" onclick="toggleLang()" id="langBtn">RU</button>
+                <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+            </div>
+        </div>
+        <div class="chat-box" id="chatBox"></div>
+        <div class="quick-commands">
+            <button onclick="sendCommand('привет')">👋 Привет</button>
+            <button onclick="sendCommand('погода москва')">🌤 Погода</button>
+            <button onclick="sendCommand('игры')">🎮 Игры</button>
+            <button onclick="sendCommand('пароль 12')">🔑 Пароль</button>
+            <button onclick="sendCommand('курс usd')">💵 Курс</button>
+            <button onclick="sendCommand('заметки')">📒 Заметки</button>
+            <button onclick="sendCommand('калории')">📊 Калории</button>
+            <button onclick="sendCommand('монетка')">🪙 Монетка</button>
+            <button onclick="sendCommand('список')">📋 Список</button>
+            <button onclick="sendCommand('очистить')">🗑 Очистить</button>
+            <button onclick="sendCommand('скриншот')">📸 Скриншот</button>
+        </div>
+        <div class="video-upload-area" style="padding: 0 20px 12px 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: flex-start; width: 100%;">
+            <button class="menu-btn" onclick="document.getElementById('videoUpload').click()">📁 Загрузить видео</button>
+            <span id="videoStatus" style="color: #88bbdd; font-size: 13px;">Файл не выбран</span>
+        </div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Напиши что-нибудь..." onkeydown="if(event.key==='Enter') sendMessage()">
+            <button onclick="sendMessage()">➤ Отправить</button>
+        </div>
     </div>
 
     <script>
@@ -129,46 +131,9 @@
         let reminders = JSON.parse(localStorage.getItem('verityReminders')) || [];
         let shoppingList = JSON.parse(localStorage.getItem('verityShoppingList')) || [];
 
-        // --- Переводы ---
         const LANG = {
-            ru: {
-                hi: 'Привет, {name}! Как дела?', sub: 'Твой ИИ-помощник', status: 'онлайн', send: 'Отправить',
-                cmdHi: '👋 Привет', cmdGames: '🎮 Игры', cmdClear: '🗑 Очистить',
-                placeholder: 'Напиши что-нибудь...', title: 'Verity AI',
-                unknown: '🤔 Не понимаю. Попробуй "помощь" или научи меня "запомни вопрос = ответ".',
-                exit: '🚪 Пока! Страница заблокирована.',
-                forget: '🧹 Я всё забыл. Мой разум чист.',
-                export_done: '📥 История скачана!',
-                theme_sw: '🎨 Тема переключена!',
-                games_menu: '🎮 **Меню игр:**\n1. Угадай число (guess)\n2. Камень-ножницы-бумага (rps)\n3. Викторина (trivia)\n4. Крестики-нолики (tictactoe)\n5. Быки и коровы (bulls)\n6. Сапёр 5x5 (sapper)\n\nВведи название игры или выбери цифру.',
-                guess_start: '🎲 Я загадал число от 1 до 100. Попробуй угадать!',
-                rps_start: '✊ Камень, ножницы или бумага? Введи: камень, ножницы, бумага',
-                trivia_start: '🎯 Викторина! Отвечай буквой a/b/c или "выход".',
-                win: '🏆 Ты выиграл!',
-                lose: '💻 Я выиграл!',
-                draw: 'Ничья!',
-                boom: '💥 Ты наступил на мину! Конец игры.',
-                ach_menu: '🏆 **Твои достижения:**\n'
-            },
-            en: {
-                hi: 'Hello, {name}! How are you?', sub: 'Your AI assistant', status: 'online', send: 'Send',
-                cmdHi: '👋 Hello', cmdGames: '🎮 Games', cmdClear: '🗑 Clear',
-                placeholder: 'Type something...', title: 'Verity AI',
-                unknown: '🤔 I don\'t understand. Try "help" or teach me "remember question = answer".',
-                exit: '🚪 Bye! Page locked.',
-                forget: '🧹 I forgot everything. My mind is clean.',
-                export_done: '📥 History downloaded!',
-                theme_sw: '🎨 Theme toggled!',
-                games_menu: '🎮 **Game Menu:**\n1. Guess Number (guess)\n2. Rock-Paper-Scissors (rps)\n3. Trivia (trivia)\n4. Tic-Tac-Toe (tictactoe)\n5. Bulls and Cows (bulls)\n6. Minesweeper 5x5 (sapper)\n\nEnter game name or number.',
-                guess_start: '🎲 I guessed a number from 1 to 100. Try to guess!',
-                rps_start: '✊ Rock, paper or scissors? Enter: rock, paper, scissors',
-                trivia_start: '🎯 Trivia! Answer with a/b/c or "exit".',
-                win: '🏆 You won!',
-                lose: '💻 I won!',
-                draw: 'Draw!',
-                boom: '💥 You stepped on a mine! Game over.',
-                ach_menu: '🏆 **Your achievements:**\n'
-            }
+            ru: { hi: 'Привет, {name}! Как дела?', sub: 'Твой ИИ-помощник', status: 'онлайн', send: 'Отправить', cmdHi: '👋 Привет', cmdGames: '🎮 Игры', cmdClear: '🗑 Очистить', placeholder: 'Напиши что-нибудь...', title: 'Verity AI', unknown: '🤔 Не понимаю. Попробуй "помощь" или научи меня "запомни вопрос = ответ".', exit: '🚪 Пока! Страница заблокирована.', forget: '🧹 Я всё забыл. Мой разум чист.', export_done: '📥 История скачана!', theme_sw: '🎨 Тема переключена!', games_menu: '🎮 **Меню игр:**\n1. Угадай число (guess)\n2. Камень-ножницы-бумага (rps)\n3. Викторина (trivia)\n4. Крестики-нолики (tictactoe)\n5. Быки и коровы (bulls)\n6. Сапёр 5x5 (sapper)\n\nВведи название игры или выбери цифру.', guess_start: '🎲 Я загадал число от 1 до 100. Попробуй угадать!', rps_start: '✊ Камень, ножницы или бумага? Введи: камень, ножницы, бумага', trivia_start: '🎯 Викторина! Отвечай буквой a/b/c или "выход".', win: '🏆 Ты выиграл!', lose: '💻 Я выиграл!', draw: 'Ничья!', boom: '💥 Ты наступил на мину! Конец игры.', ach_menu: '🏆 **Твои достижения:**\n' },
+            en: { hi: 'Hello, {name}! How are you?', sub: 'Your AI assistant', status: 'online', send: 'Send', cmdHi: '👋 Hello', cmdGames: '🎮 Games', cmdClear: '🗑 Clear', placeholder: 'Type something...', title: 'Verity AI', unknown: '🤔 I don\'t understand. Try "help" or teach me "remember question = answer".', exit: '🚪 Bye! Page locked.', forget: '🧹 I forgot everything. My mind is clean.', export_done: '📥 History downloaded!', theme_sw: '🎨 Theme toggled!', games_menu: '🎮 **Game Menu:**\n1. Guess Number (guess)\n2. Rock-Paper-Scissors (rps)\n3. Trivia (trivia)\n4. Tic-Tac-Toe (tictactoe)\n5. Bulls and Cows (bulls)\n6. Minesweeper 5x5 (sapper)\n\nEnter game name or number.', guess_start: '🎲 I guessed a number from 1 to 100. Try to guess!', rps_start: '✊ Rock, paper or scissors? Enter: rock, paper, scissors', trivia_start: '🎯 Trivia! Answer with a/b/c or "exit".', win: '🏆 You won!', lose: '💻 I won!', draw: 'Draw!', boom: '💥 You stepped on a mine! Game over.', ach_menu: '🏆 **Your achievements:**\n' }
         };
 
         function t(key, name) {
@@ -191,35 +156,7 @@
 
         function getTime() { const n = new Date(); return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0'); }
 
-        function playClick() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.frequency.value = 800; gain.gain.value = 0.1;
-                osc.start(); osc.stop(audioCtx.currentTime + 0.05);
-            } catch(e) {}
-        }
-
-        function playBoom() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sawtooth'; osc.frequency.value = 150;
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.4);
-            } catch(e) {}
-        }
-
-        function addStat(game) {
-            if (!stats[game]) stats[game] = 0;
-            stats[game]++;
-            localStorage.setItem('verityStats', JSON.stringify(stats));
-        }
+        function playClick() { try { const audioCtx = new AudioContext(); const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value = 800; gain.gain.value = 0.1; osc.start(); osc.stop(audioCtx.currentTime + 0.05); } catch(e) {} }
 
         function launchConfetti() {
             const canvas = document.createElement('canvas');
@@ -297,8 +234,9 @@
                     '⏱️ таймер [секунды], напомни через\n' +
                     '🧮 кальк [выражение], ипотека [сумма] [лет] [%]\n' +
                     '🎨 тема, тема кислотная, тема оранжевая, тема лесная\n' +
-                    '🪙 монетка, рулетка [варианты]\n' +
+                    '🪙 монетка, кубик, страна, температура [число] C в F\n' +
                     '📊 калории, статистика, достижения\n' +
+                    '📸 скриншот\n' +
                     '🗑 очистить, забыть всё, скачать\n' +
                     '🛡️ /admin (скрытая панель)';
                 addMessage('bot', msg);
@@ -328,13 +266,8 @@
 
             // --- Очистка памяти ---
             if (lower === 'забудь всё' || lower === 'forget all' || lower === 'забудь') {
-                localStorage.removeItem('verityMemory');
-                localStorage.removeItem('verityUserName');
-                localStorage.removeItem('verityChatLog');
-                memory = {};
-                userName = 'Ты';
-                chatLog = [];
-                chatBox.innerHTML = '';
+                localStorage.removeItem('verityMemory'); localStorage.removeItem('verityUserName'); localStorage.removeItem('verityChatLog');
+                memory = {}; userName = 'Ты'; chatLog = []; chatBox.innerHTML = '';
                 addMessage('bot', t('forget'));
                 return;
             }
@@ -372,10 +305,7 @@
             }
 
             // --- Игры ---
-            if (lower === 'игры' || lower === 'games') {
-                addMessage('bot', t('games_menu'));
-                return;
-            }
+            if (lower === 'игры' || lower === 'games') { addMessage('bot', t('games_menu')); return; }
             if (lower === '1' || lower === 'guess') { gameMode = 'guess'; gameData = {}; addMessage('bot', t('guess_start')); return; }
             if (lower === '2' || lower === 'rps') { gameMode = 'rps'; addMessage('bot', t('rps_start')); return; }
             if (lower === '3' || lower === 'trivia') { startTrivia(); return; }
@@ -411,7 +341,7 @@
                 return;
             }
 
-            // --- Курс и конвертер ---
+            // --- Курс ---
             if (lower.startsWith('курс') || lower.startsWith('rate')) {
                 let currency = text.replace(/курс|rate/i, '').trim().toUpperCase();
                 if (!currency) currency = 'USD';
@@ -430,6 +360,8 @@
                     });
                 return;
             }
+
+            // --- Конвертер валют ---
             if (lower.startsWith('конверт')) {
                 let parts = text.replace(/конверт/i, '').trim().split(' ');
                 let amount = parseFloat(parts[0]);
@@ -489,7 +421,83 @@
                 return;
             }
 
-            // --- Мемы (Canvas) ---
+            // --- Ипотека ---
+            if (lower.startsWith('ипотека') || lower.startsWith('mortgage')) {
+                let parts = text.replace(/ипотека|mortgage/i, '').trim().split(' ');
+                let amount = parseFloat(parts[0]);
+                let years = parseFloat(parts[1]);
+                let percent = parseFloat(parts[2]);
+                if (isNaN(amount) || isNaN(years) || isNaN(percent)) {
+                    addMessage('bot', '🏠 Пример: ипотека 1000000 5 12 (сумма, лет, процент)');
+                    return;
+                }
+                let monthlyRate = percent / 100 / 12;
+                let months = years * 12;
+                let payment = amount * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+                let total = payment * months;
+                let overpay = total - amount;
+                addMessage('bot', `🏠 **Ипотека:**\n💰 Сумма: ${amount} руб.\n📅 Срок: ${years} лет\n📊 Ставка: ${percent}%\n💳 Ежемесячный платёж: ${payment.toFixed(2)} руб.\n📈 Переплата: ${overpay.toFixed(2)} руб.\n💸 Всего: ${total.toFixed(2)} руб.`);
+                return;
+            }
+
+            // --- Случайная страна ---
+            if (lower === 'страна' || lower === 'country') {
+                const countries = ['Афганистан', 'Албания', 'Алжир', 'Андорра', 'Ангола', 'Антигуа и Барбуда', 'Аргентина', 'Армения', 'Австралия', 'Австрия', 'Азербайджан', 'Багамы', 'Бахрейн', 'Бангладеш', 'Барбадос', 'Беларусь', 'Бельгия', 'Белиз', 'Бенин', 'Бутан', 'Боливия', 'Босния и Герцеговина', 'Ботсвана', 'Бразилия', 'Бруней', 'Болгария', 'Буркина-Фасо', 'Бурунди', 'Кабо-Верде', 'Камбоджа', 'Камерун', 'Канада', 'ЦАР', 'Чад', 'Чили', 'Китай', 'Колумбия', 'Коморы', 'Конго', 'Коста-Рика', 'Хорватия', 'Куба', 'Кипр', 'Чехия', 'Дания', 'Джибути', 'Доминика', 'Доминиканская Республика', 'Восточный Тимор', 'Эквадор', 'Египет', 'Сальвадор', 'Экваториальная Гвинея', 'Эритрея', 'Эстония', 'Эсватини', 'Эфиопия', 'Фиджи', 'Финляндия', 'Франция', 'Габон', 'Гамбия', 'Грузия', 'Германия', 'Гана', 'Греция', 'Гренада', 'Гватемала', 'Гвинея', 'Гвинея-Бисау', 'Гайана', 'Гаити', 'Гондурас', 'Венгрия', 'Исландия', 'Индия', 'Индонезия', 'Иран', 'Ирак', 'Ирландия', 'Израиль', 'Италия', 'Ямайка', 'Япония', 'Иордания', 'Казахстан', 'Кения', 'Кирибати', 'Кувейт', 'Кыргызстан', 'Лаос', 'Латвия', 'Ливан', 'Лесото', 'Либерия', 'Ливия', 'Лихтенштейн', 'Литва', 'Люксембург', 'Мадагаскар', 'Малави', 'Малайзия', 'Мальдивы', 'Мали', 'Мальта', 'Маршалловы Острова', 'Мавритания', 'Маврикий', 'Мексика', 'Микронезия', 'Молдова', 'Монако', 'Монголия', 'Черногория', 'Марокко', 'Мозамбик', 'Мьянма', 'Намибия', 'Науру', 'Непал', 'Нидерланды', 'Новая Зеландия', 'Никарагуа', 'Нигер', 'Нигерия', 'Северная Корея', 'Северная Македония', 'Норвегия', 'Оман', 'Пакистан', 'Палау', 'Панама', 'Папуа-Новая Гвинея', 'Парагвай', 'Перу', 'Филиппины', 'Польша', 'Португалия', 'Катар', 'Румыния', 'Россия', 'Руанда', 'Сент-Китс и Невис', 'Сент-Люсия', 'Сент-Винсент и Гренадины', 'Самоа', 'Сан-Марино', 'Сан-Томе и Принсипи', 'Саудовская Аравия', 'Сенегал', 'Сербия', 'Сейшелы', 'Сьерра-Леоне', 'Сингапур', 'Словакия', 'Словения', 'Соломоновы Острова', 'Сомали', 'ЮАР', 'Южная Корея', 'Южный Судан', 'Испания', 'Шри-Ланка', 'Судан', 'Суринам', 'Швеция', 'Швейцария', 'Сирия', 'Таджикистан', 'Танзания', 'Таиланд', 'Того', 'Тонга', 'Тринидад и Тобаго', 'Тунис', 'Турция', 'Туркменистан', 'Тувалу', 'Уганда', 'Украина', 'ОАЭ', 'Великобритания', 'США', 'Уругвай', 'Узбекистан', 'Вануату', 'Ватикан', 'Венесуэла', 'Вьетнам', 'Йемен', 'Замбия', 'Зимбабве'];
+                let random = countries[Math.floor(Math.random() * countries.length)];
+                addMessage('bot', `🌍 Случайная страна: **${random}**`);
+                return;
+            }
+
+            // --- Конвертер температур ---
+            if (lower.startsWith('температура') || lower.startsWith('temp')) {
+                let parts = text.replace(/температура|temp/i, '').trim().split(' ');
+                if (parts.length < 4) { addMessage('bot', '🌡️ Пример: температура 25 C в F'); return; }
+                let val = parseFloat(parts[0]);
+                let from = parts[1].toUpperCase();
+                let to = parts[3].toUpperCase();
+                if (isNaN(val)) { addMessage('bot', '🌡️ Введи число. Пример: температура 25 C в F'); return; }
+                let result;
+                if (from === 'C' && to === 'F') { result = (val * 9/5) + 32; }
+                else if (from === 'F' && to === 'C') { result = (val - 32) * 5/9; }
+                else if (from === 'C' && to === 'K') { result = val + 273.15; }
+                else if (from === 'K' && to === 'C') { result = val - 273.15; }
+                else { addMessage('bot', '🌡️ Поддерживаются: C, F, K. Пример: температура 25 C в F'); return; }
+                addMessage('bot', `🌡️ ${val}°${from} = ${result.toFixed(1)}°${to}`);
+                return;
+            }
+
+            // --- Кубик с историей ---
+            if (lower === 'кубик' || lower === 'dice') {
+                let rolls = JSON.parse(localStorage.getItem('verityDiceHistory')) || [];
+                let result = Math.floor(Math.random() * 6) + 1;
+                rolls.push(result);
+                localStorage.setItem('verityDiceHistory', JSON.stringify(rolls));
+                let msg = `🎲 Результат: **${result}**`;
+                if (rolls.length > 5) {
+                    msg += `\n📜 История (последние 5): ${rolls.slice(-5).join(', ')}`;
+                }
+                addMessage('bot', msg);
+                return;
+            }
+
+            // --- Скриншот ---
+            if (lower === 'скриншот' || lower === 'screenshot') {
+                addMessage('bot', '📸 Делаю скриншот чата...');
+                setTimeout(() => {
+                    html2canvas(document.querySelector('.chat-box')).then(canvas => {
+                        const link = document.createElement('a');
+                        link.download = 'verity_chat_screenshot.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                        addMessage('bot', '📸 Скриншот сохранён!');
+                    }).catch(() => {
+                        addMessage('bot', '❌ Не удалось сделать скриншот. Проверь консоль (F12).');
+                    });
+                }, 300);
+                return;
+            }
+
+            // --- Мемы ---
             if (lower.startsWith('мем') || lower.startsWith('meme')) {
                 let raw = text.replace(/мем|meme/i, '').trim();
                 let bgColor = '#ffffff';
@@ -508,13 +516,10 @@
                     const ctx = canvas.getContext('2d');
                     ctx.fillStyle = bgColor;
                     ctx.fillRect(0, 0, 600, 400);
-                    ctx.fillStyle = bgColor === '#ffffff' || bgColor === '#ffff00' ? '#000000' : '#ffffff';
-                    ctx.font = 'bold 32px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
+                    ctx.fillStyle = (bgColor === '#ffffff' || bgColor === '#ffff00') ? '#000000' : '#ffffff';
+                    ctx.font = 'bold 32px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
                     let words = raw.split(' ');
-                    let lines = [];
-                    let currentLine = '';
+                    let lines = []; let currentLine = '';
                     for (let w of words) {
                         let test = currentLine + w + ' ';
                         if (ctx.measureText(test).width > 500) { lines.push(currentLine); currentLine = w + ' '; }
@@ -618,15 +623,12 @@
             if (lower.startsWith('калории') || lower.startsWith('calories')) {
                 let parts = text.replace(/калории|calories/i, '').trim();
                 if (parts === 'неделя' || parts === 'week') {
-                    let total = 0;
-                    let days = 0;
+                    let total = 0; let days = 0;
                     for (let i = 0; i < 7; i++) {
-                        let d = new Date();
-                        d.setDate(d.getDate() - i);
+                        let d = new Date(); d.setDate(d.getDate() - i);
                         let key = 'verityCalories_' + d.toLocaleDateString();
                         let val = JSON.parse(localStorage.getItem(key)) || 0;
-                        total += val;
-                        days++;
+                        total += val; days++;
                     }
                     let avg = Math.round(total / days);
                     addMessage('bot', `📊 Среднее потребление за 7 дней: **${avg}** калорий/день.`);
@@ -656,10 +658,7 @@
 
             // --- Список покупок ---
             if (lower === 'список' || lower === 'list') {
-                if (shoppingList.length === 0) {
-                    addMessage('bot', '📋 Список покупок пуст. Добавь через "купить ..."');
-                    return;
-                }
+                if (shoppingList.length === 0) { addMessage('bot', '📋 Список покупок пуст. Добавь через "купить ..."'); return; }
                 let msg = '📋 **Список покупок:**\n';
                 shoppingList.forEach((item, i) => {
                     let status = item.done ? '✅' : '⬜';
@@ -690,8 +689,7 @@
             if (lower === 'очистить список' || lower === 'clear list') {
                 let doneItems = shoppingList.filter(item => !item.done);
                 if (doneItems.length === shoppingList.length) {
-                    shoppingList = [];
-                    localStorage.removeItem('verityShoppingList');
+                    shoppingList = []; localStorage.removeItem('verityShoppingList');
                     addMessage('bot', '🗑️ Список покупок полностью очищен.');
                     return;
                 }
@@ -702,27 +700,23 @@
             }
 
             // --- Очистка чата ---
-            if (lower === 'очистить' || lower === 'clear') {
-                chatBox.innerHTML = '';
-                addMessage('bot', '🧹 Чат очищен.');
-                return;
-            }
-
-            // --- Тема ---
-            if (lower === 'тема кислотная' || lower === 'theme acid') { document.body.className = 'theme-acid'; localStorage.setItem('verityTheme', 'acid'); addMessage('bot', '🎨 Тема: Кислотная! 💜'); return; }
-            if (lower === 'тема оранжевая' || lower === 'theme orange') { document.body.className = 'theme-orange'; localStorage.setItem('verityTheme', 'orange'); addMessage('bot', '🎨 Тема: Оранжевая! 🧡'); return; }
-            if (lower === 'тема лесная' || lower === 'theme forest') { document.body.className = 'theme-forest'; localStorage.setItem('verityTheme', 'forest'); addMessage('bot', '🎨 Тема: Лесная! 🌿'); return; }
-            if (lower === 'тема' || lower === 'theme') { toggleTheme(); addMessage('bot', t('theme_sw')); return; }
+            if (lower === 'очистить' || lower === 'clear') { chatBox.innerHTML = ''; addMessage('bot', '🧹 Чат очищен.'); return; }
 
             // --- Пасхалки ---
-            if (lower === 'я гений' || lower === 'i am genius') { launchConfetti(); addMessage('bot', '🎉 Ты гений! Смотри, как летают конфетти!'); return; }
-            if (lower === 'консоль' || lower === 'console') { console.log('🔥 Ты нашёл меня! Verity внутри.'); addMessage('bot', '🕵️ Секретный код активирован! Смотри в консоль (F12).'); return; }
-            if (lower === 'озвучить' || lower === 'speak') {
-                const msg = currentLang === 'ru' ? 'Привет, я Верути. Я могу говорить голосом.' : 'Hello, I am Verity. I can speak.';
+            if (lower === 'я гений') { launchConfetti(); addMessage('bot', '🎉 Ты гений!'); return; }
+            if (lower === 'консоль') { console.log('🔥 Ты нашёл меня! Verity внутри.'); addMessage('bot', '🕵️ Секретный код активирован!'); return; }
+            if (lower === 'озвучить') {
+                const msg = currentLang === 'ru' ? 'Привет, я Верути.' : 'Hello, I am Verity.';
                 speakText(msg);
                 addMessage('bot', '🔊 Говорю: "'+msg+'"');
                 return;
             }
+
+            // --- Темы ---
+            if (lower === 'тема кислотная') { document.body.className = 'theme-acid'; localStorage.setItem('verityTheme', 'acid'); addMessage('bot', '🎨 Тема: Кислотная! 💜'); return; }
+            if (lower === 'тема оранжевая') { document.body.className = 'theme-orange'; localStorage.setItem('verityTheme', 'orange'); addMessage('bot', '🎨 Тема: Оранжевая! 🧡'); return; }
+            if (lower === 'тема лесная') { document.body.className = 'theme-forest'; localStorage.setItem('verityTheme', 'forest'); addMessage('bot', '🎨 Тема: Лесная! 🌿'); return; }
+            if (lower === 'тема') { toggleTheme(); addMessage('bot', t('theme_sw')); return; }
 
             // --- Админ-панель ---
             if (lower === '/admin' || lower === 'админ') {
@@ -741,30 +735,13 @@
             }
             if (lower === 'очистить всё' || lower === 'clear all') {
                 localStorage.clear();
-                memory = {};
-                notes = [];
-                tasks = [];
-                stats = {};
-                chatLog = [];
-                reminders = [];
-                shoppingList = [];
-                userName = 'Ты';
-                chatBox.innerHTML = '';
+                memory = {}; notes = []; tasks = []; stats = {}; chatLog = []; reminders = []; shoppingList = [];
+                userName = 'Ты'; chatBox.innerHTML = '';
                 addMessage('bot', '💥 Все данные удалены. Чистый лист.');
                 return;
             }
             if (lower === 'скачать бэкап' || lower === 'download backup') {
-                let backup = {
-                    memory: memory,
-                    notes: notes,
-                    tasks: tasks,
-                    stats: stats,
-                    chatLog: chatLog,
-                    reminders: reminders,
-                    shoppingList: shoppingList,
-                    userName: userName,
-                    date: new Date().toISOString()
-                };
+                let backup = { memory, notes, tasks, stats, chatLog, reminders, shoppingList, userName, date: new Date().toISOString() };
                 let json = JSON.stringify(backup, null, 2);
                 let blob = new Blob([json], {type: 'application/json'});
                 let a = document.createElement('a');
@@ -779,26 +756,17 @@
             if (memory[text]) { addMessage('bot', memory[text]); return; }
 
             // --- Базовые ответы ---
-            if (lower === 'привет' || lower === 'hi' || lower === 'hello') {
-                let nameToShow = userName.trim() === '' ? 'друг' : userName.trim();
-                addMessage('bot', t('hi', nameToShow));
-            }
-            else if (lower === 'шутка' || lower === 'joke') addMessage('bot', jokes[Math.floor(Math.random()*jokes.length)]);
-            else if (lower === 'факт' || lower === 'fact') addMessage('bot', facts[Math.floor(Math.random()*facts.length)]);
-            else if (lower === 'совет' || lower === 'advice') addMessage('bot', advices[Math.floor(Math.random()*advices.length)]);
-            else if (lower === 'цитата' || lower === 'quote') addMessage('bot', quotes[Math.floor(Math.random()*quotes.length)]);
+            if (lower === 'привет') { let nameToShow = userName.trim() === '' ? 'друг' : userName.trim(); addMessage('bot', t('hi', nameToShow)); }
+            else if (lower === 'шутка') addMessage('bot', jokes[Math.floor(Math.random()*jokes.length)]);
+            else if (lower === 'факт') addMessage('bot', facts[Math.floor(Math.random()*facts.length)]);
+            else if (lower === 'совет') addMessage('bot', advices[Math.floor(Math.random()*advices.length)]);
+            else if (lower === 'цитата') addMessage('bot', quotes[Math.floor(Math.random()*quotes.length)]);
             else addMessage('bot', t('unknown'));
         }
 
         // ==========================================================
         //  ИГРЫ
         // ==========================================================
-        function addAchievement(name) {
-            let ach = JSON.parse(localStorage.getItem('verityAchievements')) || {};
-            if (!ach[name]) ach[name] = 1; else ach[name]++;
-            localStorage.setItem('verityAchievements', JSON.stringify(ach));
-        }
-
         function startTrivia() {
             gameMode = 'trivia';
             gameData = { score: 0, qIndex: 0 };
@@ -808,14 +776,11 @@
                 { q: 'Самая большая планета?', o: ['a) Земля', 'b) Юпитер', 'c) Сатурн'], a: 'b' },
                 { q: 'Кто написал "Война и мир"?', o: ['a) Пушкин', 'b) Толстой', 'c) Достоевский'], a: 'b' }
             ];
-            addMessage('bot', t('trivia_start'));
-            setTimeout(() => showTriviaQ(), 500);
+            addMessage('bot', t('trivia_start')); setTimeout(() => showTriviaQ(), 500);
         }
         function showTriviaQ() {
             if (gameData.qIndex >= gameData.questions.length) {
-                addStat('Викторина'); addAchievement('Викторина');
-                const r = gameData.score + ' из ' + gameData.questions.length;
-                addMessage('bot', '🏆 Викторина окончена! Счёт: '+r);
+                addMessage('bot', '🏆 Викторина окончена! Счёт: '+gameData.score+' из '+gameData.questions.length);
                 gameMode = null; return;
             }
             const q = gameData.questions[gameData.qIndex];
@@ -825,32 +790,10 @@
             const q = gameData.questions[gameData.qIndex];
             if (text.toLowerCase() === q.a) { gameData.score++; addMessage('bot', '✅ Верно!'); }
             else addMessage('bot', '❌ Неверно. Ответ: '+q.a.toUpperCase());
-            gameData.qIndex++;
-            setTimeout(showTriviaQ, 600);
+            gameData.qIndex++; setTimeout(showTriviaQ, 600);
         }
 
-        function processGuess(text) {
-            if (!gameData.target) { gameData.target = Math.floor(Math.random()*100)+1; gameData.attempts=0; }
-            const g = parseInt(text);
-            if (isNaN(g)) { addMessage('bot', '⚠️ Введи число!'); return; }
-            gameData.attempts++;
-            if (g < gameData.target) addMessage('bot', '📈 Мало!');
-            else if (g > gameData.target) addMessage('bot', '📉 Много!');
-            else { addStat('Угадай число'); addAchievement('Угадай число'); addMessage('bot', '🎉 Угадал за '+gameData.attempts+' попыток!'); gameMode=null; }
-        }
-
-        function processRPS(text) {
-            const choices = ['камень','ножницы','бумага'];
-            const ai = choices[Math.floor(Math.random()*3)];
-            if (!choices.includes(text.toLowerCase())) { addMessage('bot', '⚠️ Выбери: камень, ножницы или бумага'); return; }
-            let res = 'Я выбрал: '+ai+'. ';
-            if (text.toLowerCase() === ai) res += t('draw');
-            else if ((text.toLowerCase()==='камень'&&ai==='ножницы')||(text.toLowerCase()==='ножницы'&&ai==='бумага')||(text.toLowerCase()==='бумага'&&ai==='камень')) res += t('win');
-            else res += t('lose');
-            addMessage('bot', res);
-            gameMode = null;
-        }
-
+        // === UPDATED GAMES ===
         function startTicTacToe() {
             gameMode = 'tictactoe';
             gameData = { board: [' ',' ',' ',' ',' ',' ',' ',' ',' '], turn: 'X' };
@@ -866,7 +809,7 @@
             const idx = parseInt(text)-1;
             if (isNaN(idx) || idx<0 || idx>8 || gameData.board[idx]!==' ') { addMessage('bot', '⚠️ Неверный ход!'); return; }
             gameData.board[idx] = 'X';
-            if (checkWin(gameData.board, 'X')) { addStat('Крестики-нолики'); addAchievement('Крестики-нолики'); addMessage('bot', t('win')); gameMode=null; return; }
+            if (checkWin(gameData.board, 'X')) { addMessage('bot', t('win')); gameMode=null; return; }
             let empty = gameData.board.map((v,i)=>v===' '?i:null).filter(v=>v!==null);
             if (empty.length===0) { addMessage('bot', t('draw')); gameMode=null; return; }
             let move = empty[Math.floor(Math.random()*empty.length)];
@@ -889,7 +832,7 @@
             for(let i=0;i<4;i++){ if(text[i]===t[i]) bulls++; else if(t.includes(text[i])) cows++; }
             gameData.attempts++;
             addMessage('bot', '🐂 Быки: '+bulls+' | 🐄 Коровы: '+cows);
-            if (bulls===4) { addStat('Быки и коровы'); addAchievement('Быки и коровы'); addMessage('bot', '🎉 Угадал за '+gameData.attempts+' попыток!'); gameMode=null; }
+            if (bulls===4) { addMessage('bot', '🎉 Угадал за '+gameData.attempts+' попыток!'); gameMode=null; }
         }
 
         function startSapper() {
@@ -914,20 +857,47 @@
             if(parts.length!==2||isNaN(parts[0])||isNaN(parts[1])||parts[0]<0||parts[0]>4||parts[1]<0||parts[1]>4){ addMessage('bot','⚠️ Введи x,y через запятую (0-4).'); return; }
             let idx=parts[1]*5+parts[0];
             if(gameData.revealed.includes(idx)){ addMessage('bot','⚠️ Уже открыто!'); return; }
-            if(gameData.board[idx]===-1){ playBoom(); addStat('Сапёр'); addAchievement('Сапёр'); addMessage('bot', t('boom')); gameMode=null; return; }
+            if(gameData.board[idx]===-1){ addMessage('bot', t('boom')); gameMode=null; return; }
             gameData.revealed.push(idx);
             renderSapper();
-            if(gameData.revealed.length===25-gameData.mines){ addStat('Сапёр'); addAchievement('Сапёр'); addMessage('bot','🎉 Ты выиграл!'); gameMode=null; }
+            if(gameData.revealed.length===25-gameData.mines){ addMessage('bot','🎉 Ты выиграл!'); gameMode=null; }
         }
+
+        // ==========================================================
+        //  СКРИНШОТ (html2canvas)
+        // ==========================================================
+        const script = document.createElement('script');
+        script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
+        document.head.appendChild(script);
+
+        // ==========================================================
+        //  ВИДЕО-ПЛЕЕР
+        // ==========================================================
+        document.getElementById('videoUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('video/')) { addMessage('bot', '❌ Это не видеофайл! Загрузи .mp4, .webm или .mov'); return; }
+            if (file.size > 50 * 1024 * 1024) { addMessage('bot', '❌ Файл слишком большой (больше 50 МБ).'); return; }
+            const url = URL.createObjectURL(file);
+            const videoContainer = document.createElement('div');
+            videoContainer.style.margin = '10px 0';
+            videoContainer.innerHTML = `
+                <video width="100%" controls autoplay style="border-radius: 10px; border: 1px solid #00ffcc;">
+                    <source src="${url}" type="${file.type}">
+                    Твой браузер не поддерживает видео.
+                </video>
+                <div style="font-size: 12px; color: #88bbdd; margin-top: 5px;">📁 ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} МБ)</div>
+            `;
+            document.getElementById('chatBox').appendChild(videoContainer);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            document.getElementById('videoStatus').textContent = `✅ Загружено: ${file.name}`;
+            e.target.value = '';
+        });
 
         // ==========================================================
         //  ТЕМЫ, ЯЗЫКИ, ПАСХАЛКИ
         // ==========================================================
-        function triggerEasterEgg() {
-            eggCount++;
-            if (eggCount >= 3) { triggerStars(); addMessage('bot', '🌠 Пасхалка! Звёздопад!'); eggCount=0; }
-        }
-
+        function triggerEasterEgg() { eggCount++; if (eggCount >= 3) { triggerStars(); addMessage('bot', '🌠 Пасхалка! Звёздопад!'); eggCount=0; } }
         function triggerStars() {
             const container = document.createElement('div'); container.className = 'stars-container';
             container.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden;';
@@ -943,7 +913,6 @@
             }
             setTimeout(() => container.remove(), 4000);
         }
-
         function speakText(text) {
             if ('speechSynthesis' in window) {
                 const utt = new SpeechSynthesisUtterance(text);
@@ -952,11 +921,7 @@
                 speechSynthesis.cancel(); speechSynthesis.speak(utt);
             }
         }
-
-        function toggleTheme() {
-            document.body.classList.toggle('light-theme');
-            localStorage.setItem('verityTheme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
-        }
+        function toggleTheme() { document.body.classList.toggle('light-theme'); localStorage.setItem('verityTheme', document.body.classList.contains('light-theme') ? 'light' : 'dark'); }
         let savedTheme = localStorage.getItem('verityTheme');
         if (savedTheme === 'light') document.body.classList.add('light-theme');
         else if (savedTheme === 'acid') document.body.classList.add('theme-acid');
@@ -990,44 +955,18 @@
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
         let width, height, particles = [];
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+        function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
 
         class Particle {
             constructor() { this.reset(); }
-            reset() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.size = Math.random() * 2 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 0.3;
-                this.speedY = (Math.random() - 0.5) * 0.3;
-                this.opacity = Math.random() * 0.5 + 0.2;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset();
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
-                ctx.fill();
-            }
+            reset() { this.x = Math.random() * width; this.y = Math.random() * height; this.size = Math.random() * 2 + 0.5; this.speedX = (Math.random() - 0.5) * 0.3; this.speedY = (Math.random() - 0.5) * 0.3; this.opacity = Math.random() * 0.5 + 0.2; }
+            update() { this.x += this.speedX; this.y += this.speedY; if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset(); }
+            draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`; ctx.fill(); }
         }
-
         for (let i = 0; i < 80; i++) particles.push(new Particle());
 
-        function animateBg() {
-            ctx.clearRect(0, 0, width, height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animateBg);
-        }
+        function animateBg() { ctx.clearRect(0, 0, width, height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animateBg); }
         animateBg();
 
         // ==========================================================
@@ -1043,43 +982,8 @@
             });
         }
         if (chatBox.children.length === 0) {
-            addMessage('bot', '🚀 Привет! Я Verity. Теперь у меня есть игры, погода, мемы, монетка и админ-панель!');
-        }        // ==========================================================
-        //  ЗАГРУЗКА И ПРОИГРЫВАНИЕ ВИДЕО ЧЕРЕЗ ЧАТ
-        // ==========================================================
-        document.getElementById('videoUpload').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            if (!file.type.startsWith('video/')) {
-                addMessage('bot', '❌ Это не видеофайл! Загрузи .mp4, .webm или .mov');
-                return;
-            }
-
-            if (file.size > 50 * 1024 * 1024) {
-                addMessage('bot', '❌ Файл слишком большой (больше 50 МБ).');
-                return;
-            }
-
-            const url = URL.createObjectURL(file);
-            
-            const videoContainer = document.createElement('div');
-            videoContainer.style.margin = '10px 0';
-            videoContainer.innerHTML = `
-                <video width="100%" controls autoplay style="border-radius: 10px; border: 1px solid #00ffcc;">
-                    <source src="${url}" type="${file.type}">
-                    Твой браузер не поддерживает видео.
-                </video>
-                <div style="font-size: 12px; color: #88bbdd; margin-top: 5px;">📁 ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} МБ)</div>
-            `;
-            
-            document.getElementById('chatBox').appendChild(videoContainer);
-            chatBox.scrollTop = chatBox.scrollHeight;
-            
-            document.getElementById('videoStatus').textContent = `✅ Загружено: ${file.name}`;
-            
-            e.target.value = '';
-        });
+            addMessage('bot', '🚀 Привет! Я Verity. Теперь я знаю страны, конвертирую температуры, кидаю кубик и делаю скриншоты!');
+        }
     </script>
 </body>
 </html>
