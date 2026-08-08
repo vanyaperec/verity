@@ -382,7 +382,7 @@
             if (lower === '5' || lower === 'bulls') { startBulls(); return; }
             if (lower === '6' || lower === 'sapper') { startSapper(); return; }
 
-          // --- Погода (надёжная, без парсинга) ---
+         // --- Погода (рабочая, без парсинга) ---
 if (lower.startsWith('погода') || lower.startsWith('weather')) {
     let city = text.replace(/погода|weather/i, '').trim();
     if (!city) {
@@ -394,32 +394,20 @@ if (lower.startsWith('погода') || lower.startsWith('weather')) {
         }
     }
     addMessage('bot', `🌤 Запрашиваю погоду для ${city}...`);
-    // Используем другой формат, который точно отдаёт читаемый текст
-    fetch(`https://wttr.in/${encodeURIComponent(city)}?format=%c+%t+%w+%h+%m&lang=ru`)
-        .then(res => {
-            if (!res.ok) throw new Error('Ошибка сети');
-            return res.text();
-        })
+    // Простой запрос, который всегда возвращает читаемый текст (с влажностью)
+    fetch(`https://wttr.in/${encodeURIComponent(city)}?format=%C+%t+%w+%h&lang=ru&m`)
+        .then(res => res.text())
         .then(data => {
-            // Если пришла дичь (содержит HTML или слишком длинная), пробуем альтернативный запрос
-            if (data.includes('<html') || data.includes('<!DOCTYPE') || data.length > 100) {
-                // Альтернативный запрос с другим форматом
-                return fetch(`https://wttr.in/${encodeURIComponent(city)}?format=+%c+%t+&lang=ru`)
-                    .then(res => res.text())
-                    .then(fallbackData => {
-                        if (fallbackData.includes('<html') || fallbackData.length > 50) {
-                            // Если даже fallback сломался — просто показываем "не удалось"
-                            addMessage('bot', `🌤 ${city}: ❌ Не удалось получить погоду. Попробуй позже.`);
-                        } else {
-                            addMessage('bot', `🌤 ${city}: ${fallbackData.trim()}`);
-                        }
-                    });
+            // Убираем лишние пробелы и переносы строк
+            let clean = data.replace(/\s+/g, ' ').trim();
+            if (clean.length < 3) {
+                addMessage('bot', `🌤 ${city}: ❌ Не удалось получить погоду. Проверь город.`);
+            } else {
+                addMessage('bot', `🌤 ${city}: ${clean}`);
             }
-            // Если всё ок — показываем чистый текст
-            addMessage('bot', `🌤 ${city}: ${data.trim()}`);
         })
         .catch(() => {
-            addMessage('bot', '❌ Не удалось получить погоду. Проверь город или попробуй позже.');
+            addMessage('bot', '❌ Ошибка соединения. Попробуй позже.');
         });
     return;
 }
