@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verity AI — Идеальный комбайн (без цензуры)</title>
+    <title>Verity AI — Финальный комбайн</title>
     <style>
         :root {
             --bg: #0a0a1a;
@@ -22,190 +22,47 @@
             --input-bg: rgba(255, 255, 255, 0.04);
             --send-btn: linear-gradient(135deg, #00ccff, #0077ff);
             --canvas-z: -1;
-            --theme-mode: 'dark';
         }
 
-        /* --- ТЕМЫ (3 новые + тёмная/светлая) --- */
-        .theme-acid {
-            --bg: #1a001a;
-            --chat-bg: rgba(255, 0, 255, 0.1);
-            --header-bg: linear-gradient(135deg, #2a002a, #4a004a);
-            --border: rgba(255, 0, 255, 0.3);
-            --text: #ffaaff;
-            --subtext: #cc77cc;
-            --user-msg: linear-gradient(135deg, #ff00ff, #aa00aa);
-            --bot-msg-bg: rgba(255, 0, 255, 0.05);
-            --bot-msg-border: rgba(255, 0, 255, 0.3);
-            --btn-border: rgba(255, 0, 255, 0.3);
-            --btn-bg: rgba(255, 0, 255, 0.1);
-            --btn-hover: rgba(255, 0, 255, 0.25);
-            --input-border: rgba(255, 0, 255, 0.3);
-            --input-bg: rgba(0, 0, 0, 0.2);
-            --send-btn: linear-gradient(135deg, #ff00ff, #aa00aa);
-        }
-
-        .theme-orange {
-            --bg: #1a0f00;
-            --chat-bg: rgba(255, 100, 0, 0.1);
-            --header-bg: linear-gradient(135deg, #2a1a00, #4a2a00);
-            --border: rgba(255, 100, 0, 0.3);
-            --text: #ffcc88;
-            --subtext: #cc9944;
-            --user-msg: linear-gradient(135deg, #ff8800, #cc5500);
-            --bot-msg-bg: rgba(255, 100, 0, 0.05);
-            --bot-msg-border: rgba(255, 100, 0, 0.3);
-            --btn-border: rgba(255, 100, 0, 0.3);
-            --btn-bg: rgba(255, 100, 0, 0.1);
-            --btn-hover: rgba(255, 100, 0, 0.25);
-            --input-border: rgba(255, 100, 0, 0.3);
-            --input-bg: rgba(0, 0, 0, 0.2);
-            --send-btn: linear-gradient(135deg, #ff8800, #cc5500);
-        }
-
-        .theme-forest {
-            --bg: #001a0a;
-            --chat-bg: rgba(0, 255, 100, 0.1);
-            --header-bg: linear-gradient(135deg, #002a1a, #004a2a);
-            --border: rgba(0, 255, 100, 0.3);
-            --text: #88ffcc;
-            --subtext: #44cc88;
-            --user-msg: linear-gradient(135deg, #00ff88, #00cc55);
-            --bot-msg-bg: rgba(0, 255, 100, 0.05);
-            --bot-msg-border: rgba(0, 255, 100, 0.3);
-            --btn-border: rgba(0, 255, 100, 0.3);
-            --btn-bg: rgba(0, 255, 100, 0.1);
-            --btn-hover: rgba(0, 255, 100, 0.25);
-            --input-border: rgba(0, 255, 100, 0.3);
-            --input-bg: rgba(0, 0, 0, 0.2);
-            --send-btn: linear-gradient(135deg, #00ff88, #00cc55);
-        }
-
-        .light-theme {
-            --bg: #f0f4f8;
-            --chat-bg: rgba(255, 255, 255, 0.7);
-            --header-bg: linear-gradient(135deg, #ffffff, #e0e8f0);
-            --border: rgba(0, 0, 0, 0.15);
-            --text: #1a1a2e;
-            --subtext: #445566;
-            --user-msg: linear-gradient(135deg, #0077ff, #0055cc);
-            --bot-msg-bg: rgba(0, 0, 0, 0.04);
-            --bot-msg-border: rgba(0, 0, 0, 0.1);
-            --btn-border: rgba(0, 0, 0, 0.2);
-            --btn-bg: rgba(0, 0, 0, 0.04);
-            --btn-hover: rgba(0, 0, 0, 0.1);
-            --input-border: rgba(0, 0, 0, 0.2);
-            --input-bg: #ffffff;
-            --send-btn: linear-gradient(135deg, #0077ff, #0055cc);
-        }
+        .theme-acid { --bg: #1a001a; --chat-bg: rgba(255, 0, 255, 0.1); --header-bg: linear-gradient(135deg, #2a002a, #4a004a); --border: rgba(255, 0, 255, 0.3); --text: #ffaaff; --subtext: #cc77cc; --user-msg: linear-gradient(135deg, #ff00ff, #aa00aa); --bot-msg-bg: rgba(255, 0, 255, 0.05); --bot-msg-border: rgba(255, 0, 255, 0.3); --btn-border: rgba(255, 0, 255, 0.3); --btn-bg: rgba(255, 0, 255, 0.1); --btn-hover: rgba(255, 0, 255, 0.25); --input-border: rgba(255, 0, 255, 0.3); --input-bg: rgba(0, 0, 0, 0.2); --send-btn: linear-gradient(135deg, #ff00ff, #aa00aa); }
+        .theme-orange { --bg: #1a0f00; --chat-bg: rgba(255, 100, 0, 0.1); --header-bg: linear-gradient(135deg, #2a1a00, #4a2a00); --border: rgba(255, 100, 0, 0.3); --text: #ffcc88; --subtext: #cc9944; --user-msg: linear-gradient(135deg, #ff8800, #cc5500); --bot-msg-bg: rgba(255, 100, 0, 0.05); --bot-msg-border: rgba(255, 100, 0, 0.3); --btn-border: rgba(255, 100, 0, 0.3); --btn-bg: rgba(255, 100, 0, 0.1); --btn-hover: rgba(255, 100, 0, 0.25); --input-border: rgba(255, 100, 0, 0.3); --input-bg: rgba(0, 0, 0, 0.2); --send-btn: linear-gradient(135deg, #ff8800, #cc5500); }
+        .theme-forest { --bg: #001a0a; --chat-bg: rgba(0, 255, 100, 0.1); --header-bg: linear-gradient(135deg, #002a1a, #004a2a); --border: rgba(0, 255, 100, 0.3); --text: #88ffcc; --subtext: #44cc88; --user-msg: linear-gradient(135deg, #00ff88, #00cc55); --bot-msg-bg: rgba(0, 255, 100, 0.05); --bot-msg-border: rgba(0, 255, 100, 0.3); --btn-border: rgba(0, 255, 100, 0.3); --btn-bg: rgba(0, 255, 100, 0.1); --btn-hover: rgba(0, 255, 100, 0.25); --input-border: rgba(0, 255, 100, 0.3); --input-bg: rgba(0, 0, 0, 0.2); --send-btn: linear-gradient(135deg, #00ff88, #00cc55); }
+        .light-theme { --bg: #f0f4f8; --chat-bg: rgba(255, 255, 255, 0.7); --header-bg: linear-gradient(135deg, #ffffff, #e0e8f0); --border: rgba(0, 0, 0, 0.15); --text: #1a1a2e; --subtext: #445566; --user-msg: linear-gradient(135deg, #0077ff, #0055cc); --bot-msg-bg: rgba(0, 0, 0, 0.04); --bot-msg-border: rgba(0, 0, 0, 0.1); --btn-border: rgba(0, 0, 0, 0.2); --btn-bg: rgba(0, 0, 0, 0.04); --btn-hover: rgba(0, 0, 0, 0.1); --input-border: rgba(0, 0, 0, 0.2); --input-bg: #ffffff; --send-btn: linear-gradient(135deg, #0077ff, #0055cc); }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: var(--bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            transition: background 0.4s;
-        }
-        #bgCanvas {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: var(--canvas-z); pointer-events: none; opacity: 0.4;
-        }
-        .chat-container {
-            width: 100%;
-            max-width: 700px;
-            background: var(--chat-bg);
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--border);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            height: 90vh;
-            max-height: 750px;
-            backdrop-filter: blur(6px);
-            z-index: 10; position: relative;
-        }
-        .header {
-            background: var(--header-bg);
-            padding: 18px 24px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex-shrink: 0;
-        }
-        .avatar {
-            width: 44px; height: 44px; border-radius: 50%;
-            background: linear-gradient(135deg, #00d4ff, #0077ff);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; font-weight: bold; color: #fff;
-            box-shadow: 0 0 20px rgba(0, 200, 255, 0.3);
-            cursor: pointer;
-        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; transition: background 0.4s; }
+        #bgCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: var(--canvas-z); pointer-events: none; opacity: 0.4; }
+        .chat-container { width: 100%; max-width: 700px; background: var(--chat-bg); border-radius: 24px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6); border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; height: 90vh; max-height: 750px; backdrop-filter: blur(6px); z-index: 10; position: relative; }
+        .header { background: var(--header-bg); padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+        .avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #00d4ff, #0077ff); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; color: #fff; box-shadow: 0 0 20px rgba(0, 200, 255, 0.3); cursor: pointer; }
         .header .info { flex: 1; }
         .header .info h1 { font-size: 20px; color: var(--text); font-weight: 600; }
         .header .info p { font-size: 13px; color: var(--subtext); }
         .status { font-size: 12px; color: #66dd88; padding: 4px 14px; border-radius: 20px; border: 1px solid rgba(0,255,100,0.2); background: rgba(0,255,100,0.12); }
-        
         .header-controls { display: flex; align-items: center; gap: 6px; }
-        .theme-toggle, .lang-toggle {
-            font-size: 18px; cursor: pointer; background: none; border: none; color: var(--text);
-            padding: 4px 6px; border-radius: 8px; transition: 0.2s;
-        }
+        .theme-toggle, .lang-toggle { font-size: 18px; cursor: pointer; background: none; border: none; color: var(--text); padding: 4px 6px; border-radius: 8px; transition: 0.2s; }
         .theme-toggle:hover, .lang-toggle:hover { background: var(--btn-bg); }
 
-        .chat-box {
-            flex: 1; padding: 20px 24px; overflow-y: auto;
-            background: rgba(0, 0, 0, 0.1);
-            display: flex; flex-direction: column; gap: 8px; scroll-behavior: smooth;
-        }
+        .chat-box { flex: 1; padding: 20px 24px; overflow-y: auto; background: rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; gap: 8px; scroll-behavior: smooth; }
         .chat-box::-webkit-scrollbar { width: 5px; }
         .chat-box::-webkit-scrollbar-thumb { background: rgba(0, 200, 255, 0.3); border-radius: 10px; }
         
-        .message {
-            padding: 12px 18px; border-radius: 16px; max-width: 85%;
-            word-wrap: break-word; line-height: 1.5; font-size: 15px;
-            animation: fadeIn 0.3s ease;
-        }
+        .message { padding: 12px 18px; border-radius: 16px; max-width: 85%; word-wrap: break-word; line-height: 1.5; font-size: 15px; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
         .message.user { align-self: flex-end; background: var(--user-msg); color: #fff; border-bottom-right-radius: 4px; }
         .message.bot { align-self: flex-start; background: var(--bot-msg-bg); color: var(--text); border: 1px solid var(--bot-msg-border); border-bottom-left-radius: 4px; }
         .message.bot .bot-name { font-size: 12px; color: #66ccff; font-weight: 600; margin-bottom: 4px; display: block; }
         .message .time { font-size: 10px; opacity: 0.4; margin-top: 6px; display: block; text-align: right; }
 
-        .input-area {
-            padding: 16px 20px; background: rgba(0, 0, 0, 0.2);
-            border-top: 1px solid var(--border);
-            display: flex; gap: 12px; align-items: center; flex-shrink: 0; flex-wrap: wrap;
-        }
-        .input-area input {
-            flex: 1; padding: 12px 18px; border: 2px solid var(--input-border);
-            border-radius: 30px; background: var(--input-bg); color: var(--text);
-            font-size: 15px; outline: none; transition: 0.3s; min-width: 140px;
-        }
+        .input-area { padding: 16px 20px; background: rgba(0, 0, 0, 0.2); border-top: 1px solid var(--border); display: flex; gap: 12px; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
+        .input-area input { flex: 1; padding: 12px 18px; border: 2px solid var(--input-border); border-radius: 30px; background: var(--input-bg); color: var(--text); font-size: 15px; outline: none; transition: 0.3s; min-width: 140px; }
         .input-area input:focus { border-color: #00ccff; box-shadow: 0 0 20px rgba(0,200,255,0.1); }
         .input-area input::placeholder { color: var(--subtext); }
-        .input-area button {
-            padding: 12px 28px; border: none; border-radius: 30px;
-            background: var(--send-btn); color: #fff; font-weight: 600; font-size: 15px;
-            cursor: pointer; transition: 0.3s; white-space: nowrap;
-        }
+        .input-area button { padding: 12px 28px; border: none; border-radius: 30px; background: var(--send-btn); color: #fff; font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.3s; white-space: nowrap; }
         .input-area button:hover { transform: scale(1.02); box-shadow: 0 6px 25px rgba(0,200,255,0.35); }
-        
-        .quick-commands {
-            display: flex; flex-wrap: wrap; gap: 8px;
-            padding: 8px 20px 16px 20px; background: rgba(0, 0, 0, 0.1);
-            border-top: 1px solid var(--border); justify-content: center; flex-shrink: 0;
-        }
-        .quick-commands button {
-            padding: 6px 16px; border: 1px solid var(--btn-border);
-            border-radius: 20px; background: var(--btn-bg); color: var(--subtext);
-            font-size: 12px; cursor: pointer; transition: 0.3s;
-        }
+
+        .quick-commands { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 20px 16px 20px; background: rgba(0, 0, 0, 0.1); border-top: 1px solid var(--border); justify-content: center; flex-shrink: 0; }
+        .quick-commands button { padding: 6px 16px; border: 1px solid var(--btn-border); border-radius: 20px; background: var(--btn-bg); color: var(--subtext); font-size: 12px; cursor: pointer; transition: 0.3s; }
         .quick-commands button:hover { background: var(--btn-hover); border-color: #00ccff; color: var(--text); transform: translateY(-1px); }
 
         @media (max-width: 500px) {
@@ -215,9 +72,6 @@
             .quick-commands { gap: 5px; padding: 6px 12px 12px 12px; }
             .quick-commands button { padding: 4px 12px; font-size: 11px; }
         }
-
-        /* --- КОНФЕТТИ --- */
-        canvas#confettiCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; }
     </style>
 </head>
 <body>
@@ -241,7 +95,9 @@
             <button onclick="sendCommand('пароль 12')" id="cmdPwd">🔑 Пароль</button>
             <button onclick="sendCommand('курс usd')" id="cmdCurr">💵 Курс</button>
             <button onclick="sendCommand('заметки')" id="cmdNotes">📒 Заметки</button>
-            <button onclick="sendCommand('статистика')" id="cmdStats">📊 Статистика</button>
+            <button onclick="sendCommand('калории')" id="cmdCalories">📊 Калории</button>
+            <button onclick="sendCommand('монетка')" id="cmdCoin">🪙 Монетка</button>
+            <button onclick="sendCommand('список')" id="cmdList">📋 Список</button>
             <button onclick="sendCommand('очистить')" id="cmdClear">🗑 Очистить</button>
         </div>
         <div class="input-area">
@@ -266,6 +122,8 @@
         let eggCount = 0;
         let currentLang = localStorage.getItem('verityLang') || 'ru';
         let timers = {};
+        let reminders = JSON.parse(localStorage.getItem('verityReminders')) || [];
+        let shoppingList = JSON.parse(localStorage.getItem('verityShoppingList')) || [];
 
         // --- Переводы ---
         const LANG = {
@@ -315,12 +173,10 @@
             return str;
         }
 
-        // --- ФИЛЬТР МАТА УДАЛЁН ---
         function addMessage(sender, text, isSystem = false) {
             const div = document.createElement('div');
             if (isSystem) { div.className = 'message bot'; div.style.alignSelf = 'center'; div.style.fontSize = '0.8em'; div.style.opacity = '0.6'; div.style.textAlign = 'center'; }
             else { div.className = sender === 'user' ? 'message user' : 'message bot'; }
-            
             if (sender === 'user' || isSystem) { div.innerHTML = text + '<span class="time">' + getTime() + '</span>'; }
             else {
                 div.innerHTML = '<span class="bot-name">🤖 Verity</span>' + 
@@ -376,9 +232,6 @@
             localStorage.setItem('verityStats', JSON.stringify(stats));
         }
 
-        // ==========================================================
-        //  КОНФЕТТИ
-        // ==========================================================
         function launchConfetti() {
             const canvas = document.createElement('canvas');
             canvas.id = 'confettiCanvas';
@@ -471,12 +324,16 @@
                 addMessage('bot', '👋 Приятно познакомиться, '+userName+'!');
                 return;
             }
-                        // --- Очистка памяти ---
+
+            // --- Очистка памяти ---
             if (lower === 'забудь всё' || lower === 'forget all' || lower === 'забудь') {
                 localStorage.removeItem('verityMemory');
-                localStorage.removeItem('verityUserName'); // Стираем имя
+                localStorage.removeItem('verityUserName');
+                localStorage.removeItem('verityChatLog');
                 memory = {};
-                userName = 'Ты'; // Возвращаем стандартное имя
+                userName = 'Ты';
+                chatLog = [];
+                chatBox.innerHTML = '';
                 addMessage('bot', t('forget'));
                 return;
             }
@@ -525,7 +382,7 @@
             if (lower === '5' || lower === 'bulls') { startBulls(); return; }
             if (lower === '6' || lower === 'sapper') { startSapper(); return; }
 
-            // --- НОВАЯ ПОГОДА (переписана нахуй, чтобы не бесила) ---
+            // --- Погода ---
             if (lower.startsWith('погода') || lower.startsWith('weather')) {
                 let city = text.replace(/погода|weather/i, '').trim();
                 if (!city) {
@@ -537,29 +394,25 @@
                     }
                 }
                 addMessage('bot', `🌤 Запрашиваю погоду для ${city}...`);
-                // Новый URL: без форматирования, берём чистый текст и парсим сами
                 fetch(`https://wttr.in/${encodeURIComponent(city)}?format=%C+%t+%w+%h&m&lang=ru`)
                     .then(res => {
                         if (!res.ok) throw new Error('Ошибка сети');
                         return res.text();
                     })
                     .then(data => {
-                        // Если ответ содержит HTML — вырезаем и отдаём чистыми данными
                         if (data.includes('<html') || data.includes('<')) {
-                            // Простейший парсинг: ищем температуру, ветер, влажность
                             let tempMatch = data.match(/([-+]?\d+)\s*°C/);
                             let windMatch = data.match(/(\d+)\s*км\/ч/);
                             let humidMatch = data.match(/(\d+)\s*%/);
-                            let descMatch = data.match(/([А-Яа-яA-Za-z]+)/);
+                            let descMatch = data.match(/(?!DOCTYPE)([А-Яа-яA-Za-z]+)/);
                             let result = `🌤 ${city}: `;
                             if (descMatch) result += descMatch[0] + ', ';
                             if (tempMatch) result += tempMatch[0] + ', ';
                             if (windMatch) result += 'ветер ' + windMatch[0] + ', ';
                             if (humidMatch) result += 'влажность ' + humidMatch[0];
-                            if (result === `🌤 ${city}: `) result += 'данные не распознаны, но сайт ответил.';
+                            if (result === `🌤 ${city}: `) result += 'данные не распознаны.';
                             addMessage('bot', result);
                         } else {
-                            // Если текст чистый — отдаём как есть
                             addMessage('bot', `🌤 Погода в ${city}: ${data}`);
                         }
                     })
@@ -610,6 +463,37 @@
                     .catch(() => {
                         addMessage('bot', '❌ Ошибка конвертации.');
                     });
+                return;
+            }
+
+            // --- Конвертер единиц (без API) ---
+            if (lower.startsWith('конверт')) {
+                let parts = text.replace(/конверт/i, '').trim().split(' ');
+                if (parts.length < 4) { addMessage('bot', '📐 Пример: конверт 10 км в мили'); return; }
+                let value = parseFloat(parts[0]);
+                let from = parts[1].toLowerCase();
+                let to = parts[3].toLowerCase();
+                if (isNaN(value)) { addMessage('bot', '📐 Введи число. Пример: конверт 10 км в мили'); return; }
+                let result = 0;
+                let unitMap = {
+                    'км': { 'мили': 0.621371, 'м': 1000 },
+                    'мили': { 'км': 1.60934, 'м': 1609.34 },
+                    'м': { 'км': 0.001, 'мили': 0.000621371 },
+                    'кг': { 'фунты': 2.20462 },
+                    'фунты': { 'кг': 0.453592 },
+                    'c': { 'f': (value * 9/5) + 32 },
+                    'f': { 'c': (value - 32) * 5/9 }
+                };
+                if (unitMap[from] && unitMap[from][to]) {
+                    if (typeof unitMap[from][to] === 'function') {
+                        result = unitMap[from][to]();
+                    } else {
+                        result = value * unitMap[from][to];
+                    }
+                    addMessage('bot', `📐 ${value} ${from} = ${result.toFixed(2)} ${to}`);
+                } else {
+                    addMessage('bot', '📐 Поддерживаются: км, мили, м, кг, фунты, C, F');
+                }
                 return;
             }
 
@@ -682,20 +566,301 @@
                 return;
             }
 
+            // --- Генератор QR-кода ---
+            if (lower.startsWith('qr') || lower.startsWith('qrcode')) {
+                let text = text.replace(/qr|qrcode/i, '').trim();
+                if (!text) { addMessage('bot', '📱 Пример: qr https://google.com'); return; }
+                addMessage('bot', `📱 QR-код для: ${text}\nhttps://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(text)}`);
+                return;
+            }
+
+            // --- Сокращатель ссылок ---
+            if (lower.startsWith('сократи') || lower.startsWith('shorten')) {
+                let url = text.replace(/сократи|shorten/i, '').trim();
+                if (!url) { addMessage('bot', '🔗 Пример: сократи https://google.com'); return; }
+                if (!url.startsWith('http')) url = 'https://' + url;
+                addMessage('bot', `🔗 Сокращаю ссылку...`);
+                fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`)
+                    .then(res => res.text())
+                    .then(shortUrl => {
+                        addMessage('bot', `✅ Сокращённая ссылка: ${shortUrl}`);
+                    })
+                    .catch(() => {
+                        addMessage('bot', '❌ Не удалось сократить ссылку. Попробуй позже.');
+                    });
+                return;
+            }
+
+            // --- Рандом ---
+            if (lower === 'рандом' || lower === 'random') {
+                let num = Math.floor(Math.random() * 100) + 1;
+                addMessage('bot', `🎲 Случайное число от 1 до 100: **${num}**`);
+                return;
+            }
+
+            // --- История команд ---
+            if (lower === 'история' || lower === 'history') {
+                if (chatLog.length === 0) { addMessage('bot', '📜 История пуста.'); return; }
+                let msg = '📜 **Последние 10 действий:**\n';
+                let start = Math.max(0, chatLog.length - 10);
+                for (let i = start; i < chatLog.length; i++) {
+                    msg += `[${chatLog[i].time}] ${chatLog[i].sender}: ${chatLog[i].text}\n`;
+                }
+                addMessage('bot', msg);
+                return;
+            }
+
+            // --- Палитра цветов ---
+            if (lower === 'палитра' || lower === 'palette') {
+                let colors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFA500', '#800080'];
+                let randomColor = colors[Math.floor(Math.random() * colors.length)];
+                addMessage('bot', `🎨 Случайный цвет: ${randomColor}`);
+                return;
+            }
+
+            // --- Напоминалка ---
+            if (lower.startsWith('напомни через')) {
+                let parts = text.replace(/напомни через/i, '').trim().split(' ');
+                let time = parseInt(parts[0]);
+                let unit = parts[1] || 'минут';
+                let reminderText = parts.slice(2).join(' ');
+                if (isNaN(time) || time <= 0 || !reminderText) {
+                    addMessage('bot', '⏰ Пример: напомни через 10 минут позвонить');
+                    return;
+                }
+                let seconds;
+                if (unit.includes('секунд') || unit.includes('секунду') || unit.includes('сек')) {
+                    seconds = time;
+                } else if (unit.includes('час') || unit.includes('часов') || unit.includes('часа')) {
+                    seconds = time * 3600;
+                } else {
+                    seconds = time * 60;
+                }
+                if (seconds > 86400) { addMessage('bot', '⏰ Максимум 24 часа.'); return; }
+                let reminder = { id: Date.now(), text: reminderText, time: seconds, createdAt: Date.now(), active: true };
+                reminders.push(reminder);
+                localStorage.setItem('verityReminders', JSON.stringify(reminders));
+                addMessage('bot', `⏰ Напомню через ${time} ${unit} о: "${reminderText}" (ID: ${reminder.id})`);
+                setTimeout(() => {
+                    let stillActive = reminders.find(r => r.id === reminder.id && r.active);
+                    if (stillActive) {
+                        addMessage('bot', `⏰ НАПОМИНАНИЕ: ${reminderText}`);
+                        stillActive.active = false;
+                        localStorage.setItem('verityReminders', JSON.stringify(reminders));
+                    }
+                }, seconds * 1000);
+                return;
+            }
+
+            // --- Список активных напоминаний ---
+            if (lower === 'мои напоминания' || lower === 'reminders') {
+                let active = reminders.filter(r => r.active);
+                if (active.length === 0) {
+                    addMessage('bot', '📋 Нет активных напоминаний.');
+                    return;
+                }
+                let msg = '📋 **Активные напоминания:**\n';
+                active.forEach((r, i) => {
+                    let remaining = Math.floor(r.time / 60);
+                    msg += `${i+1}. ${r.text} (через ${remaining} мин.) [ID: ${r.id}]\n`;
+                });
+                addMessage('bot', msg);
+                return;
+            }
+
+            // --- Отмена напоминания ---
+            if (lower.startsWith('отменить напоминание') || lower.startsWith('cancel reminder')) {
+                let id = parseInt(text.replace(/отменить напоминание|cancel reminder/i, '').trim());
+                if (isNaN(id)) {
+                    addMessage('bot', '❌ Пример: отменить напоминание 123456');
+                    return;
+                }
+                let found = reminders.find(r => r.id === id && r.active);
+                if (!found) {
+                    addMessage('bot', '❌ Напоминание не найдено или уже выполнено.');
+                    return;
+                }
+                found.active = false;
+                localStorage.setItem('verityReminders', JSON.stringify(reminders));
+                addMessage('bot', `✅ Напоминание "${found.text}" отменено.`);
+                return;
+            }
+
+            // --- Калории ---
+            if (lower.startsWith('норма') && !isNaN(parseInt(text.replace(/норма/i, '').trim()))) {
+                let norm = parseInt(text.replace(/норма/i, '').trim());
+                if (norm <= 0) { addMessage('bot', '⚠️ Норма должна быть больше 0.'); return; }
+                localStorage.setItem('verityCalorieNorm', JSON.stringify(norm));
+                addMessage('bot', `✅ Дневная норма калорий установлена: **${norm}**.`);
+                return;
+            }
+            if (lower.startsWith('калории') || lower.startsWith('calories')) {
+                let parts = text.replace(/калории|calories/i, '').trim();
+                if (parts === 'неделя' || parts === 'week') {
+                    let total = 0;
+                    let days = 0;
+                    for (let i = 0; i < 7; i++) {
+                        let d = new Date();
+                        d.setDate(d.getDate() - i);
+                        let key = 'verityCalories_' + d.toLocaleDateString();
+                        let val = JSON.parse(localStorage.getItem(key)) || 0;
+                        total += val;
+                        days++;
+                    }
+                    let avg = Math.round(total / days);
+                    addMessage('bot', `📊 Среднее потребление за 7 дней: **${avg}** калорий/день.`);
+                    return;
+                }
+                if (parts === '') {
+                    let today = new Date().toLocaleDateString();
+                    let todayCal = JSON.parse(localStorage.getItem('verityCalories_' + today)) || 0;
+                    let norm = JSON.parse(localStorage.getItem('verityCalorieNorm')) || null;
+                    let msg = `📊 Сегодня (${today}) съедено: **${todayCal}** калорий.`;
+                    if (norm) {
+                        let остаток = norm - todayCal;
+                        msg += `\n🎯 Норма: ${norm} | Остаток: **${остаток}** калорий.`;
+                    }
+                    addMessage('bot', msg);
+                    return;
+                }
+                let cal = parseInt(parts);
+                if (isNaN(cal) || cal <= 0) { addMessage('bot', '⚠️ Пример: калории 500'); return; }
+                let today = new Date().toLocaleDateString();
+                let current = JSON.parse(localStorage.getItem('verityCalories_' + today)) || 0;
+                let total = current + cal;
+                localStorage.setItem('verityCalories_' + today, JSON.stringify(total));
+                addMessage('bot', `✅ Добавлено ${cal} калорий. Итог за сегодня: **${total}**.`);
+                return;
+            }
+
+            // --- Рулетка ---
+            if (lower.startsWith('монеты') && !isNaN(parseInt(text.replace(/монеты|coins/i, '').trim()))) {
+                let bal = parseInt(text.replace(/монеты|coins/i, '').trim());
+                if (bal < 0) { addMessage('bot', '⚠️ Баланс не может быть отрицательным.'); return; }
+                localStorage.setItem('verityBalance', JSON.stringify(bal));
+                addMessage('bot', `💰 Баланс установлен: **${bal}** монет.`);
+                return;
+            }
+            if (lower.startsWith('рулетка') || lower.startsWith('roulette')) {
+                let args = text.replace(/рулетка|roulette/i, '').trim();
+                if (!args) {
+                    addMessage('bot', '🎰 Пример: рулетка пицца, суши, бургер');
+                    return;
+                }
+                let parts = args.split(' на ');
+                let optionsStr = parts[0];
+                let bet = parts.length > 1 ? parseInt(parts[1]) : null;
+                let options = optionsStr.split(',').map(s => s.trim());
+                if (options.length < 2) { addMessage('bot', '🎰 Нужно хотя бы 2 варианта через запятую.'); return; }
+                let winner = options[Math.floor(Math.random() * options.length)];
+                if (bet !== null && !isNaN(bet) && bet > 0) {
+                    let balance = JSON.parse(localStorage.getItem('verityBalance')) || 0;
+                    if (balance < bet) {
+                        addMessage('bot', `❌ Недостаточно монет. У тебя: ${balance}, ставка: ${bet}.`);
+                        return;
+                    }
+                    let win = Math.random() > 0.5;
+                    if (win) {
+                        balance += bet;
+                        localStorage.setItem('verityBalance', JSON.stringify(balance));
+                        addMessage('bot', `🎰 Варианты: ${args.split(' на ')[0]}\n👉 **Выпало: ${winner}** 🏆\n💰 Ты выиграл! +${bet} монет. Баланс: **${balance}**.`);
+                    } else {
+                        balance -= bet;
+                        localStorage.setItem('verityBalance', JSON.stringify(balance));
+                        addMessage('bot', `🎰 Варианты: ${args.split(' на ')[0]}\n👉 **Выпало: ${winner}** 😢\n💸 Ты проиграл ${bet} монет. Баланс: **${balance}**.`);
+                    }
+                } else {
+                    addMessage('bot', `🎰 Из вариантов: ${optionsStr}\n👉 **Выпало: ${winner}**`);
+                }
+                return;
+            }
+
+            // --- Монетка со статистикой ---
+            if (lower === 'монетка' || lower === 'coin') {
+                let stats = JSON.parse(localStorage.getItem('verityCoinStats')) || { heads: 0, tails: 0 };
+                let result = Math.random() < 0.5 ? 'Орёл' : 'Решка';
+                if (result === 'Орёл') { stats.heads++; } else { stats.tails++; }
+                localStorage.setItem('verityCoinStats', JSON.stringify(stats));
+                addMessage('bot', `🪙 **Результат:** ${result}\n📊 **Статистика:**\nОрёл: ${stats.heads}\nРешка: ${stats.tails}`);
+                return;
+            }
+
+            // --- Список покупок ---
+            if (lower === 'список' || lower === 'list') {
+                if (shoppingList.length === 0) {
+                    addMessage('bot', '📋 Список покупок пуст. Добавь через "купить ..."');
+                    return;
+                }
+                let msg = '📋 **Список покупок:**\n';
+                shoppingList.forEach((item, i) => {
+                    let status = item.done ? '✅' : '⬜';
+                    msg += `${i+1}. ${status} ${item.text}\n`;
+                });
+                addMessage('bot', msg);
+                return;
+            }
+            if (lower.startsWith('купить') || lower.startsWith('buy')) {
+                let item = text.replace(/купить|buy/i, '').trim();
+                if (!item) { addMessage('bot', '📋 Пример: купить молоко'); return; }
+                shoppingList.push({ text: item, done: false });
+                localStorage.setItem('verityShoppingList', JSON.stringify(shoppingList));
+                addMessage('bot', `📋 Добавлено: "${item}"`);
+                return;
+            }
+            if (lower.startsWith('купил') || lower.startsWith('bought')) {
+                let num = parseInt(text.replace(/купил|bought/i, '').trim());
+                if (isNaN(num) || num < 1 || num > shoppingList.length) {
+                    addMessage('bot', '⚠️ Пример: купил 1');
+                    return;
+                }
+                shoppingList[num-1].done = true;
+                localStorage.setItem('verityShoppingList', JSON.stringify(shoppingList));
+                addMessage('bot', `✅ Покупка #${num} отмечена как выполненная.`);
+                return;
+            }
+            if (lower === 'очистить список' || lower === 'clear list') {
+                let doneItems = shoppingList.filter(item => !item.done);
+                if (doneItems.length === shoppingList.length) {
+                    shoppingList = [];
+                    localStorage.removeItem('verityShoppingList');
+                    addMessage('bot', '🗑️ Список покупок полностью очищен.');
+                    return;
+                }
+                shoppingList = doneItems;
+                localStorage.setItem('verityShoppingList', JSON.stringify(shoppingList));
+                addMessage('bot', '🗑️ Выполненные покупки удалены. Остались: ' + shoppingList.length + ' шт.');
+                return;
+            }
+
             // --- Генератор мемов (Canvas) ---
             if (lower.startsWith('мем') || lower.startsWith('meme')) {
-                let memeText = text.replace(/мем|meme/i, '').trim();
-                if (!memeText) { addMessage('bot', '🖼️ Пример: мем Пойми меня, если сможешь'); return; }
+                let raw = text.replace(/мем|meme/i, '').trim();
+                let bgColor = '#ffffff';
+                let colors = {
+                    'красном': '#ff0000', 'синем': '#0000ff', 'зелёном': '#00cc00',
+                    'чёрном': '#000000', 'жёлтом': '#ffcc00', 'фиолетовом': '#9900ff',
+                    'оранжевом': '#ff8800', 'розовом': '#ff66b2'
+                };
+                for (let key in colors) {
+                    if (raw.includes('на ' + key + ' фоне')) {
+                        bgColor = colors[key];
+                        raw = raw.replace('на ' + key + ' фоне', '').trim();
+                        break;
+                    }
+                }
+                if (!raw) { addMessage('bot', '🖼️ Пример: мем Пойми меня, если сможешь'); return; }
                 try {
                     const canvas = document.createElement('canvas');
                     canvas.width = 600; canvas.height = 400;
                     const ctx = canvas.getContext('2d');
-                    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, 600, 400);
-                    ctx.fillStyle = '#000000'; ctx.font = 'bold 32px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                    
-                    // Разбиваем текст на строки, если длинный
+                    ctx.fillStyle = bgColor;
+                    ctx.fillRect(0, 0, 600, 400);
+                    ctx.fillStyle = bgColor === '#ffffff' || bgColor === '#ffff00' ? '#000000' : '#ffffff';
+                    ctx.font = 'bold 32px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    let words = raw.split(' ');
                     let lines = [];
-                    let words = memeText.split(' ');
                     let currentLine = '';
                     for (let w of words) {
                         let test = currentLine + w + ' ';
@@ -703,18 +868,18 @@
                         else { currentLine = test; }
                     }
                     lines.push(currentLine);
-                    
                     let startY = 200 - (lines.length * 20);
                     lines.forEach((line, i) => {
                         ctx.fillText(line, 300, startY + i * 40);
                     });
-                    
                     const link = document.createElement('a');
                     link.download = 'meme.png';
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                     addMessage('bot', '🖼️ Мем сгенерирован! Проверь папку "Загрузки".');
-                } catch(e) { addMessage('bot', '❌ Ошибка генерации мема.'); }
+                } catch (e) {
+                    addMessage('bot', '❌ Ошибка генерации мема.');
+                }
                 return;
             }
 
@@ -743,7 +908,7 @@
                 return;
             }
 
-            // --- Планировщик задач ---
+            // --- Задачи ---
             if (lower === 'задачи' || lower === 'tasks') {
                 if (tasks.length === 0) { addMessage('bot', '📋 Задач пока нет. Добавь через "задача текст"'); return; }
                 let msg = '📋 **Список задач:**\n';
@@ -768,7 +933,7 @@
                 return;
             }
 
-            // --- Очистка чата (Пофикшено!) ---
+            // --- Очистка чата ---
             if (lower === 'очистить' || lower === 'clear') {
                 chatBox.innerHTML = '';
                 addMessage('bot', '🧹 Чат очищен.');
@@ -797,36 +962,20 @@
                 return;
             }
 
-            // --- Смена темы (3 новые + стандартные) ---
-            if (lower === 'тема кислотная' || lower === 'theme acid') {
-                document.body.className = 'theme-acid';
-                localStorage.setItem('verityTheme', 'acid');
-                addMessage('bot', '🎨 Тема: Кислотная! 💜');
-                return;
-            }
-            if (lower === 'тема оранжевая' || lower === 'theme orange') {
-                document.body.className = 'theme-orange';
-                localStorage.setItem('verityTheme', 'orange');
-                addMessage('bot', '🎨 Тема: Оранжевая! 🧡');
-                return;
-            }
-            if (lower === 'тема лесная' || lower === 'theme forest') {
-                document.body.className = 'theme-forest';
-                localStorage.setItem('verityTheme', 'forest');
-                addMessage('bot', '🎨 Тема: Лесная! 🌿');
-                return;
-            }
-            if (lower === 'тема' || lower === 'theme') {
-                toggleTheme();
-                addMessage('bot', t('theme_sw'));
-                return;
-            }
+            // --- Смена темы ---
+            if (lower === 'тема кислотная' || lower === 'theme acid') { document.body.className = 'theme-acid'; localStorage.setItem('verityTheme', 'acid'); addMessage('bot', '🎨 Тема: Кислотная! 💜'); return; }
+            if (lower === 'тема оранжевая' || lower === 'theme orange') { document.body.className = 'theme-orange'; localStorage.setItem('verityTheme', 'orange'); addMessage('bot', '🎨 Тема: Оранжевая! 🧡'); return; }
+            if (lower === 'тема лесная' || lower === 'theme forest') { document.body.className = 'theme-forest'; localStorage.setItem('verityTheme', 'forest'); addMessage('bot', '🎨 Тема: Лесная! 🌿'); return; }
+            if (lower === 'тема' || lower === 'theme') { toggleTheme(); addMessage('bot', t('theme_sw')); return; }
 
             // --- Проверка памяти ---
             if (memory[text]) { addMessage('bot', memory[text]); return; }
 
             // --- Базовые ответы ---
-            if (lower === 'привет' || lower === 'hi' || lower === 'hello') addMessage('bot', t('hi', userName));
+            if (lower === 'привет' || lower === 'hi' || lower === 'hello') {
+                let nameToShow = userName.trim() === '' ? 'друг' : userName.trim();
+                addMessage('bot', t('hi', nameToShow));
+            }
             else if (lower === 'шутка' || lower === 'joke') addMessage('bot', jokes[Math.floor(Math.random()*jokes.length)]);
             else if (lower === 'факт' || lower === 'fact') addMessage('bot', facts[Math.floor(Math.random()*facts.length)]);
             else if (lower === 'совет' || lower === 'advice') addMessage('bot', advices[Math.floor(Math.random()*advices.length)]);
@@ -857,8 +1006,7 @@
         }
         function showTriviaQ() {
             if (gameData.qIndex >= gameData.questions.length) {
-                addStat('Викторина');
-                addAchievement('Викторина');
+                addStat('Викторина'); addAchievement('Викторина');
                 const r = gameData.score + ' из ' + gameData.questions.length;
                 addMessage('bot', '🏆 Викторина окончена! Счёт: '+r);
                 gameMode = null; return;
@@ -1002,7 +1150,6 @@
             document.body.classList.toggle('light-theme');
             localStorage.setItem('verityTheme', document.body.classList.contains('light-theme') ? 'light' : 'dark');
         }
-        // Восстанавливаем тему
         let savedTheme = localStorage.getItem('verityTheme');
         if (savedTheme === 'light') document.body.classList.add('light-theme');
         else if (savedTheme === 'acid') document.body.classList.add('theme-acid');
@@ -1034,7 +1181,7 @@
         const quotes = ['📝 "Будь собой." — Оскар Уайльд','📝 "Жизнь продолжается." — Роберт Фрост','📝 "Люби то, что делаешь." — Стив Джобс','📝 "Главное — не останавливаться." — Конфуций'];
 
         // ==========================================================
-        //  АНИМИРОВАННЫЙ ФОН (CANVAS)
+        //  АНИМИРОВАННЫЙ ФОН
         // ==========================================================
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
@@ -1080,6 +1227,33 @@
         animateBg();
 
         // ==========================================================
+        //  ВОССТАНОВЛЕНИЕ НАПОМИНАНИЙ
+        // ==========================================================
+        function restoreReminders() {
+            let now = Date.now();
+            reminders.forEach(r => {
+                if (!r.active) return;
+                let elapsed = (now - r.createdAt) / 1000;
+                let remaining = r.time - elapsed;
+                if (remaining <= 0) {
+                    addMessage('bot', `⏰ НАПОМИНАНИЕ (восстановлено): ${r.text}`);
+                    r.active = false;
+                    localStorage.setItem('verityReminders', JSON.stringify(reminders));
+                } else {
+                    setTimeout(() => {
+                        let stillActive = reminders.find(rem => rem.id === r.id && rem.active);
+                        if (stillActive) {
+                            addMessage('bot', `⏰ НАПОМИНАНИЕ: ${r.text}`);
+                            stillActive.active = false;
+                            localStorage.setItem('verityReminders', JSON.stringify(reminders));
+                        }
+                    }, remaining * 1000);
+                }
+            });
+        }
+        restoreReminders();
+
+        // ==========================================================
         //  ЗАПУСК
         // ==========================================================
         if (chatLog.length > 0) {
@@ -1091,7 +1265,7 @@
                 chatBox.appendChild(div);
             });
         }
-        addMessage('bot', '🚀 Привет! Я Verity. Теперь у меня есть генератор мемов, ипотечный калькулятор, конвертер валют и планировщик задач!');
+        addMessage('bot', '🚀 Привет! Я Verity. Теперь у меня есть счётчик калорий, рулетка, монетка со статистикой, список покупок и напоминалка с восстановлением!');
     </script>
 </body>
 </html>
