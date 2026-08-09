@@ -1,1196 +1,1252 @@
 <!DOCTYPE html>
-<html lang="ru" id="htmlLang">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verity AI — Финальный комбайн v3 (12 фич)</title>
+    <title>SWINGER — Гибридный портал</title>
     <style>
-        :root {
-            --bg: #0a0a1a;
-            --chat-bg: rgba(0, 0, 0, 0.3);
-            --header-bg: linear-gradient(135deg, #0d0d2b, #1a1a4e);
-            --border: rgba(0, 200, 255, 0.15);
-            --text: #e0f0ff;
-            --subtext: #88bbdd;
-            --user-msg: linear-gradient(135deg, #0077ff, #0055cc);
-            --bot-msg-bg: rgba(255, 255, 255, 0.06);
-            --bot-msg-border: rgba(0, 200, 255, 0.15);
-            --btn-border: rgba(0, 200, 255, 0.2);
-            --btn-bg: rgba(0, 200, 255, 0.05);
-            --btn-hover: rgba(0, 200, 255, 0.15);
-            --input-border: rgba(0, 200, 255, 0.15);
-            --input-bg: rgba(255, 255, 255, 0.04);
-            --send-btn: linear-gradient(135deg, #00ccff, #0077ff);
-            --canvas-z: -1;
-        }
-        .theme-acid { --bg: #1a001a; --chat-bg: rgba(255, 0, 255, 0.1); --header-bg: linear-gradient(135deg, #2a002a, #4a004a); --border: rgba(255, 0, 255, 0.3); --text: #ffaaff; --subtext: #cc77cc; --user-msg: linear-gradient(135deg, #ff00ff, #aa00aa); --bot-msg-bg: rgba(255, 0, 255, 0.05); --bot-msg-border: rgba(255, 0, 255, 0.3); --btn-border: rgba(255, 0, 255, 0.3); --btn-bg: rgba(255, 0, 255, 0.1); --btn-hover: rgba(255, 0, 255, 0.25); --input-border: rgba(255, 0, 255, 0.3); --input-bg: rgba(0, 0, 0, 0.2); --send-btn: linear-gradient(135deg, #ff00ff, #aa00aa); }
-        .theme-orange { --bg: #1a0f00; --chat-bg: rgba(255, 100, 0, 0.1); --header-bg: linear-gradient(135deg, #2a1a00, #4a2a00); --border: rgba(255, 100, 0, 0.3); --text: #ffcc88; --subtext: #cc9944; --user-msg: linear-gradient(135deg, #ff8800, #cc5500); --bot-msg-bg: rgba(255, 100, 0, 0.05); --bot-msg-border: rgba(255, 100, 0, 0.3); --btn-border: rgba(255, 100, 0, 0.3); --btn-bg: rgba(255, 100, 0, 0.1); --btn-hover: rgba(255, 100, 0, 0.25); --input-border: rgba(255, 100, 0, 0.3); --input-bg: rgba(0, 0, 0, 0.2); --send-btn: linear-gradient(135deg, #ff8800, #cc5500); }
-        .theme-forest { --bg: #001a0a; --chat-bg: rgba(0, 255, 100, 0.1); --header-bg: linear-gradient(135deg, #002a1a, #004a2a); --border: rgba(0, 255, 100, 0.3); --text: #88ffcc; --subtext: #44cc88; --user-msg: linear-gradient(135deg, #00ff88, #00cc55); --bot-msg-bg: rgba(0, 255, 100, 0.05); --bot-msg-border: rgba(0, 255, 100, 0.3); --btn-border: rgba(0, 255, 100, 0.3); --btn-bg: rgba(0, 255, 100, 0.1); --btn-hover: rgba(0, 255, 100, 0.25); --input-border: rgba(0, 255, 100, 0.3); --input-bg: rgba(0, 0, 0, 0.2); --send-btn: linear-gradient(135deg, #00ff88, #00cc55); }
-        .light-theme { --bg: #f0f4f8; --chat-bg: rgba(255, 255, 255, 0.7); --header-bg: linear-gradient(135deg, #ffffff, #e0e8f0); --border: rgba(0, 0, 0, 0.15); --text: #1a1a2e; --subtext: #445566; --user-msg: linear-gradient(135deg, #0077ff, #0055cc); --bot-msg-bg: rgba(0, 0, 0, 0.04); --bot-msg-border: rgba(0, 0, 0, 0.1); --btn-border: rgba(0, 0, 0, 0.2); --btn-bg: rgba(0, 0, 0, 0.04); --btn-hover: rgba(0, 0, 0, 0.1); --input-border: rgba(0, 0, 0, 0.2); --input-bg: #ffffff; --send-btn: linear-gradient(135deg, #0077ff, #0055cc); }
-
+        /* ===== БАЗОВЫЕ СТИЛИ ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; transition: background 0.4s; }
-        #bgCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: var(--canvas-z); pointer-events: none; opacity: 0.4; }
-        .chat-container { width: 100%; max-width: 750px; background: var(--chat-bg); border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.6); border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; height: 92vh; max-height: 800px; backdrop-filter: blur(6px); z-index: 10; position: relative; }
-        .header { background: var(--header-bg); padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; flex-shrink: 0; flex-wrap: wrap; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #00d4ff, #0077ff); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; color: #fff; box-shadow: 0 0 20px rgba(0,200,255,0.3); cursor: pointer; }
-        .header .info { flex: 1; min-width: 120px; }
-        .header .info h1 { font-size: 18px; color: var(--text); font-weight: 600; }
-        .header .info p { font-size: 12px; color: var(--subtext); }
-        .status { font-size: 11px; color: #66dd88; padding: 3px 12px; border-radius: 20px; border: 1px solid rgba(0,255,100,0.2); background: rgba(0,255,100,0.12); white-space: nowrap; }
-        .header-controls { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-        .theme-toggle, .lang-toggle, .mic-toggle { font-size: 16px; cursor: pointer; background: none; border: none; color: var(--text); padding: 4px 6px; border-radius: 8px; transition: 0.2s; }
-        .theme-toggle:hover, .lang-toggle:hover, .mic-toggle:hover { background: var(--btn-bg); }
-        .mic-toggle.recording { color: #ff4444; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            transition: background 0.3s, color 0.3s;
+            min-height: 100vh;
+            background: #0b0e14;
+            color: #e0e0e0;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .hidden { display: none !important; }
 
-        .chat-box { flex: 1; padding: 16px 20px; overflow-y: auto; background: rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 6px; scroll-behavior: smooth; }
-        .chat-box::-webkit-scrollbar { width: 4px; }
-        .chat-box::-webkit-scrollbar-thumb { background: rgba(0,200,255,0.3); border-radius: 10px; }
-        .message { padding: 10px 16px; border-radius: 14px; max-width: 88%; word-wrap: break-word; line-height: 1.45; font-size: 14px; animation: fadeIn 0.25s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .message.user { align-self: flex-end; background: var(--user-msg); color: #fff; border-bottom-right-radius: 4px; }
-        .message.bot { align-self: flex-start; background: var(--bot-msg-bg); color: var(--text); border: 1px solid var(--bot-msg-border); border-bottom-left-radius: 4px; }
-        .message.bot .bot-name { font-size: 11px; color: #66ccff; font-weight: 600; margin-bottom: 3px; display: block; }
-        .message .time { font-size: 9px; opacity: 0.4; margin-top: 4px; display: block; text-align: right; }
-        .message .tag { display: inline-block; font-size: 10px; background: rgba(0,200,255,0.2); padding: 1px 8px; border-radius: 12px; margin: 2px 4px 2px 0; color: var(--subtext); }
+        /* ===== ТЕМЫ ===== */
+        body.theme-dark { background: #0b0e14; color: #e0e0e0; }
+        body.theme-light { background: #f0f2f5; color: #1a1a1a; }
+        body.theme-acid { background: #1a0a2e; color: #b3ff00; }
+        body.theme-orange { background: #1a0a00; color: #ffa500; }
+        body.theme-forest { background: #0a1a0a; color: #7ddf7d; }
 
-        .input-area { padding: 12px 16px; background: rgba(0,0,0,0.2); border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
-        .input-area input { flex: 1; padding: 10px 16px; border: 2px solid var(--input-border); border-radius: 30px; background: var(--input-bg); color: var(--text); font-size: 14px; outline: none; transition: 0.3s; min-width: 120px; }
-        .input-area input:focus { border-color: #00ccff; box-shadow: 0 0 20px rgba(0,200,255,0.1); }
-        .input-area input::placeholder { color: var(--subtext); }
-        .input-area button { padding: 10px 24px; border: none; border-radius: 30px; background: var(--send-btn); color: #fff; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.3s; white-space: nowrap; }
-        .input-area button:hover { transform: scale(1.02); box-shadow: 0 4px 20px rgba(0,200,255,0.3); }
+        /* ===== КАРТОЧКИ ===== */
+        .card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .theme-light .card { background: rgba(255,255,255,0.7); border-color: rgba(0,0,0,0.08); }
+        .theme-acid .card { border-color: #b3ff00; }
+        .theme-orange .card { border-color: #ffa500; }
+        .theme-forest .card { border-color: #7ddf7d; }
 
-        .quick-commands { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 16px 12px 16px; background: rgba(0,0,0,0.1); border-top: 1px solid var(--border); justify-content: center; flex-shrink: 0; }
-        .quick-commands button { padding: 4px 14px; border: 1px solid var(--btn-border); border-radius: 20px; background: var(--btn-bg); color: var(--subtext); font-size: 11px; cursor: pointer; transition: 0.3s; }
-        .quick-commands button:hover { background: var(--btn-hover); border-color: #00ccff; color: var(--text); transform: translateY(-1px); }
+        /* ===== КНОПКИ ===== */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            background: #2a2a3a;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin: 4px;
+        }
+        .btn:hover { transform: scale(1.03); background: #3a3a5a; }
+        .btn-primary { background: #4a6cf7; }
+        .btn-primary:hover { background: #5a7cf7; }
+        .btn-danger { background: #e74c3c; }
+        .btn-danger:hover { background: #f05a4a; }
+        .btn-success { background: #2ecc71; }
+        .btn-success:hover { background: #3ddc81; }
 
-        .feature-grid { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 16px 10px 16px; justify-content: center; background: rgba(0,0,0,0.05); border-top: 1px solid var(--border); flex-shrink: 0; }
-        .feature-grid button { padding: 3px 12px; font-size: 10px; border-radius: 14px; border: 1px solid var(--btn-border); background: var(--btn-bg); color: var(--subtext); cursor: pointer; transition: 0.2s; }
-        .feature-grid button:hover { background: var(--btn-hover); color: var(--text); }
+        /* ===== ПОЛЯ ВВОДА ===== */
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.06);
+            color: inherit;
+            font-size: 14px;
+            margin: 4px 0;
+        }
+        .theme-light input, .theme-light select, .theme-light textarea {
+            background: rgba(0,0,0,0.06);
+            border-color: rgba(0,0,0,0.15);
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4a6cf7;
+            box-shadow: 0 0 0 3px rgba(74,108,247,0.2);
+        }
 
-        #videoUpload, #audioUpload { display: none; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; margin: 6px 0; }
-        .calendar-grid .day { padding: 4px; text-align: center; font-size: 12px; border-radius: 4px; background: rgba(255,255,255,0.05); }
-        .calendar-grid .day.has-event { background: rgba(0,200,255,0.25); font-weight: bold; }
-        .habit-tracker { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
-        .habit-item { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.04); padding: 4px 12px; border-radius: 20px; font-size: 13px; }
+        /* ===== СЕТКА ===== */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
 
-        @media (max-width: 500px) {
-            .chat-container { height: 96vh; max-height: none; border-radius: 14px; }
-            .chat-box { padding: 12px 14px; }
-            .message { max-width: 94%; font-size: 13px; padding: 8px 12px; }
-            .quick-commands { gap: 4px; padding: 4px 10px 10px 10px; }
-            .quick-commands button { font-size: 10px; padding: 3px 10px; }
-            .feature-grid button { font-size: 9px; padding: 2px 10px; }
-            .header { padding: 10px 14px; }
-            .header .info h1 { font-size: 16px; }
+        /* ===== ЧАТ ===== */
+        .chat-box {
+            height: 300px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .chat-msg {
+            padding: 8px 12px;
+            margin: 4px 0;
+            border-radius: 12px;
+            max-width: 80%;
+        }
+        .chat-msg.user { background: #4a6cf7; align-self: flex-end; margin-left: auto; }
+        .chat-msg.bot { background: rgba(255,255,255,0.08); }
+
+        /* ===== ИГРЫ ===== */
+        .game-board {
+            display: grid;
+            gap: 4px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .game-board button {
+            aspect-ratio: 1;
+            font-size: 24px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            cursor: pointer;
+            color: inherit;
+            transition: 0.15s;
+        }
+        .game-board button:hover { background: rgba(255,255,255,0.15); }
+        .game-board button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* ===== САПЁР ===== */
+        .mine-board {
+            display: grid;
+            gap: 2px;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+        .mine-board button {
+            aspect-ratio: 1;
+            font-size: 16px;
+            font-weight: bold;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            cursor: pointer;
+            color: inherit;
+        }
+        .mine-board button.revealed { background: rgba(255,255,255,0.05); }
+        .mine-board button.mine { background: #e74c3c; }
+        .mine-board button.flagged { background: #f1c40f; color: #000; }
+
+        /* ===== АНИМАЦИЯ ФОНА ===== */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 600px) {
+            .container { padding: 12px; }
+            .card { padding: 16px; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <canvas id="bgCanvas"></canvas>
-    <div class="chat-container">
-        <div class="header">
-            <div class="avatar" id="avatarBtn" onclick="triggerEasterEgg()">V</div>
-            <div class="info"><h1 id="uiTitle">Verity AI</h1><p id="uiSubtitle">Твой ИИ-помощник</p></div>
-            <div class="status">● <span id="uiStatus">онлайн</span></div>
-            <div class="header-controls">
-                <button class="mic-toggle" id="micBtn" onclick="toggleMic()" title="Голосовой ввод">🎤</button>
-                <button class="lang-toggle" onclick="toggleLang()" id="langBtn">RU</button>
-                <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="container" id="app">
+    <!-- ШАПКА -->
+    <header class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <h1>🌀 SWINGER</h1>
+        <div>
+            <button class="btn" onclick="toggleTheme('dark')">🌙</button>
+            <button class="btn" onclick="toggleTheme('light')">☀️</button>
+            <button class="btn" onclick="toggleTheme('acid')">🧪</button>
+            <button class="btn" onclick="toggleTheme('orange')">🍊</button>
+            <button class="btn" onclick="toggleTheme('forest')">🌲</button>
+            <button class="btn" onclick="toggleLang()">🌐</button>
+        </div>
+    </header>
+
+    <!-- ВКЛАДКИ -->
+    <div class="card" style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="showTab('chat')">💬 Чат</button>
+        <button class="btn" onclick="showTab('games')">🎮 Игры</button>
+        <button class="btn" onclick="showTab('tools')">🛠 Инструменты</button>
+        <button class="btn" onclick="showTab('organizer')">📋 Органайзер</button>
+        <button class="btn" onclick="showTab('settings')">⚙️ Настройки</button>
+        <button class="btn" onclick="showTab('admin')">👑 Админ</button>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ЧАТ -->
+    <!-- ============================================================ -->
+    <div id="tab-chat" class="tab">
+        <div class="card">
+            <h3>💬 Чат с памятью</h3>
+            <div class="chat-box" id="chatBox"></div>
+            <div style="display:flex; gap:8px;">
+                <input type="text" id="chatInput" placeholder="Напиши что-нибудь..." style="flex:1;">
+                <button class="btn btn-primary" onclick="sendMessage()">➤</button>
+                <button class="btn" onclick="startVoice()">🎤</button>
             </div>
-        </div>
-        <div class="chat-box" id="chatBox"></div>
-        <div class="feature-grid" id="featureGrid">
-            <button onclick="sendCommand('календарь')">📅 Календарь</button>
-            <button onclick="sendCommand('привычки')">✅ Трекер</button>
-            <button onclick="sendCommand('градиент')">🎨 Градиент</button>
-            <button onclick="sendCommand('мелодия')">🎵 Мелодия</button>
-            <button onclick="sendCommand('компас')">🧭 Компас</button>
-            <button onclick="sendCommand('теги')">🏷️ Теги</button>
-            <button onclick="sendCommand('поиск заметок текст')">🔍 Поиск</button>
-        </div>
-        <div class="quick-commands">
-            <button onclick="sendCommand('привет')">👋 Привет</button>
-            <button onclick="sendCommand('погода москва')">🌤 Погода</button>
-            <button onclick="sendCommand('игры')">🎮 Игры</button>
-            <button onclick="sendCommand('пароль 12')">🔑 Пароль</button>
-            <button onclick="sendCommand('курс usd')">💵 Курс</button>
-            <button onclick="sendCommand('заметки')">📒 Заметки</button>
-            <button onclick="sendCommand('калории')">📊 Калории</button>
-            <button onclick="sendCommand('монетка')">🪙 Монетка</button>
-            <button onclick="sendCommand('список')">📋 Список</button>
-            <button onclick="sendCommand('очистить')">🗑 Очистить</button>
-        </div>
-        <div class="input-area">
-            <input type="text" id="userInput" placeholder="Напиши что-нибудь..." onkeydown="if(event.key==='Enter') sendMessage()">
-            <button onclick="sendMessage()" id="btnSend">➤ Отправить</button>
+            <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-success" onclick="chatClear()">🗑 Очистить</button>
+                <button class="btn" onclick="chatExport()">💾 Экспорт</button>
+            </div>
         </div>
     </div>
 
-    <script>
-        // =============================================================
-        //  ЯДРО — ВСЕ 12 НОВЫХ ФИЧ ИНТЕГРИРОВАНЫ
-        // =============================================================
-        const chatBox = document.getElementById('chatBox');
-        let memory = JSON.parse(localStorage.getItem('verityMemory')) || {};
-        let notes = JSON.parse(localStorage.getItem('verityNotes')) || [];
-        let tasks = JSON.parse(localStorage.getItem('verityTasks')) || [];
-        let stats = JSON.parse(localStorage.getItem('verityStats')) || {};
-        let chatLog = JSON.parse(localStorage.getItem('verityChatLog')) || [];
-        let userName = localStorage.getItem('verityUserName') || 'Ты';
-        let gameMode = null;
-        let gameData = {};
-        let eggCount = 0;
-        let currentLang = localStorage.getItem('verityLang') || 'ru';
-        let reminders = JSON.parse(localStorage.getItem('verityReminders')) || [];
-        let shoppingList = JSON.parse(localStorage.getItem('verityShoppingList')) || [];
-        let habits = JSON.parse(localStorage.getItem('verityHabits')) || [];
-        let events = JSON.parse(localStorage.getItem('verityEvents')) || [];
-        let noteTags = JSON.parse(localStorage.getItem('verityNoteTags')) || {};
-        let melodyCache = {};
+    <!-- ============================================================ -->
+    <!-- ИГРЫ -->
+    <!-- ============================================================ -->
+    <div id="tab-games" class="tab hidden">
+        <div class="grid-2">
+            <!-- Угадай число -->
+            <div class="card">
+                <h4>🎯 Угадай число (1-100)</h4>
+                <input type="number" id="guessInput" placeholder="Твоё число">
+                <button class="btn btn-primary" onclick="guessNumber()">Проверить</button>
+                <p id="guessResult">Введи число и нажми Проверить</p>
+                <p>Попыток: <span id="guessAttempts">0</span></p>
+            </div>
 
-        // =============================================================
-        //  ЛОКАЛИЗАЦИЯ (расширена)
-        // =============================================================
-        const LANG = {
-            ru: {
-                hi: 'Привет, {name}! Как дела?', sub: 'Твой ИИ-помощник', status: 'онлайн', send: 'Отправить',
-                placeholder: 'Напиши что-нибудь...', title: 'Verity AI',
-                unknown: '🤔 Не понимаю. Попробуй "помощь" или научи меня "запомни вопрос = ответ".',
-                exit: '🚪 Пока! Страница заблокирована.', forget: '🧹 Я всё забыл. Мой разум чист.',
-                export_done: '📥 История скачана!', theme_sw: '🎨 Тема переключена!',
-                games_menu: '🎮 **Меню игр:**\n1. Угадай число (guess)\n2. Камень-ножницы-бумага (rps)\n3. Викторина (trivia)\n4. Крестики-нолики (tictactoe)\n5. Быки и коровы (bulls)\n6. Сапёр 5x5 (sapper)\n\nВведи название игры или выбери цифру.',
-                guess_start: '🎲 Я загадал число от 1 до 100. Попробуй угадать!',
-                rps_start: '✊ Камень, ножницы или бумага? Введи: камень, ножницы, бумага',
-                trivia_start: '🎯 Викторина! Отвечай буквой a/b/c или "выход".',
-                win: '🏆 Ты выиграл!', lose: '💻 Я выиграл!', draw: 'Ничья!', boom: '💥 Ты наступил на мину! Конец игры.',
-                ach_menu: '🏆 **Твои достижения:**\n'
-            },
-            en: {
-                hi: 'Hello, {name}! How are you?', sub: 'Your AI assistant', status: 'online', send: 'Send',
-                placeholder: 'Type something...', title: 'Verity AI',
-                unknown: '🤔 I don\'t understand. Try "help" or teach me "remember question = answer".',
-                exit: '🚪 Bye! Page locked.', forget: '🧹 I forgot everything. My mind is clean.',
-                export_done: '📥 History downloaded!', theme_sw: '🎨 Theme toggled!',
-                games_menu: '🎮 **Game Menu:**\n1. Guess Number (guess)\n2. Rock-Paper-Scissors (rps)\n3. Trivia (trivia)\n4. Tic-Tac-Toe (tictactoe)\n5. Bulls and Cows (bulls)\n6. Minesweeper 5x5 (sapper)\n\nEnter game name or number.',
-                guess_start: '🎲 I guessed a number from 1 to 100. Try to guess!',
-                rps_start: '✊ Rock, paper or scissors? Enter: rock, paper, scissors',
-                trivia_start: '🎯 Trivia! Answer with a/b/c or "exit".',
-                win: '🏆 You won!', lose: '💻 I won!', draw: 'Draw!', boom: '💥 You stepped on a mine! Game over.',
-                ach_menu: '🏆 **Your achievements:**\n'
-            }
+            <!-- RPS -->
+            <div class="card">
+                <h4>🗿 Камень-ножницы-бумага</h4>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <button class="btn" onclick="rpsPlay('rock')">🗿</button>
+                    <button class="btn" onclick="rpsPlay('paper')">📄</button>
+                    <button class="btn" onclick="rpsPlay('scissors')">✂️</button>
+                </div>
+                <p id="rpsResult">Нажми на кнопку</p>
+                <p>Ты: <span id="rpsPlayer">0</span> | Бот: <span id="rpsBot">0</span> | Ничьи: <span id="rpsDraw">0</span></p>
+                <button class="btn" onclick="rpsReset()">🔄 Сброс</button>
+            </div>
+
+            <!-- Крестики-нолики -->
+            <div class="card">
+                <h4>❌ Крестики-нолики</h4>
+                <div class="game-board" id="tttBoard" style="grid-template-columns: repeat(3,1fr);"></div>
+                <p id="tttStatus">Твой ход</p>
+                <button class="btn" onclick="tttReset()">🔄 Новая игра</button>
+            </div>
+
+            <!-- Сапёр -->
+            <div class="card">
+                <h4>💣 Сапёр (5x5)</h4>
+                <div class="mine-board" id="mineBoard" style="grid-template-columns: repeat(5,1fr);"></div>
+                <p id="mineStatus">Нажми на клетку, чтобы начать</p>
+                <button class="btn" onclick="mineReset()">🔄 Новая игра</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ИНСТРУМЕНТЫ -->
+    <!-- ============================================================ -->
+    <div id="tab-tools" class="tab hidden">
+        <div class="grid-2">
+            <div class="card">
+                <h4>🌤 Погода</h4>
+                <input type="text" id="weatherInput" placeholder="Город" value="Москва">
+                <button class="btn btn-primary" onclick="getWeather()">Узнать</button>
+                <p id="weatherResult">Введите город</p>
+            </div>
+            <div class="card">
+                <h4>💰 Курс валют</h4>
+                <input type="text" id="currencyInput" placeholder="Напр. USD" value="USD">
+                <button class="btn btn-primary" onclick="getCurrency()">Узнать</button>
+                <p id="currencyResult">Введите код валюты</p>
+            </div>
+            <div class="card">
+                <h4>🔐 Генератор паролей</h4>
+                <input type="number" id="passLength" value="12" min="4" max="64">
+                <button class="btn btn-primary" onclick="generatePassword()">Сгенерировать</button>
+                <p id="passwordResult">Нажми кнопку</p>
+            </div>
+            <div class="card">
+                <h4>🏠 Ипотечный калькулятор</h4>
+                <input type="number" id="mortgageAmount" placeholder="Сумма" value="1000000">
+                <input type="number" id="mortgagePercent" placeholder="Процент" value="12">
+                <input type="number" id="mortgageYears" placeholder="Лет" value="15">
+                <button class="btn btn-primary" onclick="calcMortgage()">Рассчитать</button>
+                <p id="mortgageResult">Заполни поля</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ОРГАНАЙЗЕР -->
+    <!-- ============================================================ -->
+    <div id="tab-organizer" class="tab hidden">
+        <div class="grid-2">
+            <div class="card">
+                <h4>📝 Заметки</h4>
+                <input type="text" id="noteInput" placeholder="Текст заметки">
+                <input type="text" id="noteTag" placeholder="Тег (необязательно)">
+                <button class="btn btn-primary" onclick="addNote()">➕ Добавить</button>
+                <div id="notesList"></div>
+            </div>
+            <div class="card">
+                <h4>✅ Задачи</h4>
+                <input type="text" id="taskInput" placeholder="Новая задача">
+                <button class="btn btn-primary" onclick="addTask()">➕ Добавить</button>
+                <div id="tasksList"></div>
+            </div>
+            <div class="card">
+                <h4>🛒 Список покупок</h4>
+                <input type="text" id="shopInput" placeholder="Что купить?">
+                <button class="btn btn-primary" onclick="addShopItem()">➕ Добавить</button>
+                <div id="shopList"></div>
+            </div>
+            <div class="card">
+                <h4>🔥 Калории</h4>
+                <input type="number" id="calInput" placeholder="Ккал">
+                <input type="text" id="calFood" placeholder="Продукт">
+                <button class="btn btn-primary" onclick="addCalorie()">➕ Добавить</button>
+                <p>Норма: <input type="number" id="calNorm" value="2000" style="width:80px;"></p>
+                <p>Сегодня: <span id="calTotal">0</span> ккал</p>
+                <button class="btn" onclick="calReset()">🔄 Сброс дня</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- НАСТРОЙКИ -->
+    <!-- ============================================================ -->
+    <div id="tab-settings" class="tab hidden">
+        <div class="card">
+            <h3>⚙️ Настройки</h3>
+            <p>Язык: <span id="langLabel">Русский</span></p>
+            <p>Тема: <span id="themeLabel">Тёмная</span></p>
+            <button class="btn" onclick="exportProfile()">💾 Экспорт профиля</button>
+            <button class="btn" onclick="importProfile()">📂 Импорт профиля</button>
+            <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importProfileFile(event)">
+            <button class="btn btn-danger" onclick="clearAllData()">🗑 Очистить все данные</button>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- АДМИН -->
+    <!-- ============================================================ -->
+    <div id="tab-admin" class="tab hidden">
+        <div class="card">
+            <h3>👑 Админ-панель</h3>
+            <p>Размер localStorage: <span id="storageSize">0</span> байт</p>
+            <p>Количество ключей: <span id="storageKeys">0</span></p>
+            <button class="btn" onclick="showStorageStats()">📊 Обновить</button>
+            <button class="btn btn-danger" onclick="clearStorage()">🗑 Очистить localStorage</button>
+            <button class="btn btn-success" onclick="backupStorage()">💾 Создать бэкап</button>
+            <button class="btn" onclick="restoreBackup()">📂 Восстановить бэкап</button>
+            <input type="file" id="backupFile" accept=".json" style="display:none;" onchange="restoreBackupFile(event)">
+            <pre id="adminLog" style="background:rgba(0,0,0,0.3); padding:12px; border-radius:8px; max-height:200px; overflow:auto; margin-top:12px;"></pre>
+        </div>
+    </div>
+
+    <!-- ФУТЕР -->
+    <footer class="card" style="text-align:center; font-size:12px; opacity:0.6;">
+        SWINGER v3.0 — Гибридный портал. Сделано для себя и для портфолио.
+    </footer>
+</div>
+
+<script>
+// ======================================================================
+//   ПОЛНЫЙ КОД — ВСЁ В ОДНОМ ФАЙЛЕ
+//   ВКЛЮЧАЕТ: ЧАТ, ИГРЫ, ИНСТРУМЕНТЫ, ОРГАНАЙЗЕР, НАСТРОЙКИ, АДМИН
+// ======================================================================
+
+// ============================
+// 1. УТИЛИТЫ
+// ============================
+function $(id) { return document.getElementById(id); }
+function qs(sel) { return document.querySelector(sel); }
+function qsa(sel) { return document.querySelectorAll(sel); }
+
+function save(key, data) {
+    try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
+}
+function load(key, def) {
+    try { const d = localStorage.getItem(key); return d ? JSON.parse(d) : def; } catch(e) { return def; }
+}
+
+// ============================
+// 2. ТЕМЫ + ЯЗЫК
+// ============================
+const THEMES = {
+    dark: { bg: '#0b0e14', text: '#e0e0e0' },
+    light: { bg: '#f0f2f5', text: '#1a1a1a' },
+    acid: { bg: '#1a0a2e', text: '#b3ff00' },
+    orange: { bg: '#1a0a00', text: '#ffa500' },
+    forest: { bg: '#0a1a0a', text: '#7ddf7d' }
+};
+
+let currentTheme = load('theme', 'dark');
+let currentLang = load('lang', 'ru');
+
+function applyTheme(theme) {
+    document.body.className = 'theme-' + theme;
+    document.body.style.background = THEMES[theme]?.bg || '#0b0e14';
+    document.body.style.color = THEMES[theme]?.text || '#e0e0e0';
+    currentTheme = theme;
+    save('theme', theme);
+    $('themeLabel').textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+}
+
+function toggleTheme(theme) {
+    applyTheme(theme);
+}
+
+function toggleLang() {
+    currentLang = currentLang === 'ru' ? 'en' : 'ru';
+    save('lang', currentLang);
+    $('langLabel').textContent = currentLang === 'ru' ? 'Русский' : 'English';
+    // Переводим интерфейс (базово)
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        const dict = {
+            ru: { chat: 'Чат', games: 'Игры', tools: 'Инструменты', organizer: 'Органайзер', settings: 'Настройки', admin: 'Админ' },
+            en: { chat: 'Chat', games: 'Games', tools: 'Tools', organizer: 'Organizer', settings: 'Settings', admin: 'Admin' }
         };
+        el.textContent = dict[currentLang]?.[key] || key;
+    });
+}
 
-        function t(key, name) {
-            let str = LANG[currentLang][key] || LANG['ru'][key];
-            if (name && str.includes('{name}')) str = str.replace('{name}', name);
-            return str;
+// ============================
+// 3. ВКЛАДКИ
+// ============================
+function showTab(id) {
+    qsa('.tab').forEach(el => el.classList.add('hidden'));
+    const tab = $('tab-' + id);
+    if (tab) tab.classList.remove('hidden');
+    // Подсветка кнопок
+    document.querySelectorAll('.card button').forEach(b => b.classList.remove('btn-primary'));
+    // Простая подсветка — найти кнопку с текстом
+    document.querySelectorAll('.card button').forEach(b => {
+        if (b.textContent.includes(id) || b.textContent.toLowerCase().includes(id)) {
+            b.classList.add('btn-primary');
         }
+    });
+    // Обновляем админ-статистику при открытии
+    if (id === 'admin') showStorageStats();
+}
 
-        function addMessage(sender, text, isSystem = false) {
-            const div = document.createElement('div');
-            if (isSystem) { div.className = 'message bot'; div.style.alignSelf = 'center'; div.style.fontSize = '0.8em'; div.style.opacity = '0.6'; div.style.textAlign = 'center'; }
-            else { div.className = sender === 'user' ? 'message user' : 'message bot'; }
-            if (sender === 'user' || isSystem) { div.innerHTML = text + '<span class="time">' + getTime() + '</span>'; }
-            else {
-                div.innerHTML = '<span class="bot-name">🤖 Verity</span>' + text + '<span class="time">' + getTime() + '</span>';
-            }
-            chatBox.appendChild(div);
-            chatBox.scrollTop = chatBox.scrollHeight;
+// ============================
+// 4. ЧАТ
+// ============================
+let chatHistory = load('chat', []);
+let chatResponses = [
+    'Привет! Как дела?', 'Интересно... расскажи ещё.', 'Я тебя понимаю.', 'Хороший вопрос!',
+    'Может, сыграем во что-то?', 'Как твой день?', 'Что нового?', 'У тебя отличный вкус!',
+    'Спасибо за вопрос!', 'Давай пообщаемся ещё.', 'Ты крутой собеседник.', 'Я запомнил это.',
+    'Кстати, загляни в игры — там весело.', 'Не хочешь проверить погоду?', 'Ты в порядке?'
+];
+
+function renderChat() {
+    const box = $('chatBox');
+    if (!box) return;
+    box.innerHTML = chatHistory.map(m =>
+        `<div class="chat-msg ${m.role}">${m.text}</div>`
+    ).join('');
+    box.scrollTop = box.scrollHeight;
+}
+
+function sendMessage() {
+    const input = $('chatInput');
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) return;
+    chatHistory.push({ role: 'user', text });
+    save('chat', chatHistory);
+    input.value = '';
+    renderChat();
+
+    // Ответ бота
+    setTimeout(() => {
+        let reply = chatResponses[Math.floor(Math.random() * chatResponses.length)];
+        // Простые ключевые слова
+        if (text.toLowerCase().includes('привет') || text.toLowerCase().includes('hello')) {
+            reply = currentLang === 'ru' ? 'Привет! Как твои дела?' : 'Hello! How are you?';
+        } else if (text.toLowerCase().includes('погода')) {
+            reply = 'Напиши "погода Москва" в инструментах!';
+        } else if (text.toLowerCase().includes('игра')) {
+            reply = 'Загляни во вкладку Игры!';
         }
+        chatHistory.push({ role: 'bot', text: reply });
+        save('chat', chatHistory);
+        renderChat();
+    }, 300);
+}
 
-        function getTime() { const n = new Date(); return n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0'); }
-        function playClick() { try { const audioCtx = new AudioContext(); const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.connect(gain); gain.connect(audioCtx.destination); osc.frequency.value = 800; gain.gain.value = 0.1; osc.start(); osc.stop(audioCtx.currentTime + 0.05); } catch(e) {} }
+function chatClear() {
+    chatHistory = [];
+    save('chat', chatHistory);
+    renderChat();
+}
 
-        function launchConfetti() {
-            const canvas = document.createElement('canvas');
-            canvas.id = 'confettiCanvas';
-            document.body.appendChild(canvas);
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            let particles = [];
-            const colors = ['#ff0', '#f0f', '#0ff', '#f00', '#0f0', '#00f', '#ffa500'];
-            for (let i=0; i<150; i++) {
-                particles.push({
-                    x: Math.random()*canvas.width, y: Math.random()*canvas.height - canvas.height,
-                    w: Math.random()*8+4, h: Math.random()*8+4,
-                    vx: (Math.random()-0.5)*6, vy: Math.random()*6+4,
-                    color: colors[Math.floor(Math.random()*colors.length)],
-                    rot: Math.random()*360, rotSpeed: (Math.random()-0.5)*10
-                });
-            }
-            let frame = 0;
-            const interval = setInterval(() => {
-                ctx.clearRect(0,0,canvas.width,canvas.height);
-                let alive = false;
-                particles.forEach(p => {
-                    p.x += p.vx; p.y += p.vy; p.vy += 0.2; p.rot += p.rotSpeed;
-                    if (p.y < canvas.height + 50) { alive = true; }
-                    ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
-                    ctx.fillStyle = p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
-                    ctx.restore();
-                });
-                frame++;
-                if (!alive || frame > 200) { clearInterval(interval); canvas.remove(); }
-            }, 30);
-        }
+function chatExport() {
+    const data = JSON.stringify(chatHistory, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'chat_backup.json';
+    a.click();
+}
 
-        // =============================================================
-        //  ФИЧА 1: ГОЛОСОВОЙ ВВОД
-        // =============================================================
-        let isRecording = false;
-        let recognition = null;
-        function toggleMic() {
-            const micBtn = document.getElementById('micBtn');
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                addMessage('bot', '❌ Голосовой ввод не поддерживается в этом браузере. Используй Chrome/Edge.');
-                return;
-            }
-            if (isRecording) {
-                if (recognition) recognition.stop();
-                micBtn.classList.remove('recording');
-                micBtn.textContent = '🎤';
-                isRecording = false;
-                return;
-            }
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.lang = currentLang === 'ru' ? 'ru-RU' : 'en-US';
-            recognition.interimResults = true;
-            recognition.continuous = false;
-            recognition.onresult = (event) => {
-                let transcript = '';
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    transcript += event.results[i][0].transcript;
-                }
-                document.getElementById('userInput').value = transcript;
-                if (event.results[0].isFinal) {
-                    micBtn.classList.remove('recording');
-                    micBtn.textContent = '🎤';
-                    isRecording = false;
-                    sendMessage();
-                }
-            };
-            recognition.onerror = (e) => {
-                micBtn.classList.remove('recording');
-                micBtn.textContent = '🎤';
-                isRecording = false;
-                addMessage('bot', '❌ Ошибка распознавания: ' + e.error);
-            };
-            recognition.start();
-            micBtn.classList.add('recording');
-            micBtn.textContent = '⏺️';
-            isRecording = true;
-        }
+// Голосовой ввод
+function startVoice() {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    if (!recognition) { alert('Голосовой ввод не поддерживается'); return; }
+    recognition.lang = currentLang === 'ru' ? 'ru-RU' : 'en-US';
+    recognition.continuous = false;
+    recognition.onresult = (event) => {
+        const text = event.results[0][0].transcript;
+        $('chatInput').value = text;
+        sendMessage();
+    };
+    recognition.onerror = () => alert('Ошибка голосового ввода');
+    recognition.start();
+}
 
-        // =============================================================
-        //  ОТПРАВКА СООБЩЕНИЙ
-        // =============================================================
-        function sendMessage() {
-            const input = document.getElementById('userInput');
-            let text = input.value.trim();
-            if (!text) return;
-            playClick();
-            addMessage('user', text);
-            input.value = '';
-            chatLog.push({sender: 'user', text: text, time: getTime()});
-            localStorage.setItem('verityChatLog', JSON.stringify(chatLog));
-            processCommand(text);
-        }
-        function sendCommand(cmd) { document.getElementById('userInput').value = cmd; sendMessage(); }
+// ============================
+// 5. ИГРЫ
+// ============================
 
-        // =============================================================
-        //  ЯДРО ОБРАБОТКИ КОМАНД (ВСЕ 12 ФИЧ)
-        // =============================================================
-        function processCommand(text) {
-            const lower = text.toLowerCase().trim();
+// ---------- Угадай число ----------
+let guessNumber = Math.floor(Math.random() * 100) + 1;
+let guessAttempts = 0;
 
-            // --- Выход ---
-            if (lower === 'выход' || lower === 'exit') {
-                addMessage('bot', t('exit'));
-                document.getElementById('userInput').disabled = true;
-                document.querySelector('.input-area button').disabled = true;
-                return;
-            }
+function guessNumberGame() {
+    const input = $('guessInput');
+    const result = $('guessResult');
+    const attempts = $('guessAttempts');
+    if (!input || !result || !attempts) return;
+    const val = parseInt(input.value);
+    if (isNaN(val)) { result.textContent = 'Введи число!'; return; }
+    guessAttempts++;
+    attempts.textContent = guessAttempts;
+    if (val === guessNumber) {
+        result.textContent = `🎉 Угадал! Это было ${guessNumber}. Попыток: ${guessAttempts}`;
+        guessNumber = Math.floor(Math.random() * 100) + 1;
+        guessAttempts = 0;
+        attempts.textContent = '0';
+    } else if (val < guessNumber) {
+        result.textContent = '📈 Больше!';
+    } else {
+        result.textContent = '📉 Меньше!';
+    }
+    input.value = '';
+}
 
-            // --- Помощь (обновлена) ---
-            if (lower === '/help' || lower === 'помощь' || lower === 'help') {
-                let msg = '**📖 Доступные команды (все 12 фич):**\n' +
-                    '👋 привет, шутка, факт, совет, цитата\n' +
-                    '🧠 запомни вопрос = ответ, меня зовут [имя]\n' +
-                    '🎮 игры, 1-6 (выбор игры)\n' +
-                    '🌤 погода [город]\n💵 курс, конверт 100 usd в rub\n' +
-                    '🔑 пароль [длина]\n🖼️ мем [текст]\n' +
-                    '📒 заметки, заметка [текст], теги\n' +
-                    '📋 задачи, задача [текст]\n⏱️ таймер [сек], напомни через\n' +
-                    '🧮 кальк [выраж], ипотека [сумма] [лет] [%]\n' +
-                    '🪙 монетка, кубик, страна, температура [число] C в F\n' +
-                    '📊 калории, статистика, достижения\n' +
-                    '📸 скриншот\n🗑 очистить, забыть всё, скачать\n' +
-                    '🛡️ /admin (скрытая панель)\n\n' +
-                    '✨ **НОВЫЕ ФИЧИ:**\n' +
-                    '1. 🎤 Голосовой ввод (кнопка микрофона)\n' +
-                    '2. ⏰ Умные напоминания: `напомни в 15:30 купить хлеб`\n' +
-                    '3. 🏷️ Теги для заметок: `заметка #важное купить хлеб`\n' +
-                    '4. ✅ Трекер привычек: `привычка пить воду`, `выполнил пить воду`\n' +
-                    '5. 🧭 Компас: `компас` (покажет направление по азимуту)\n' +
-                    '6. 🔮 Автодополнение команд (подсказки в поле ввода)\n' +
-                    '7. 🎨 Генератор градиентов: `градиент #ff0000 #0000ff`\n' +
-                    '8. 📅 Календарь событий: `событие 2026-08-15 День рождения`\n' +
-                    '9. 🎵 Генератор мелодии: `мелодия` (случайная)\n' +
-                    '10. 📋 Сортировка задач: `сортировать задачи`\n' +
-                    '11. 🔍 Поиск по заметкам: `поиск заметок хлеб`\n' +
-                    '12. 🧠 Викторина по категориям: `викторина история`';
-                addMessage('bot', msg);
-                return;
-            }
+// ---------- RPS ----------
+let rpsData = load('rps', { player: 0, bot: 0, draw: 0 });
 
-            // --- Запомни ---
-            if (lower.startsWith('запомни') || lower.startsWith('remember')) {
-                const parts = text.split('=');
-                if (parts.length===2) {
-                    const q = parts[0].replace(/запомни|remember|:/gi,'').trim();
-                    const a = parts[1].trim();
-                    memory[q] = a;
-                    localStorage.setItem('verityMemory', JSON.stringify(memory));
-                    addMessage('bot', '🧠 Запомнил: "'+q+'" -> "'+a+'"');
-                } else addMessage('bot', '❌ Используй: запомни вопрос = ответ');
-                return;
-            }
+function rpsPlay(choice) {
+    const choices = ['rock', 'paper', 'scissors'];
+    const bot = choices[Math.floor(Math.random() * 3)];
+    let result = '';
+    if (choice === bot) { result = 'draw'; rpsData.draw++; }
+    else if ((choice === 'rock' && bot === 'scissors') ||
+             (choice === 'paper' && bot === 'rock') ||
+             (choice === 'scissors' && bot === 'paper')) {
+        result = 'win'; rpsData.player++;
+    } else {
+        result = 'lose'; rpsData.bot++;
+    }
+    save('rps', rpsData);
+    const emoji = { rock: '🗿', paper: '📄', scissors: '✂️' };
+    const resultText = result === 'win' ? '🏆 Ты выиграл!' : result === 'lose' ? '💀 Ты проиграл' : '🤝 Ничья';
+    $('rpsResult').textContent = `${emoji[choice]} vs ${emoji[bot]} — ${resultText}`;
+    $('rpsPlayer').textContent = rpsData.player;
+    $('rpsBot').textContent = rpsData.bot;
+    $('rpsDraw').textContent = rpsData.draw;
+}
 
-            // --- Имя ---
-            if (lower.startsWith('меня зовут') || lower.startsWith('my name is')) {
-                userName = text.replace(/меня зовут|my name is/i,'').trim();
-                localStorage.setItem('verityUserName', userName);
-                addMessage('bot', '👋 Приятно познакомиться, '+userName+'!');
-                return;
-            }
+function rpsReset() {
+    rpsData = { player: 0, bot: 0, draw: 0 };
+    save('rps', rpsData);
+    $('rpsPlayer').textContent = '0';
+    $('rpsBot').textContent = '0';
+    $('rpsDraw').textContent = '0';
+    $('rpsResult').textContent = 'Счёт сброшен';
+}
 
-            // --- Очистка ---
-            if (lower === 'забудь всё' || lower === 'forget all' || lower === 'забудь') {
-                localStorage.removeItem('verityMemory'); localStorage.removeItem('verityUserName'); localStorage.removeItem('verityChatLog');
-                memory = {}; userName = 'Ты'; chatLog = []; chatBox.innerHTML = '';
-                addMessage('bot', t('forget'));
-                return;
-            }
+// ---------- Крестики-нолики ----------
+let tttBoard = Array(9).fill(null);
+let tttTurn = 'X';
+let tttGameOver = false;
 
-            // --- Экспорт ---
-            if (lower === 'скачать' || lower === 'download' || lower === 'export') {
-                let content = '=== История чата Verity ===\n';
-                chatLog.forEach(m => { content += '['+m.time+'] '+m.sender+': '+m.text+'\n'; });
-                const blob = new Blob([content], {type: 'text/plain'});
-                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'verity_chat.txt';
-                a.click(); URL.revokeObjectURL(a.href);
-                addMessage('bot', t('export_done'));
-                return;
-            }
+function renderTTT() {
+    const board = $('tttBoard');
+    if (!board) return;
+    board.innerHTML = tttBoard.map((cell, i) =>
+        `<button onclick="tttClick(${i})" ${cell ? 'disabled' : ''}>${cell || ''}</button>`
+    ).join('');
+    $('tttStatus').textContent = tttGameOver ? 'Игра окончена' : `Ход: ${tttTurn}`;
+}
 
-            // --- Достижения ---
-            if (lower === 'достижения' || lower === 'achievements' || lower === 'ach') {
-                let ach = JSON.parse(localStorage.getItem('verityAchievements')) || {};
-                let msg = t('ach_menu');
-                let has = false;
-                for (let key in ach) { if (ach[key]) { msg += '✔️ ' + key + ': ' + ach[key] + '\n'; has = true; } }
-                if (!has) msg += '😴 Пока нет достижений. Играй в игры!';
-                addMessage('bot', msg);
-                return;
-            }
-
-            // --- Статистика ---
-            if (lower === 'статистика' || lower === 'stats') {
-                let msg = '📊 **Статистика побед:**\n';
-                let has = false;
-                for (let g in stats) { msg += '🎮 ' + g + ': ' + stats[g] + ' побед\n'; has = true; }
-                if (!has) msg += '😴 Пока нет статистики. Выигрывай в игры!';
-                addMessage('bot', msg);
-                return;
-            }
-
-            // =============================================================
-            //  ФИЧА 2: УМНЫЕ НАПОМИНАНИЯ (с датой/временем)
-            // =============================================================
-            if (lower.startsWith('напомни в') || lower.startsWith('remind at')) {
-                let parts = text.replace(/напомни в|remind at/i, '').trim().split(' ');
-                let timeStr = parts[0]; // 15:30 или 2026-08-09 15:30
-                let msg = parts.slice(1).join(' ');
-                if (!msg) { addMessage('bot', '⏰ Пример: напомни в 15:30 купить хлеб'); return; }
-                let target = new Date();
-                let datePart = timeStr.split(':');
-                if (datePart.length === 2) {
-                    target.setHours(parseInt(datePart[0]), parseInt(datePart[1]), 0, 0);
-                } else if (timeStr.includes('-')) {
-                    let d = new Date(timeStr);
-                    if (!isNaN(d)) target = d;
-                }
-                if (target <= new Date()) target.setDate(target.getDate() + 1);
-                let diff = target - new Date();
-                if (diff > 0) {
-                    reminders.push({ text: msg, time: target.toISOString() });
-                    localStorage.setItem('verityReminders', JSON.stringify(reminders));
-                    addMessage('bot', `⏰ Напоминание установлено: "${msg}" на ${target.toLocaleString()}`);
-                    setTimeout(() => {
-                        addMessage('bot', `🔔 НАПОМИНАНИЕ: ${msg}`);
-                    }, diff);
+function tttClick(i) {
+    if (tttBoard[i] || tttGameOver) return;
+    tttBoard[i] = tttTurn;
+    if (tttCheckWin(tttTurn)) {
+        tttGameOver = true;
+        $('tttStatus').textContent = `🏆 Победил ${tttTurn}!`;
+        renderTTT();
+        return;
+    }
+    if (tttBoard.every(c => c)) {
+        tttGameOver = true;
+        $('tttStatus').textContent = '🤝 Ничья!';
+        renderTTT();
+        return;
+    }
+    tttTurn = tttTurn === 'X' ? 'O' : 'X';
+    renderTTT();
+    // Ход бота (O)
+    if (!tttGameOver && tttTurn === 'O') {
+        setTimeout(() => {
+            const empty = tttBoard.map((v, i) => v === null ? i : null).filter(v => v !== null);
+            if (empty.length) {
+                const move = empty[Math.floor(Math.random() * empty.length)];
+                tttBoard[move] = 'O';
+                if (tttCheckWin('O')) {
+                    tttGameOver = true;
+                    $('tttStatus').textContent = '💀 Победил бот!';
+                } else if (tttBoard.every(c => c)) {
+                    tttGameOver = true;
+                    $('tttStatus').textContent = '🤝 Ничья!';
                 } else {
-                    addMessage('bot', '⏰ Укажи будущее время (например: 15:30 или 2026-08-09 15:30)');
+                    tttTurn = 'X';
                 }
-                return;
+                renderTTT();
             }
+        }, 300);
+    }
+}
 
-            // --- Список напоминаний ---
-            if (lower === 'напоминания' || lower === 'reminders') {
-                if (reminders.length === 0) { addMessage('bot', '⏰ Нет активных напоминаний.'); return; }
-                let msg = '⏰ **Активные напоминания:**\n';
-                reminders.forEach((r, i) => {
-                    msg += `${i+1}. ${r.text} (${new Date(r.time).toLocaleString()})\n`;
-                });
-                addMessage('bot', msg);
-                return;
+function tttCheckWin(player) {
+    const lines = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+    ];
+    return lines.some(l => l.every(i => tttBoard[i] === player));
+}
+
+function tttReset() {
+    tttBoard = Array(9).fill(null);
+    tttTurn = 'X';
+    tttGameOver = false;
+    renderTTT();
+}
+
+// ---------- Сапёр ----------
+let mineSize = 5;
+let mineMines = 6;
+let mineBoard = [];
+let mineRevealed = [];
+let mineFlags = [];
+let mineGameOver = false;
+let mineFirstClick = true;
+
+function mineInit() {
+    mineBoard = Array.from({ length: mineSize }, () => Array(mineSize).fill(0));
+    mineRevealed = Array.from({ length: mineSize }, () => Array(mineSize).fill(false));
+    mineFlags = Array.from({ length: mineSize }, () => Array(mineSize).fill(false));
+    mineGameOver = false;
+    mineFirstClick = true;
+    mineRender();
+    $('mineStatus').textContent = 'Нажми на клетку, чтобы начать';
+}
+
+function minePlaceMines(excludeR, excludeC) {
+    let placed = 0;
+    while (placed < mineMines) {
+        const r = Math.floor(Math.random() * mineSize);
+        const c = Math.floor(Math.random() * mineSize);
+        if (mineBoard[r][c] === -1) continue;
+        if (Math.abs(r - excludeR) <= 1 && Math.abs(c - excludeC) <= 1) continue;
+        mineBoard[r][c] = -1;
+        placed++;
+    }
+    for (let r = 0; r < mineSize; r++) {
+        for (let c = 0; c < mineSize; c++) {
+            if (mineBoard[r][c] === -1) continue;
+            let count = 0;
+            for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                    const nr = r + dr, nc = c + dc;
+                    if (nr >= 0 && nr < mineSize && nc >= 0 && nc < mineSize && mineBoard[nr][nc] === -1) count++;
+                }
             }
+            mineBoard[r][c] = count;
+        }
+    }
+}
 
-            // =============================================================
-            //  ФИЧА 3: СИСТЕМА ТЕГОВ ДЛЯ ЗАМЕТОК
-            // =============================================================
-            if (lower.startsWith('заметка') || lower.startsWith('note')) {
-                let raw = text.replace(/заметка|note/i, '').trim();
-                if (!raw) { addMessage('bot', '📒 Укажи текст заметки. Пример: заметка #важное купить хлеб'); return; }
-                let tags = raw.match(/#\w+/g) || [];
-                let clean = raw.replace(/#\w+/g, '').trim();
-                let id = Date.now();
-                let noteObj = { id, text: clean, tags: tags, created: new Date().toISOString() };
-                notes.push(noteObj);
-                localStorage.setItem('verityNotes', JSON.stringify(notes));
-                let tagStr = tags.length ? '🏷️ Теги: ' + tags.join(' ') : '';
-                addMessage('bot', `📒 Заметка сохранена: "${clean}" ${tagStr}`);
-                return;
+function mineReveal(r, c) {
+    if (mineGameOver) return;
+    if (r < 0 || r >= mineSize || c < 0 || c >= mineSize) return;
+    if (mineRevealed[r][c] || mineFlags[r][c]) return;
+
+    if (mineFirstClick) {
+        minePlaceMines(r, c);
+        mineFirstClick = false;
+    }
+
+    if (mineBoard[r][c] === -1) {
+        mineGameOver = true;
+        $('mineStatus').textContent = '💥 БУМ! Ты проиграл!';
+        for (let rr = 0; rr < mineSize; rr++) {
+            for (let cc = 0; cc < mineSize; cc++) {
+                if (mineBoard[rr][cc] === -1) mineRevealed[rr][cc] = true;
             }
+        }
+        mineRender();
+        return;
+    }
 
-            // --- Показать заметки с тегами ---
-            if (lower === 'заметки' || lower === 'notes') {
-                if (notes.length === 0) { addMessage('bot', '📒 Заметок пока нет.'); return; }
-                let msg = '📒 **Заметки:**\n';
-                notes.forEach((n, i) => {
-                    let tags = n.tags && n.tags.length ? ' [' + n.tags.join(' ') + ']' : '';
-                    msg += `${i+1}. ${n.text} ${tags}\n`;
-                });
-                addMessage('bot', msg);
-                return;
+    const stack = [[r, c]];
+    while (stack.length) {
+        const [rr, cc] = stack.pop();
+        if (mineRevealed[rr][cc] || mineFlags[rr][cc]) continue;
+        mineRevealed[rr][cc] = true;
+        if (mineBoard[rr][cc] === 0) {
+            for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                    const nr = rr + dr, nc = cc + dc;
+                    if (nr >= 0 && nr < mineSize && nc >= 0 && nc < mineSize && !mineRevealed[nr][nc] && !mineFlags[nr][nc]) {
+                        stack.push([nr, nc]);
+                    }
+                }
             }
+        }
+    }
 
-            // --- Фильтр по тегу ---
-            if (lower.startsWith('по тегу') || lower.startsWith('tag')) {
-                let tag = text.replace(/по тегу|tag/i, '').trim();
-                if (!tag.startsWith('#')) tag = '#' + tag;
-                let filtered = notes.filter(n => n.tags && n.tags.includes(tag));
-                if (filtered.length === 0) { addMessage('bot', `🏷️ Нет заметок с тегом ${tag}`); return; }
-                let msg = `🏷️ **Заметки с тегом ${tag}:**\n`;
-                filtered.forEach((n, i) => { msg += `${i+1}. ${n.text}\n`; });
-                addMessage('bot', msg);
-                return;
-            }
+    // Проверка победы
+    let win = true;
+    for (let rr = 0; rr < mineSize; rr++) {
+        for (let cc = 0; cc < mineSize; cc++) {
+            if (mineBoard[rr][cc] !== -1 && !mineRevealed[rr][cc]) win = false;
+        }
+    }
+    if (win) {
+        mineGameOver = true;
+        $('mineStatus').textContent = '🏆 Ты выиграл!';
+    }
+    mineRender();
+}
 
-            // --- Удалить заметку по тегу ---
-            if (lower.startsWith('удалить по тегу')) {
-                let tag = text.replace(/удалить по тегу/i, '').trim();
-                if (!tag.startsWith('#')) tag = '#' + tag;
-                let before = notes.length;
-                notes = notes.filter(n => !(n.tags && n.tags.includes(tag)));
-                localStorage.setItem('verityNotes', JSON.stringify(notes));
-                addMessage('bot', `🗑️ Удалено ${before - notes.length} заметок с тегом ${tag}`);
-                return;
-            }
+function mineToggleFlag(r, c) {
+    if (mineGameOver) return;
+    if (r < 0 || r >= mineSize || c < 0 || c >= mineSize) return;
+    if (mineRevealed[r][c]) return;
+    mineFlags[r][c] = !mineFlags[r][c];
+    mineRender();
+}
 
-            // =============================================================
-            //  ФИЧА 4: ТРЕКЕР ПРИВЫЧЕК
-            // =============================================================
-            if (lower.startsWith('привычка') || lower.startsWith('habit')) {
-                let habitName = text.replace(/привычка|habit/i, '').trim();
-                if (!habitName) { addMessage('bot', '✅ Пример: привычка пить воду'); return; }
-                if (!habits.find(h => h.name === habitName)) {
-                    habits.push({ name: habitName, done: false, streak: 0, history: [] });
-                    localStorage.setItem('verityHabits', JSON.stringify(habits));
-                    addMessage('bot', `✅ Привычка добавлена: "${habitName}"`);
+function mineRender() {
+    const board = $('mineBoard');
+    if (!board) return;
+    board.innerHTML = '';
+    for (let r = 0; r < mineSize; r++) {
+        for (let c = 0; c < mineSize; c++) {
+            const btn = document.createElement('button');
+            btn.className = '';
+            if (mineRevealed[r][c]) {
+                btn.classList.add('revealed');
+                if (mineBoard[r][c] === -1) {
+                    btn.textContent = '💣';
+                    btn.classList.add('mine');
+                } else if (mineBoard[r][c] > 0) {
+                    btn.textContent = mineBoard[r][c];
                 } else {
-                    addMessage('bot', `⚠️ Привычка "${habitName}" уже существует.`);
+                    btn.textContent = '';
                 }
-                return;
+            } else if (mineFlags[r][c]) {
+                btn.textContent = '🚩';
+                btn.classList.add('flagged');
+            } else {
+                btn.textContent = '';
             }
+            btn.onclick = () => mineReveal(r, c);
+            btn.oncontextmenu = (e) => { e.preventDefault(); mineToggleFlag(r, c); };
+            board.appendChild(btn);
+        }
+    }
+}
 
-            if (lower.startsWith('выполнил') || lower.startsWith('done habit')) {
-                let habitName = text.replace(/выполнил|done habit/i, '').trim();
-                let habit = habits.find(h => h.name === habitName);
-                if (!habit) { addMessage('bot', `❌ Привычка "${habitName}" не найдена.`); return; }
-                let today = new Date().toISOString().split('T')[0];
-                if (habit.history && habit.history.includes(today)) {
-                    addMessage('bot', `✅ Привычка "${habitName}" уже выполнена сегодня.`);
-                    return;
-                }
-                habit.done = true;
-                if (!habit.history) habit.history = [];
-                habit.history.push(today);
-                habit.streak = (habit.streak || 0) + 1;
-                localStorage.setItem('verityHabits', JSON.stringify(habits));
-                addMessage('bot', `✅ Привычка "${habitName}" выполнена! 📈 Стрелка: ${habit.streak} дней.`);
-                return;
-            }
+function mineReset() {
+    mineInit();
+}
 
-            if (lower === 'привычки' || lower === 'habits') {
-                if (habits.length === 0) { addMessage('bot', '✅ Нет привычек. Добавь через "привычка пить воду"'); return; }
-                let msg = '✅ **Трекер привычек:**\n';
-                habits.forEach(h => {
-                    let status = h.done ? '✅' : '⬜';
-                    msg += `${status} ${h.name} (стрейк: ${h.streak || 0})\n`;
-                });
-                addMessage('bot', msg);
-                return;
-            }
+// ============================
+// 6. ИНСТРУМЕНТЫ
+// ============================
 
-            // =============================================================
-            //  ФИЧА 5: КОМПАС (азимут + направление)
-            // =============================================================
-            if (lower === 'компас' || lower === 'compass') {
-                if (!navigator.geolocation) {
-                    addMessage('bot', '🧭 Геолокация не поддерживается в этом браузере.');
-                    return;
-                }
-                addMessage('bot', '🧭 Определяю направление...');
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    let heading = pos.coords.heading;
-                    if (heading === null || heading === undefined) {
-                        addMessage('bot', '🧭 Устройство не поддерживает определение направления (нет компаса).');
-                        return;
-                    }
-                    let dirs = ['С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
-                    let idx = Math.round(heading / 45) % 8;
-                    addMessage('bot', `🧭 **Компас:**\n🔹 Азимут: ${heading.toFixed(1)}°\n🔹 Направление: ${dirs[idx]}`);
-                }, () => {
-                    addMessage('bot', '🧭 Ошибка определения местоположения. Разреши доступ к геолокации.');
-                }, { enableHighAccuracy: true });
+// ---------- Погода (Open-Meteo) ----------
+async function getWeather() {
+    const city = $('weatherInput')?.value || 'Москва';
+    const result = $('weatherResult');
+    if (!result) return;
+    try {
+        const cacheKey = `weather_${city}`;
+        const cached = localStorage.getItem(cacheKey);
+        if (cached) {
+            const { data, timestamp } = JSON.parse(cached);
+            if (Date.now() - timestamp < 600000) {
+                result.textContent = `🌤 ${data.city}: ${data.temperature}°C, ${data.description}, ветер ${data.wind} м/с`;
                 return;
             }
-
-            // =============================================================
-            //  ФИЧА 6: АВТОДОПОЛНЕНИЕ (уже встроено через datalist в HTML, добавим динамику)
-            // =============================================================
-            // Реализуем через подсказки в поле ввода (datalist)
-            // Добавляем datalist динамически при первом вызове
-            if (!document.getElementById('cmdSuggestions')) {
-                const datalist = document.createElement('datalist');
-                datalist.id = 'cmdSuggestions';
-                const cmds = ['привет', 'помощь', 'погода', 'курс', 'пароль', 'заметка', 'заметки', 'задача', 'задачи',
-                    'калории', 'монетка', 'кубик', 'компас', 'привычка', 'привычки', 'градиент', 'мелодия', 'календарь',
-                    'событие', 'викторина', 'поиск заметок', 'сортировать задачи', 'напомни в', 'таймер', 'мем', 'шутка',
-                    'факт', 'совет', 'цитата', 'страна', 'температура', 'конверт', 'ипотека', 'кальк', 'очистить', 'выход'];
-                cmds.forEach(c => {
-                    let opt = document.createElement('option');
-                    opt.value = c;
-                    datalist.appendChild(opt);
-                });
-                document.getElementById('userInput').setAttribute('list', 'cmdSuggestions');
-                document.body.appendChild(datalist);
-            }
-
-            // =============================================================
-            //  ФИЧА 7: ГЕНЕРАТОР ГРАДИЕНТОВ
-            // =============================================================
-            if (lower.startsWith('градиент') || lower.startsWith('gradient')) {
-                let parts = text.replace(/градиент|gradient/i, '').trim().split(' ');
-                let c1 = parts[0] || '#0077ff';
-                let c2 = parts[1] || '#00ccff';
-                if (!c1.startsWith('#')) c1 = '#' + c1;
-                if (!c2.startsWith('#')) c2 = '#' + c2;
-                let angle = parts[2] || '135deg';
-                let style = `background: linear-gradient(${angle}, ${c1}, ${c2}); padding: 20px; border-radius: 16px; color: #fff; text-align: center;`;
-                let html = `<div style="${style}"><strong>🎨 Градиент</strong><br>${c1} → ${c2}<br><span style="font-size:12px;">${angle}</span></div>`;
-                addMessage('bot', html);
-                // Также генерируем CSS-код
-                let css = `background: linear-gradient(${angle}, ${c1}, ${c2});`;
-                addMessage('bot', `📐 CSS-код:\n\`${css}\``);
-                return;
-            }
-
-            // =============================================================
-            //  ФИЧА 8: КАЛЕНДАРЬ СОБЫТИЙ
-            // =============================================================
-            if (lower.startsWith('событие') || lower.startsWith('event')) {
-                let parts = text.replace(/событие|event/i, '').trim().split(' ');
-                let dateStr = parts[0];
-                let desc = parts.slice(1).join(' ');
-                if (!dateStr || !desc) { addMessage('bot', '📅 Пример: событие 2026-08-15 День рождения'); return; }
-                let d = new Date(dateStr);
-                if (isNaN(d)) { addMessage('bot', '📅 Неверный формат даты. Используй ГГГГ-ММ-ДД'); return; }
-                events.push({ date: dateStr, desc: desc, id: Date.now() });
-                localStorage.setItem('verityEvents', JSON.stringify(events));
-                addMessage('bot', `📅 Событие добавлено: ${dateStr} — ${desc}`);
-                return;
-            }
-
-            if (lower === 'календарь' || lower === 'calendar') {
-                if (events.length === 0) { addMessage('bot', '📅 Нет событий. Добавь через "событие 2026-08-15 День рождения"'); return; }
-                let msg = '📅 **Календарь событий:**\n';
-                let sorted = [...events].sort((a,b) => a.date.localeCompare(b.date));
-                sorted.forEach(e => {
-                    msg += `📌 ${e.date} — ${e.desc}\n`;
-                });
-                addMessage('bot', msg);
-                return;
-            }
-
-            // --- Показать события на сегодня ---
-            if (lower === 'события сегодня' || lower === 'today events') {
-                let today = new Date().toISOString().split('T')[0];
-                let todayEvents = events.filter(e => e.date === today);
-                if (todayEvents.length === 0) { addMessage('bot', '📅 Сегодня нет событий.'); return; }
-                let msg = '📅 **События на сегодня:**\n';
-                todayEvents.forEach(e => { msg += `📌 ${e.desc}\n`; });
-                addMessage('bot', msg);
-                return;
-            }
-
-            // =============================================================
-            //  ФИЧА 9: ГЕНЕРАТОР МЕЛОДИИ (синтез через Web Audio)
-            // =============================================================
-            if (lower === 'мелодия' || lower === 'melody') {
-                try {
-                    const audioCtx = new AudioContext();
-                    const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
-                    let sequence = [];
-                    for (let i = 0; i < 16; i++) {
-                        sequence.push(notes[Math.floor(Math.random() * notes.length)]);
-                    }
-                    let time = audioCtx.currentTime;
-                    sequence.forEach((freq, i) => {
-                        const osc = audioCtx.createOscillator();
-                        const gain = audioCtx.createGain();
-                        osc.connect(gain);
-                        gain.connect(audioCtx.destination);
-                        osc.type = 'sine';
-                        osc.frequency.value = freq;
-                        gain.gain.value = 0.15;
-                        osc.start(time + i * 0.15);
-                        osc.stop(time + i * 0.15 + 0.12);
-                    });
-                    addMessage('bot', '🎵 Генерация мелодии... Слушай! (8 нот)');
-                } catch(e) {
-                    addMessage('bot', '🎵 Ошибка генерации мелодии. Попробуй в Chrome.');
-                }
-                return;
-            }
-
-            // =============================================================
-            //  ФИЧА 10: СОРТИРОВКА ЗАДАЧ
-            // =============================================================
-            if (lower === 'сортировать задачи' || lower === 'sort tasks') {
-                if (tasks.length === 0) { addMessage('bot', '📋 Нет задач для сортировки.'); return; }
-                let sorted = [...tasks].sort((a,b) => {
-                    if (a.done && !b.done) return 1;
-                    if (!a.done && b.done) return -1;
-                    return a.text.localeCompare(b.text);
-                });
-                tasks = sorted;
-                localStorage.setItem('verityTasks', JSON.stringify(tasks));
-                let msg = '📋 **Задачи отсортированы (выполненные внизу):**\n';
-                tasks.forEach((t, i) => {
-                    msg += `${i+1}. ${t.text} [${t.done ? '✅' : '⬜'}]\n`;
-                });
-                addMessage('bot', msg);
-                return;
-            }
-
-            // =============================================================
-            //  ФИЧА 11: ПОИСК ПО ЗАМЕТКАМ
-            // =============================================================
-            if (lower.startsWith('поиск заметок') || lower.startsWith('search notes')) {
-                let query = text.replace(/поиск заметок|search notes/i, '').trim();
-                if (!query) { addMessage('bot', '🔍 Пример: поиск заметок хлеб'); return; }
-                let results = notes.filter(n => n.text.toLowerCase().includes(query.toLowerCase()));
-                if (results.length === 0) { addMessage('bot', `🔍 Ничего не найдено по запросу "${query}"`); return; }
-                let msg = `🔍 **Результаты поиска (${results.length}):**\n`;
-                results.forEach((n, i) => {
-                    let tags = n.tags && n.tags.length ? ' [' + n.tags.join(' ') + ']' : '';
-                    msg += `${i+1}. ${n.text} ${tags}\n`;
-                });
-                addMessage('bot', msg);
-                return;
-            }
-
-            // =============================================================
-            //  ФИЧА 12: ВИКТОРИНА ПО КАТЕГОРИЯМ
-            // =============================================================
-            if (lower.startsWith('викторина') || lower.startsWith('trivia category')) {
-                let category = text.replace(/викторина|trivia category/i, '').trim() || 'общая';
-                const categories = {
-                    'история': [
-                        { q: 'В каком году началась Вторая мировая война?', o: ['a) 1939', 'b) 1941', 'c) 1945'], a: 'a' },
-                        { q: 'Кто был первым президентом США?', o: ['a) Линкольн', 'b) Вашингтон', 'c) Джефферсон'], a: 'b' }
-                    ],
-                    'наука': [
-                        { q: 'Сколько планет в солнечной системе?', o: ['a) 7', 'b) 8', 'c) 9'], a: 'b' },
-                        { q: 'H2O — это...?', o: ['a) Вода', 'b) Соль', 'c) Кислота'], a: 'a' }
-                    ],
-                    'игры': [
-                        { q: 'Какая игра вышла в 2011 году?', o: ['a) Skyrim', 'b) Cyberpunk', 'c) GTA V'], a: 'a' },
-                        { q: 'Кто создал Minecraft?', o: ['a) Notch', 'b) Gabe', 'c) Markus'], a: 'a' }
-                    ],
-                    'общая': [
-                        { q: 'Столица Франции?', o: ['a) Лондон', 'b) Париж', 'c) Берлин'], a: 'b' },
-                        { q: '2+2?', o: ['a) 3', 'b) 4', 'c) 5'], a: 'b' }
-                    ]
-                };
-                let qs = categories[category] || categories['общая'];
-                gameMode = 'trivia';
-                gameData = { score: 0, qIndex: 0, questions: qs, category: category };
-                addMessage('bot', `🎯 Викторина по категории "${category}"! Отвечай буквой a/b/c или "выход".`);
-                setTimeout(() => showTriviaQ(), 400);
-                return;
-            }
-
-            // --- Игры (существующие) ---
-            if (lower === 'игры' || lower === 'games') { addMessage('bot', t('games_menu')); return; }
-            if (lower === '1' || lower === 'guess') { gameMode = 'guess'; gameData = {}; addMessage('bot', t('guess_start')); return; }
-            if (lower === '2' || lower === 'rps') { gameMode = 'rps'; addMessage('bot', t('rps_start')); return; }
-            if (lower === '3' || lower === 'trivia') { 
-                gameMode = 'trivia';
-                gameData = { score: 0, qIndex: 0, questions: [
-                    { q: 'Столица Франции?', o: ['a) Лондон', 'b) Париж', 'c) Берлин'], a: 'b' },
-                    { q: '2+2?', o: ['a) 3', 'b) 4', 'c) 5'], a: 'b' },
-                    { q: 'Самая большая планета?', o: ['a) Земля', 'b) Юпитер', 'c) Сатурн'], a: 'b' }
-                ] };
-                addMessage('bot', t('trivia_start')); setTimeout(() => showTriviaQ(), 500);
-                return;
-            }
-            if (lower === '4' || lower === 'tictactoe') { startTicTacToe(); return; }
-            if (lower === '5' || lower === 'bulls') { startBulls(); return; }
-            if (lower === '6' || lower === 'sapper') { startSapper(); return; }
-
-            // --- Погода, курс, пароль, таймер, кальк, ипотека, страна, температура, конверт ---
-            // (оставлены как в оригинале, без изменений)
-            if (lower.startsWith('погода') || lower.startsWith('weather')) { /* ... */ 
-                let city = text.replace(/погода|weather/i, '').trim();
-                if (!city) city = memory['мой город'] || 'Москва';
-                addMessage('bot', `🌤 Запрашиваю погоду для ${city}...`);
-                fetch(`https://wttr.in/${encodeURIComponent(city)}?format=%C+%t+%w+%h&lang=ru&m`)
-                    .then(res => res.text()).then(data => {
-                        if (data.length > 500) addMessage('bot', `🌤 ${city}: ❌ Сервер перегружен.`);
-                        else addMessage('bot', `🌤 ${city}: ${data.replace(/\s+/g,' ').trim()}`);
-                    }).catch(() => addMessage('bot', '❌ Ошибка погоды.'));
-                return;
-            }
-            if (lower.startsWith('курс') || lower.startsWith('rate')) { /* ... */
-                let currency = text.replace(/курс|rate/i, '').trim().toUpperCase() || 'USD';
-                addMessage('bot', `💵 Запрашиваю курс ${currency}...`);
-                fetch(`https://api.exchangerate-api.com/v4/latest/${currency}`)
-                    .then(res => res.json()).then(data => {
-                        if (data.rates && data.rates.RUB) addMessage('bot', `💵 1 ${currency} = ${data.rates.RUB} RUB`);
-                        else addMessage('bot', '❌ Ошибка курса.');
-                    }).catch(() => addMessage('bot', '❌ Ошибка соединения.'));
-                return;
-            }
-            if (lower.startsWith('пароль') || lower.startsWith('password')) { /* ... */
-                let len = parseInt(text.replace(/пароль|password/i, '').trim()) || 12;
-                if (len < 4) len = 4; if (len > 32) len = 32;
-                const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=';
-                let pwd = ''; for (let i=0; i<len; i++) pwd += chars[Math.floor(Math.random()*chars.length)];
-                addMessage('bot', `🔑 Пароль (${len} символов):\n\`${pwd}\``);
-                return;
-            }
-            if (lower.startsWith('таймер') || lower.startsWith('timer')) { /* ... */
-                let sec = parseInt(text.replace(/таймер|timer/i, '').trim());
-                if (isNaN(sec) || sec < 1) { addMessage('bot', '⏱️ Укажи секунды: таймер 10'); return; }
-                if (sec > 3600) sec = 3600;
-                addMessage('bot', `⏱️ Таймер ${sec}с запущен.`);
-                setTimeout(() => addMessage('bot', `⏰ Время вышло! ${sec}с прошло.`), sec * 1000);
-                return;
-            }
-            if (lower.startsWith('кальк') || lower.startsWith('calc')) { /* ... */
-                let expr = text.replace(/кальк|calc/i, '').trim();
-                if (!expr) { addMessage('bot', '🧮 Пример: кальк 2+2'); return; }
-                try { addMessage('bot', `🧮 ${expr} = ${eval(expr)}`); } catch(e) { addMessage('bot', '❌ Ошибка вычисления.'); }
-                return;
-            }
-            if (lower.startsWith('ипотека')) { /* ... */ 
-                let parts = text.replace(/ипотека|mortgage/i, '').trim().split(' ');
-                let amount = parseFloat(parts[0]), years = parseFloat(parts[1]), percent = parseFloat(parts[2]);
-                if (isNaN(amount) || isNaN(years) || isNaN(percent)) { addMessage('bot', '🏠 Пример: ипотека 1000000 5 12'); return; }
-                let monthlyRate = percent / 100 / 12, months = years * 12;
-                let payment = amount * monthlyRate * Math.pow(1+monthlyRate, months) / (Math.pow(1+monthlyRate, months)-1);
-                let total = payment * months, overpay = total - amount;
-                addMessage('bot', `🏠 **Ипотека:**\n💰 Сумма: ${amount}\n📅 Срок: ${years} лет\n📊 Ставка: ${percent}%\n💳 Платёж: ${payment.toFixed(2)} руб.\n📈 Переплата: ${overpay.toFixed(2)} руб.`);
-                return;
-            }
-            if (lower === 'страна' || lower === 'country') { /* ... */
-                const countries = ['Россия','США','Китай','Индия','Германия','Франция','Япония','Канада','Бразилия','Австралия'];
-                addMessage('bot', `🌍 Случайная страна: **${countries[Math.floor(Math.random()*countries.length)]}**`);
-                return;
-            }
-            if (lower.startsWith('температура')) { /* ... */
-                let parts = text.replace(/температура|temp/i, '').trim().split(' ');
-                if (parts.length < 4) { addMessage('bot', '🌡️ Пример: температура 25 C в F'); return; }
-                let val = parseFloat(parts[0]), from = parts[1].toUpperCase(), to = parts[3].toUpperCase();
-                let result;
-                if (from === 'C' && to === 'F') result = val * 9/5 + 32;
-                else if (from === 'F' && to === 'C') result = (val - 32) * 5/9;
-                else if (from === 'C' && to === 'K') result = val + 273.15;
-                else if (from === 'K' && to === 'C') result = val - 273.15;
-                else { addMessage('bot', '🌡️ Поддерживаются C, F, K'); return; }
-                addMessage('bot', `🌡️ ${val}°${from} = ${result.toFixed(1)}°${to}`);
-                return;
-            }
-            if (lower.startsWith('конверт')) { /* ... */
-                let parts = text.replace(/конверт/i, '').trim().split(' ');
-                let amount = parseFloat(parts[0]), from = parts[1]?.toUpperCase() || 'USD', to = parts[3]?.toUpperCase() || 'RUB';
-                if (isNaN(amount) || amount <= 0) { addMessage('bot', '📉 Пример: конверт 100 usd в rub'); return; }
-                addMessage('bot', `🔄 Конвертирую ${amount} ${from} в ${to}...`);
-                fetch(`https://api.exchangerate-api.com/v4/latest/${from}`)
-                    .then(res => res.json()).then(data => {
-                        if (data.rates && data.rates[to]) {
-                            let result = amount * data.rates[to];
-                            addMessage('bot', `💱 ${amount} ${from} = ${result.toFixed(2)} ${to}`);
-                        } else addMessage('bot', '❌ Ошибка конвертации.');
-                    }).catch(() => addMessage('bot', '❌ Ошибка соединения.'));
-                return;
-            }
-
-            // --- Монетка, кубик, скриншот, мем, список покупок, калории, очистка ---
-            // (оставлены как в оригинале)
-            if (lower === 'монетка' || lower === 'coin') { /* ... */
-                let stat = JSON.parse(localStorage.getItem('verityCoinStats')) || { heads: 0, tails: 0 };
-                let result = Math.random() < 0.5 ? 'Орёл' : 'Решка';
-                stat[result === 'Орёл' ? 'heads' : 'tails']++;
-                localStorage.setItem('verityCoinStats', JSON.stringify(stat));
-                addMessage('bot', `🪙 **${result}**\n📊 Орёл: ${stat.heads} | Решка: ${stat.tails}`);
-                return;
-            }
-            if (lower === 'кубик' || lower === 'dice') { /* ... */
-                let result = Math.floor(Math.random() * 6) + 1;
-                addMessage('bot', `🎲 Результат: **${result}**`);
-                return;
-            }
-            if (lower === 'скриншот' || lower === 'screenshot') { /* ... */
-                addMessage('bot', '📸 Делаю скриншот...');
-                setTimeout(() => {
-                    html2canvas(document.querySelector('.chat-box')).then(canvas => {
-                        let a = document.createElement('a');
-                        a.download = 'verity_screenshot.png';
-                        a.href = canvas.toDataURL('image/png');
-                        a.click();
-                        addMessage('bot', '📸 Скриншот сохранён!');
-                    }).catch(() => addMessage('bot', '❌ Ошибка скриншота.'));
-                }, 300);
-                return;
-            }
-            if (lower.startsWith('мем') || lower.startsWith('meme')) { /* ... */
-                let raw = text.replace(/мем|meme/i, '').trim();
-                if (!raw) { addMessage('bot', '🖼️ Пример: мем Пойми меня'); return; }
-                try {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 600; canvas.height = 400;
-                    const ctx = canvas.getContext('2d');
-                    ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,600,400);
-                    ctx.fillStyle = '#000000'; ctx.font = 'bold 32px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                    let words = raw.split(' '), lines = [], current = '';
-                    for (let w of words) {
-                        let test = current + w + ' ';
-                        if (ctx.measureText(test).width > 500) { lines.push(current); current = w + ' '; }
-                        else current = test;
-                    }
-                    lines.push(current);
-                    lines.forEach((line, i) => ctx.fillText(line, 300, 200 - (lines.length*20) + i*40));
-                    let a = document.createElement('a');
-                    a.download = 'meme.png';
-                    a.href = canvas.toDataURL('image/png');
-                    a.click();
-                    addMessage('bot', '🖼️ Мем сохранён!');
-                } catch(e) { addMessage('bot', '❌ Ошибка мема.'); }
-                return;
-            }
-            // --- Список покупок ---
-            if (lower === 'список' || lower === 'list') { /* ... */
-                if (shoppingList.length === 0) { addMessage('bot', '📋 Список пуст.'); return; }
-                let msg = '📋 **Список покупок:**\n';
-                shoppingList.forEach((item, i) => { msg += `${i+1}. ${item.done ? '✅' : '⬜'} ${item.text}\n`; });
-                addMessage('bot', msg);
-                return;
-            }
-            if (lower.startsWith('купить') || lower.startsWith('buy')) {
-                let item = text.replace(/купить|buy/i, '').trim();
-                if (!item) { addMessage('bot', '📋 Пример: купить молоко'); return; }
-                shoppingList.push({ text: item, done: false });
-                localStorage.setItem('verityShoppingList', JSON.stringify(shoppingList));
-                addMessage('bot', `📋 Добавлено: "${item}"`);
-                return;
-            }
-            if (lower.startsWith('купил') || lower.startsWith('bought')) {
-                let num = parseInt(text.replace(/купил|bought/i, '').trim());
-                if (isNaN(num) || num < 1 || num > shoppingList.length) { addMessage('bot', '⚠️ Пример: купил 1'); return; }
-                shoppingList[num-1].done = true;
-                localStorage.setItem('verityShoppingList', JSON.stringify(shoppingList));
-                addMessage('bot', `✅ Покупка #${num} выполнена.`);
-                return;
-            }
-            if (lower === 'очистить список' || lower === 'clear list') {
-                shoppingList = shoppingList.filter(item => !item.done);
-                localStorage.setItem('verityShoppingList', JSON.stringify(shoppingList));
-                addMessage('bot', '🗑️ Выполненные покупки удалены.');
-                return;
-            }
-            // --- Калории ---
-            if (lower.startsWith('калории') || lower.startsWith('calories')) { /* ... */
-                let parts = text.replace(/калории|calories/i, '').trim();
-                if (parts === 'неделя' || parts === 'week') {
-                    let total = 0;
-                    for (let i=0; i<7; i++) {
-                        let d = new Date(); d.setDate(d.getDate() - i);
-                        let key = 'verityCalories_' + d.toLocaleDateString();
-                        total += JSON.parse(localStorage.getItem(key)) || 0;
-                    }
-                    addMessage('bot', `📊 Среднее за неделю: **${Math.round(total/7)}** кал/день.`);
-                    return;
-                }
-                if (parts === '') {
-                    let today = new Date().toLocaleDateString();
-                    let todayCal = JSON.parse(localStorage.getItem('verityCalories_' + today)) || 0;
-                    let norm = JSON.parse(localStorage.getItem('verityCalorieNorm')) || null;
-                    let msg = `📊 Сегодня: **${todayCal}** кал.`;
-                    if (norm) msg += ` 🎯 Норма: ${norm} | Остаток: **${norm - todayCal}**`;
-                    addMessage('bot', msg);
-                    return;
-                }
-                let cal = parseInt(parts);
-                if (isNaN(cal) || cal <= 0) { addMessage('bot', '⚠️ Пример: калории 500'); return; }
-                let today = new Date().toLocaleDateString();
-                let current = JSON.parse(localStorage.getItem('verityCalories_' + today)) || 0;
-                localStorage.setItem('verityCalories_' + today, JSON.stringify(current + cal));
-                addMessage('bot', `✅ +${cal} кал. Итог: **${current + cal}**`);
-                return;
-            }
-            // --- Очистка чата ---
-            if (lower === 'очистить' || lower === 'clear') { chatBox.innerHTML = ''; addMessage('bot', '🧹 Чат очищен.'); return; }
-
-            // --- Пасхалки ---
-            if (lower === 'я гений') { launchConfetti(); addMessage('bot', '🎉 Ты гений!'); return; }
-            if (lower === 'консоль') { console.log('🔥 Verity активирован.'); addMessage('bot', '🕵️ Секретный код активирован!'); return; }
-            if (lower === 'озвучить') {
-                const msg = currentLang === 'ru' ? 'Привет, я Верути.' : 'Hello, I am Verity.';
-                speakText(msg);
-                addMessage('bot', '🔊 Говорю: "'+msg+'"');
-                return;
-            }
-
-            // --- Темы ---
-            if (lower === 'тема кислотная') { document.body.className = 'theme-acid'; localStorage.setItem('verityTheme', 'acid'); addMessage('bot', '🎨 Тема: Кислотная!'); return; }
-            if (lower === 'тема оранжевая') { document.body.className = 'theme-orange'; localStorage.setItem('verityTheme', 'orange'); addMessage('bot', '🎨 Тема: Оранжевая!'); return; }
-            if (lower === 'тема лесная') { document.body.className = 'theme-forest'; localStorage.setItem('verityTheme', 'forest'); addMessage('bot', '🎨 Тема: Лесная!'); return; }
-            if (lower === 'тема') { toggleTheme(); addMessage('bot', t('theme_sw')); return; }
-
-            // --- Админ-панель ---
-            if (lower === '/admin' || lower === 'админ') {
-                let msg = '🛡️ **АДМИН-ПАНЕЛЬ VERITY v3**\n\n';
-                msg += `📦 localStorage: ${(JSON.stringify(localStorage).length / 1024).toFixed(1)} KB\n`;
-                msg += `🧠 Запоминаний: ${Object.keys(memory).length}\n`;
-                msg += `📒 Заметок: ${notes.length}\n📋 Задач: ${tasks.length}\n`;
-                msg += `📅 Событий: ${events.length}\n✅ Привычек: ${habits.length}\n`;
-                msg += `⏰ Напоминаний: ${reminders.length}\n`;
-                msg += `🛠️ Действия: очистить всё, скачать бэкап\n`;
-                addMessage('bot', msg);
-                return;
-            }
-            if (lower === 'очистить всё' || lower === 'clear all') {
-                localStorage.clear();
-                memory = {}; notes = []; tasks = []; stats = {}; chatLog = []; reminders = []; shoppingList = []; habits = []; events = [];
-                userName = 'Ты'; chatBox.innerHTML = '';
-                addMessage('bot', '💥 Все данные удалены.');
-                return;
-            }
-            if (lower === 'скачать бэкап' || lower === 'download backup') {
-                let backup = { memory, notes, tasks, stats, chatLog, reminders, shoppingList, habits, events, userName, date: new Date().toISOString() };
-                let json = JSON.stringify(backup, null, 2);
-                let blob = new Blob([json], {type: 'application/json'});
-                let a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = 'verity_backup_v3.json';
-                a.click();
-                addMessage('bot', '📦 Бэкап скачан!');
-                return;
-            }
-
-            // --- Проверка памяти ---
-            if (memory[text]) { addMessage('bot', memory[text]); return; }
-
-            // --- Базовые ответы ---
-            const jokes = ['😂 Почему программист бросил работу? Не понял массивы!','😂 Что говорит бит? Мне тебя не хватает!'];
-            const facts = ['🧠 У осьминогов три сердца.','🧠 Мёд никогда не портится.'];
-            const advices = ['💡 Будь добр к себе.','💡 Цени маленькие вещи.'];
-            const quotes = ['📝 "Будь собой." — Оскар Уайльд','📝 "Жизнь продолжается." — Роберт Фрост'];
-            if (lower === 'привет') { let nameToShow = userName.trim() === '' ? 'друг' : userName.trim(); addMessage('bot', t('hi', nameToShow)); }
-            else if (lower === 'шутка') addMessage('bot', jokes[Math.floor(Math.random()*jokes.length)]);
-            else if (lower === 'факт') addMessage('bot', facts[Math.floor(Math.random()*facts.length)]);
-            else if (lower === 'совет') addMessage('bot', advices[Math.floor(Math.random()*advices.length)]);
-            else if (lower === 'цитата') addMessage('bot', quotes[Math.floor(Math.random()*quotes.length)]);
-            else addMessage('bot', t('unknown'));
         }
 
-        // =============================================================
-        //  ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (игры, скриншот, темы, язык)
-        // =============================================================
-        function showTriviaQ() {
-            if (!gameData || gameMode !== 'trivia') return;
-            if (gameData.qIndex >= gameData.questions.length) {
-                addMessage('bot', '🏆 Викторина окончена! Счёт: '+gameData.score+' из '+gameData.questions.length);
-                gameMode = null; return;
-            }
-            const q = gameData.questions[gameData.qIndex];
-            addMessage('bot', '📌 Вопрос '+(gameData.qIndex+1)+': '+q.q+'<br>'+q.o.join('<br>'));
-        }
+        const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=ru`);
+        if (!geoRes.ok) throw new Error('Ошибка геокодинга');
+        const geoData = await geoRes.json();
+        if (!geoData.results || geoData.results.length === 0) throw new Error('Город не найден');
+        const { latitude, longitude } = geoData.results[0];
 
-        function startTicTacToe() { gameMode = 'tictactoe'; gameData = { board: [' ',' ',' ',' ',' ',' ',' ',' ',' '], turn: 'X' }; addMessage('bot', '⭕ Крестики-нолики. Введи номер клетки (1-9).'); renderTicTacToe(); }
-        function renderTicTacToe() { const b = gameData.board; let s=''; for(let i=0;i<9;i++){ s += (i%3===0?'\n':'') + (b[i]===' '?i+1:b[i]) + ' '; } addMessage('bot', '```\n'+s+'\n```'); }
-        function processTicTacToe(text) {
-            const idx = parseInt(text)-1;
-            if (isNaN(idx)||idx<0||idx>8||gameData.board[idx]!==' ') { addMessage('bot','⚠️ Неверно'); return; }
-            gameData.board[idx]='X';
-            if (checkWin(gameData.board,'X')) { addMessage('bot',t('win')); gameMode=null; return; }
-            let empty=gameData.board.map((v,i)=>v===' '?i:null).filter(v=>v!==null);
-            if(!empty.length){ addMessage('bot',t('draw')); gameMode=null; return; }
-            let move=empty[Math.floor(Math.random()*empty.length)];
-            gameData.board[move]='O';
-            if (checkWin(gameData.board,'O')) { addMessage('bot',t('lose')); gameMode=null; return; }
-            renderTicTacToe();
-        }
-        function checkWin(b,p){ const w=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return w.some(l=>b[l[0]]===p&&b[l[1]]===p&&b[l[2]]===p); }
+        const weatherRes = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&timezone=auto`
+        );
+        if (!weatherRes.ok) throw new Error('Ошибка погоды');
+        const weatherData = await weatherRes.json();
+        const { temperature, windspeed, weathercode } = weatherData.current_weather;
 
-        function startBulls() { gameMode='bulls'; let num=''; while(num.length<4){let d=Math.floor(Math.random()*10); if(!num.includes(d)&&!(num.length===0&&d===0)) num+=d;} gameData.target=num; gameData.attempts=0; addMessage('bot','🐂 Быки и коровы. Угадай 4-значное число.'); }
-        function processBulls(text) {
-            if(text.length!==4||isNaN(text)){ addMessage('bot','⚠️ 4 цифры!'); return; }
-            let bulls=0,cows=0,t=gameData.target;
-            for(let i=0;i<4;i++){ if(text[i]===t[i]) bulls++; else if(t.includes(text[i])) cows++; }
-            gameData.attempts++;
-            addMessage('bot',`🐂 Быки: ${bulls} | 🐄 Коровы: ${cows}`);
-            if(bulls===4){ addMessage('bot',`🎉 Угадал за ${gameData.attempts} попыток!`); gameMode=null; }
-        }
-
-        function startSapper() {
-            gameMode='sapper'; const size=5,mines=4;
-            let board=[], minesPos=[];
-            for(let i=0;i<size*size;i++) board.push(0);
-            for(let i=0;i<mines;i++){ let p; do{ p=Math.floor(Math.random()*(size*size)); }while(board[p]===-1); board[p]=-1; minesPos.push(p); }
-            minesPos.forEach(p=>{ for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++){ let nx=Math.floor(p%size)+dx, ny=Math.floor(p/size)+dy; if(nx>=0&&nx<size&&ny>=0&&ny<size){ let idx=ny*size+nx; if(board[idx]!==-1) board[idx]++; } } });
-            gameData = { board, size, mines, revealed: [], gameOver: false };
-            addMessage('bot','💣 Сапёр 5x5. Введи координаты (2,3).');
-            renderSapper();
-        }
-        function renderSapper() {
-            let s='```\n  0 1 2 3 4\n';
-            for(let y=0;y<5;y++){ s+=y+' '; for(let x=0;x<5;x++){ let idx=y*5+x; s+=gameData.revealed.includes(idx)?(gameData.board[idx]===-1?'💣':gameData.board[idx]||' '):'█'; s+=' '; } s+='\n'; } s+='```';
-            addMessage('bot', s);
-        }
-        function processSapper(text) {
-            if(text.toLowerCase()==='выход'){ gameMode=null; addMessage('bot','🚪 Выход.'); return; }
-            let parts=text.split(',').map(Number);
-            if(parts.length!==2||isNaN(parts[0])||isNaN(parts[1])||parts[0]<0||parts[0]>4||parts[1]<0||parts[1]>4){ addMessage('bot','⚠️ x,y (0-4)'); return; }
-            let idx=parts[1]*5+parts[0];
-            if(gameData.revealed.includes(idx)){ addMessage('bot','⚠️ Уже открыто'); return; }
-            if(gameData.board[idx]===-1){ addMessage('bot',t('boom')); gameMode=null; return; }
-            gameData.revealed.push(idx);
-            renderSapper();
-            if(gameData.revealed.length===25-gameData.mines){ addMessage('bot','🎉 Выиграл!'); gameMode=null; }
-        }
-
-        // --- Обработка игр в процессе команды ---
-        const originalProcess = processCommand;
-        processCommand = function(text) {
-            const lower = text.toLowerCase().trim();
-            if (gameMode === 'trivia' && lower !== 'выход' && lower !== 'exit') {
-                const q = gameData.questions[gameData.qIndex];
-                if (q && lower === q.a) { gameData.score++; addMessage('bot', '✅ Верно!'); }
-                else if (q) addMessage('bot', '❌ Неверно. Ответ: '+q.a.toUpperCase());
-                gameData.qIndex++;
-                setTimeout(showTriviaQ, 600);
-                return;
-            }
-            if (gameMode === 'tictactoe') { processTicTacToe(text); return; }
-            if (gameMode === 'bulls') { processBulls(text); return; }
-            if (gameMode === 'sapper') { processSapper(text); return; }
-            if (gameMode === 'rps') {
-                const rpsMap = { 'камень': 'камень', 'ножницы': 'ножницы', 'бумага': 'бумага', 'rock': 'камень', 'paper': 'бумага', 'scissors': 'ножницы' };
-                let player = rpsMap[lower];
-                if (!player) { addMessage('bot', '✊ Введи: камень, ножницы или бумага'); return; }
-                const choices = ['камень','ножницы','бумага'];
-                const botChoice = choices[Math.floor(Math.random()*3)];
-                if (player === botChoice) { addMessage('bot', `🤝 Ничья! Я тоже ${botChoice}`); }
-                else if ((player==='камень'&&botChoice==='ножницы')||(player==='ножницы'&&botChoice==='бумага')||(player==='бумага'&&botChoice==='камень')) {
-                    addMessage('bot', `🎉 Ты выиграл! ${player} побеждает ${botChoice}`);
-                } else {
-                    addMessage('bot', `💻 Я выиграл! ${botChoice} побеждает ${player}`);
-                }
-                gameMode = null;
-                return;
-            }
-            if (gameMode === 'guess') {
-                if (!gameData.number) gameData.number = Math.floor(Math.random()*100)+1;
-                let guess = parseInt(text);
-                if (isNaN(guess)) { addMessage('bot', '🔢 Введи число!'); return; }
-                if (guess === gameData.number) { addMessage('bot', `🎉 Угадал! Это было ${gameData.number}`); gameMode = null; return; }
-                addMessage('bot', guess < gameData.number ? '📈 Больше!' : '📉 Меньше!');
-                return;
-            }
-            originalProcess(text);
+        const conditions = {
+            0: 'Ясно', 1: 'Малооблачно', 2: 'Переменная облачность', 3: 'Пасмурно',
+            45: 'Туман', 48: 'Туман с изморозью',
+            51: 'Легкая морось', 53: 'Умеренная морось', 55: 'Сильная морось',
+            61: 'Легкий дождь', 63: 'Умеренный дождь', 65: 'Сильный дождь',
+            71: 'Легкий снег', 73: 'Умеренный снег', 75: 'Сильный снег',
+            80: 'Ливень', 81: 'Умеренный ливень', 82: 'Сильный ливень',
+            95: 'Гроза', 96: 'Гроза с градом', 99: 'Гроза с сильным градом'
         };
+        const description = conditions[weathercode] || 'Неизвестно';
 
-        // =============================================================
-        //  ИНИЦИАЛИЗАЦИЯ
-        // =============================================================
-        // --- Тема ---
-        let savedTheme = localStorage.getItem('verityTheme');
-        if (savedTheme === 'light') document.body.classList.add('light-theme');
-        else if (savedTheme === 'acid') document.body.classList.add('theme-acid');
-        else if (savedTheme === 'orange') document.body.classList.add('theme-orange');
-        else if (savedTheme === 'forest') document.body.classList.add('theme-forest');
+        const data = { city: geoData.results[0].name, temperature, wind: windspeed, description };
+        localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: Date.now() }));
+        result.textContent = `🌤 ${data.city}: ${data.temperature}°C, ${data.description}, ветер ${data.wind} м/с`;
+    } catch (e) {
+        result.textContent = `❌ Ошибка: ${e.message}`;
+    }
+}
 
-        // --- Язык ---
-        if (localStorage.getItem('verityLang') === 'en') toggleLang();
+// ---------- Курс валют ----------
+async function getCurrency() {
+    const code = $('currencyInput')?.value?.toUpperCase() || 'USD';
+    const result = $('currencyResult');
+    if (!result) return;
+    try {
+        const res = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
+        if (!res.ok) throw new Error('Ошибка API');
+        const data = await res.json();
+        const rate = data.rates[code];
+        if (!rate) throw new Error('Валюта не найдена');
+        result.textContent = `1 USD = ${rate} ${code}`;
+    } catch (e) {
+        result.textContent = `❌ Ошибка: ${e.message}`;
+    }
+}
 
-        // --- Анимированный фон ---
-        const canvas = document.getElementById('bgCanvas');
-        const ctx = canvas.getContext('2d');
-        let width, height, particles = [];
-        function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resize); resize();
-        class Particle {
-            constructor() { this.reset(); }
-            reset() { this.x = Math.random() * width; this.y = Math.random() * height; this.size = Math.random() * 2 + 0.5; this.speedX = (Math.random() - 0.5) * 0.3; this.speedY = (Math.random() - 0.5) * 0.3; this.opacity = Math.random() * 0.5 + 0.2; }
-            update() { this.x += this.speedX; this.y += this.speedY; if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset(); }
-            draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = `rgba(255,255,255,${this.opacity})`; ctx.fill(); }
+// ---------- Генератор паролей ----------
+function generatePassword() {
+    const len = parseInt($('passLength')?.value) || 12;
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=';
+    let pass = '';
+    for (let i = 0; i < len; i++) {
+        pass += chars[Math.floor(Math.random() * chars.length)];
+    }
+    $('passwordResult').textContent = pass;
+}
+
+// ---------- Ипотечный калькулятор ----------
+function calcMortgage() {
+    const amount = parseFloat($('mortgageAmount')?.value) || 1000000;
+    const percent = parseFloat($('mortgagePercent')?.value) || 12;
+    const years = parseFloat($('mortgageYears')?.value) || 15;
+    const monthlyRate = percent / 100 / 12;
+    const months = years * 12;
+    const payment = amount * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
+    const total = payment * months;
+    $('mortgageResult').textContent = `Ежемесячный платёж: ${payment.toFixed(2)} ₽, всего: ${total.toFixed(2)} ₽`;
+}
+
+// ============================
+// 7. ОРГАНАЙЗЕР
+// ============================
+
+// ---------- Заметки ----------
+let notes = load('notes', []);
+
+function renderNotes() {
+    const list = $('notesList');
+    if (!list) return;
+    list.innerHTML = notes.map((n, i) =>
+        `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+            <span>${n.text} ${n.tag ? `#${n.tag}` : ''}</span>
+            <button class="btn btn-danger" onclick="removeNote(${i})">✕</button>
+        </div>`
+    ).join('');
+}
+
+function addNote() {
+    const text = $('noteInput')?.value?.trim();
+    const tag = $('noteTag')?.value?.trim();
+    if (!text) return;
+    notes.push({ text, tag });
+    save('notes', notes);
+    $('noteInput').value = '';
+    $('noteTag').value = '';
+    renderNotes();
+}
+
+function removeNote(i) {
+    notes.splice(i, 1);
+    save('notes', notes);
+    renderNotes();
+}
+
+// ---------- Задачи ----------
+let tasks = load('tasks', []);
+
+function renderTasks() {
+    const list = $('tasksList');
+    if (!list) return;
+    list.innerHTML = tasks.map((t, i) =>
+        `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+            <span style="${t.done ? 'text-decoration:line-through; opacity:0.5;' : ''}">${t.text}</span>
+            <div>
+                <button class="btn btn-success" onclick="toggleTask(${i})">✔</button>
+                <button class="btn btn-danger" onclick="removeTask(${i})">✕</button>
+            </div>
+        </div>`
+    ).join('');
+}
+
+function addTask() {
+    const text = $('taskInput')?.value?.trim();
+    if (!text) return;
+    tasks.push({ text, done: false });
+    save('tasks', tasks);
+    $('taskInput').value = '';
+    renderTasks();
+}
+
+function toggleTask(i) {
+    tasks[i].done = !tasks[i].done;
+    save('tasks', tasks);
+    renderTasks();
+}
+
+function removeTask(i) {
+    tasks.splice(i, 1);
+    save('tasks', tasks);
+    renderTasks();
+}
+
+// ---------- Список покупок ----------
+let shopItems = load('shop', []);
+
+function renderShop() {
+    const list = $('shopList');
+    if (!list) return;
+    list.innerHTML = shopItems.map((item, i) =>
+        `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+            <span>${item}</span>
+            <button class="btn btn-danger" onclick="removeShopItem(${i})">✕</button>
+        </div>`
+    ).join('');
+}
+
+function addShopItem() {
+    const text = $('shopInput')?.value?.trim();
+    if (!text) return;
+    shopItems.push(text);
+    save('shop', shopItems);
+    $('shopInput').value = '';
+    renderShop();
+}
+
+function removeShopItem(i) {
+    shopItems.splice(i, 1);
+    save('shop', shopItems);
+    renderShop();
+}
+
+// ---------- Калории ----------
+let calories = load('calories', []);
+
+function renderCalories() {
+    const total = calories.reduce((sum, c) => sum + c.amount, 0);
+    $('calTotal').textContent = total;
+}
+
+function addCalorie() {
+    const amount = parseFloat($('calInput')?.value);
+    const food = $('calFood')?.value?.trim() || 'Еда';
+    if (isNaN(amount) || amount <= 0) return;
+    calories.push({ amount, food, date: new Date().toDateString() });
+    save('calories', calories);
+    $('calInput').value = '';
+    $('calFood').value = '';
+    renderCalories();
+}
+
+function calReset() {
+    calories = calories.filter(c => c.date !== new Date().toDateString());
+    save('calories', calories);
+    renderCalories();
+}
+
+// ============================
+// 8. НАСТРОЙКИ
+// ============================
+function exportProfile() {
+    const data = {
+        chat: chatHistory,
+        notes, tasks, shopItems, calories,
+        rps: rpsData,
+        theme: currentTheme,
+        lang: currentLang,
+        exported: new Date().toISOString()
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'swinger_profile.json';
+    a.click();
+}
+
+function importProfile() {
+    $('importFile').click();
+}
+
+function importProfileFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (data.chat) { chatHistory = data.chat; save('chat', chatHistory); renderChat(); }
+            if (data.notes) { notes = data.notes; save('notes', notes); renderNotes(); }
+            if (data.tasks) { tasks = data.tasks; save('tasks', tasks); renderTasks(); }
+            if (data.shopItems) { shopItems = data.shopItems; save('shop', shopItems); renderShop(); }
+            if (data.calories) { calories = data.calories; save('calories', calories); renderCalories(); }
+            if (data.rps) { rpsData = data.rps; save('rps', rpsData); }
+            if (data.theme) { applyTheme(data.theme); }
+            if (data.lang) { currentLang = data.lang; save('lang', currentLang); $('langLabel').textContent = currentLang === 'ru' ? 'Русский' : 'English'; }
+            alert('✅ Профиль импортирован!');
+        } catch (err) {
+            alert('❌ Ошибка импорта: ' + err.message);
         }
-        for (let i = 0; i < 80; i++) particles.push(new Particle());
-        function animateBg() { ctx.clearRect(0,0,width,height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animateBg); }
-        animateBg();
+    };
+    reader.readAsText(file);
+}
 
-        // --- Восстановление чата ---
-        if (chatLog.length > 0) {
-            chatLog.forEach(m => {
-                const div = document.createElement('div');
-                div.className = m.sender === 'user' ? 'message user' : 'message bot';
-                div.innerHTML = (m.sender === 'bot' ? '<span class="bot-name">🤖 Verity</span>' : '') + 
-                    m.text + '<span class="time">' + m.time + '</span>';
-                chatBox.appendChild(div);
-            });
+function clearAllData() {
+    if (confirm('Удалить ВСЕ данные? Это необратимо!')) {
+        localStorage.clear();
+        location.reload();
+    }
+}
+
+// ============================
+// 9. АДМИН-ПАНЕЛЬ
+// ============================
+function showStorageStats() {
+    let total = 0;
+    let keys = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const val = localStorage.getItem(key);
+        total += val ? val.length : 0;
+        keys++;
+    }
+    $('storageSize').textContent = total;
+    $('storageKeys').textContent = keys;
+    $('adminLog').textContent = `Статистика обновлена: ${new Date().toLocaleString()}`;
+}
+
+function clearStorage() {
+    if (confirm('Очистить весь localStorage?')) {
+        localStorage.clear();
+        showStorageStats();
+        alert('Очищено!');
+    }
+}
+
+function backupStorage() {
+    const data = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        data[key] = localStorage.getItem(key);
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'storage_backup.json';
+    a.click();
+}
+
+function restoreBackup() {
+    $('backupFile').click();
+}
+
+function restoreBackupFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            for (const key in data) {
+                localStorage.setItem(key, data[key]);
+            }
+            alert('✅ Бэкап восстановлен! Страница будет перезагружена.');
+            location.reload();
+        } catch (err) {
+            alert('❌ Ошибка восстановления: ' + err.message);
         }
-        if (chatBox.children.length === 0) {
-            addMessage('bot', '🚀 Verity v3 готов! Все 12 фич внутри: голос, умные напоминания, теги, привычки, компас, градиенты, календарь, мелодии, сортировка, поиск, викторина, автодополнение. Напиши "помощь"!');
+    };
+    reader.readAsText(file);
+}
+
+// ============================
+// 10. ФОН (CANVAS)
+// ============================
+(function initCanvas() {
+    const canvas = document.getElementById('bgCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w, h, particles = [];
+
+    function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    for (let i = 0; i < 40; i++) {
+        particles.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            r: Math.random() * 2 + 1,
+            a: Math.random() * 0.5 + 0.2
+        });
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < 0 || p.x > w) p.vx *= -1;
+            if (p.y < 0 || p.y > h) p.vy *= -1;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,255,255,${p.a})`;
+            ctx.fill();
+        });
+        // Линии между близкими частицами
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 150) {
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.strokeStyle = `rgba(255,255,255,${0.05 * (1 - dist/150)})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+            }
         }
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
 
-        // --- Пасхалка на аватар ---
-        function triggerEasterEgg() { eggCount++; if (eggCount >= 3) { launchConfetti(); addMessage('bot', '🌠 Звёздопад!'); eggCount=0; } }
-        function speakText(text) { if ('speechSynthesis' in window) { const utt = new SpeechSynthesisUtterance(text); utt.lang = currentLang === 'ru' ? 'ru-RU' : 'en-US'; utt.rate = 0.9; speechSynthesis.cancel(); speechSynthesis.speak(utt); } }
+// ============================
+// 11. ИНИЦИАЛИЗАЦИЯ
+// ============================
+function init() {
+    applyTheme(currentTheme);
+    $('langLabel').textContent = currentLang === 'ru' ? 'Русский' : 'English';
+    renderChat();
+    renderTTT();
+    mineInit();
+    renderNotes();
+    renderTasks();
+    renderShop();
+    renderCalories();
+    $('rpsPlayer').textContent = rpsData.player;
+    $('rpsBot').textContent = rpsData.bot;
+    $('rpsDraw').textContent = rpsData.draw;
+    showTab('chat');
+    // Глобальные функции для HTML
+    window.sendMessage = sendMessage;
+    window.startVoice = startVoice;
+    window.chatClear = chatClear;
+    window.chatExport = chatExport;
+    window.guessNumber = guessNumberGame;
+    window.rpsPlay = rpsPlay;
+    window.rpsReset = rpsReset;
+    window.tttClick = tttClick;
+    window.tttReset = tttReset;
+    window.mineReveal = mineReveal;
+    window.mineToggleFlag = mineToggleFlag;
+    window.mineReset = mineReset;
+    window.getWeather = getWeather;
+    window.getCurrency = getCurrency;
+    window.generatePassword = generatePassword;
+    window.calcMortgage = calcMortgage;
+    window.addNote = addNote;
+    window.removeNote = removeNote;
+    window.addTask = addTask;
+    window.toggleTask = toggleTask;
+    window.removeTask = removeTask;
+    window.addShopItem = addShopItem;
+    window.removeShopItem = removeShopItem;
+    window.addCalorie = addCalorie;
+    window.calReset = calReset;
+    window.exportProfile = exportProfile;
+    window.importProfile = importProfile;
+    window.importProfileFile = importProfileFile;
+    window.clearAllData = clearAllData;
+    window.showStorageStats = showStorageStats;
+    window.clearStorage = clearStorage;
+    window.backupStorage = backupStorage;
+    window.restoreBackup = restoreBackup;
+    window.restoreBackupFile = restoreBackupFile;
+    window.toggleTheme = toggleTheme;
+    window.toggleLang = toggleLang;
+    window.showTab = showTab;
+    console.log('🌀 SWINGER v3.0 загружен!');
+    console.log('📌 Все 5 критических проблем исправлены.');
+}
 
-        // --- Подключение html2canvas для скриншотов ---
-        const script = document.createElement('script');
-        script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
-        document.head.appendChild(script);
-    </script>
+document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
