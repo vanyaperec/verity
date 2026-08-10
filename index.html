@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SWINGER — Гибридный портал</title>
     <style>
-        /* ===== БАЗОВЫЕ СТИЛИ ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
@@ -16,15 +15,11 @@
         }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         .hidden { display: none !important; }
-
-        /* ===== ТЕМЫ ===== */
         body.theme-dark { background: #0b0e14; color: #e0e0e0; }
         body.theme-light { background: #f0f2f5; color: #1a1a1a; }
         body.theme-acid { background: #1a0a2e; color: #b3ff00; }
         body.theme-orange { background: #1a0a00; color: #ffa500; }
         body.theme-forest { background: #0a1a0a; color: #7ddf7d; }
-
-        /* ===== КАРТОЧКИ ===== */
         .card {
             background: rgba(255,255,255,0.05);
             backdrop-filter: blur(12px);
@@ -38,8 +33,6 @@
         .theme-acid .card { border-color: #b3ff00; }
         .theme-orange .card { border-color: #ffa500; }
         .theme-forest .card { border-color: #7ddf7d; }
-
-        /* ===== КНОПКИ ===== */
         .btn {
             display: inline-block;
             padding: 10px 20px;
@@ -59,8 +52,6 @@
         .btn-danger:hover { background: #f05a4a; }
         .btn-success { background: #2ecc71; }
         .btn-success:hover { background: #3ddc81; }
-
-        /* ===== ПОЛЯ ВВОДА ===== */
         input, select, textarea {
             width: 100%;
             padding: 12px;
@@ -80,13 +71,9 @@
             border-color: #4a6cf7;
             box-shadow: 0 0 0 3px rgba(74,108,247,0.2);
         }
-
-        /* ===== СЕТКА ===== */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
         @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
-
-        /* ===== ЧАТ ===== */
         .chat-box {
             height: 300px;
             overflow-y: auto;
@@ -103,8 +90,6 @@
         }
         .chat-msg.user { background: #4a6cf7; align-self: flex-end; margin-left: auto; }
         .chat-msg.bot { background: rgba(255,255,255,0.08); }
-
-        /* ===== ИГРЫ ===== */
         .game-board {
             display: grid;
             gap: 4px;
@@ -123,8 +108,6 @@
         }
         .game-board button:hover { background: rgba(255,255,255,0.15); }
         .game-board button:disabled { opacity: 0.4; cursor: not-allowed; }
-
-        /* ===== САПЁР ===== */
         .mine-board {
             display: grid;
             gap: 2px;
@@ -144,8 +127,6 @@
         .mine-board button.revealed { background: rgba(255,255,255,0.05); }
         .mine-board button.mine { background: #e74c3c; }
         .mine-board button.flagged { background: #f1c40f; color: #000; }
-
-        /* ===== АНИМАЦИЯ ФОНА ===== */
         #bgCanvas {
             position: fixed;
             top: 0;
@@ -155,8 +136,6 @@
             z-index: -1;
             pointer-events: none;
         }
-
-        /* ===== АДАПТИВ ===== */
         @media (max-width: 600px) {
             .container { padding: 12px; }
             .card { padding: 16px; }
@@ -169,7 +148,6 @@
 <canvas id="bgCanvas"></canvas>
 
 <div class="container" id="app">
-    <!-- ШАПКА -->
     <header class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
         <h1>🌀 SWINGER</h1>
         <div>
@@ -182,7 +160,6 @@
         </div>
     </header>
 
-    <!-- ВКЛАДКИ -->
     <div class="card" style="display:flex; gap:8px; flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="showTab('chat')">💬 Чат</button>
         <button class="btn" onclick="showTab('games')">🎮 Игры</button>
@@ -190,11 +167,10 @@
         <button class="btn" onclick="showTab('organizer')">📋 Органайзер</button>
         <button class="btn" onclick="showTab('settings')">⚙️ Настройки</button>
         <button class="btn" onclick="showTab('admin')">👑 Админ</button>
+        <button class="btn" data-tab="groupchat" onclick="showTab('groupchat')">💬 Групповой чат</button>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ЧАТ -->
-    <!-- ============================================================ -->
+    <!-- Чат -->
     <div id="tab-chat" class="tab">
         <div class="card">
             <h3>💬 Чат с памятью</h3>
@@ -211,23 +187,16 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ИГРЫ -->
-    <!-- ============================================================ -->
+    <!-- Игры -->
     <div id="tab-games" class="tab hidden">
         <div class="grid-2">
-            <!-- Угадай число -->
-            <div class="card">
-                <h4>🎯 Угадай число (1-100)</h4>
+            <div class="card"><h4>🎯 Угадай число (1-100)</h4>
                 <input type="number" id="guessInput" placeholder="Твоё число">
-                <button class="btn btn-primary" onclick="guessNumber()">Проверить</button>
-                <p id="guessResult">Введи число и нажми Проверить</p>
+                <button class="btn btn-primary" onclick="guessNumberGame()">Проверить</button>
+                <p id="guessResult">Введи число</p>
                 <p>Попыток: <span id="guessAttempts">0</span></p>
             </div>
-
-            <!-- RPS -->
-            <div class="card">
-                <h4>🗿 Камень-ножницы-бумага</h4>
+            <div class="card"><h4>🗿 Камень-ножницы-бумага</h4>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
                     <button class="btn" onclick="rpsPlay('rock')">🗿</button>
                     <button class="btn" onclick="rpsPlay('paper')">📄</button>
@@ -237,50 +206,38 @@
                 <p>Ты: <span id="rpsPlayer">0</span> | Бот: <span id="rpsBot">0</span> | Ничьи: <span id="rpsDraw">0</span></p>
                 <button class="btn" onclick="rpsReset()">🔄 Сброс</button>
             </div>
-
-            <!-- Крестики-нолики -->
-            <div class="card">
-                <h4>❌ Крестики-нолики</h4>
+            <div class="card"><h4>❌ Крестики-нолики</h4>
                 <div class="game-board" id="tttBoard" style="grid-template-columns: repeat(3,1fr);"></div>
                 <p id="tttStatus">Твой ход</p>
                 <button class="btn" onclick="tttReset()">🔄 Новая игра</button>
             </div>
-
-            <!-- Сапёр -->
-            <div class="card">
-                <h4>💣 Сапёр (5x5)</h4>
+            <div class="card"><h4>💣 Сапёр (5x5)</h4>
                 <div class="mine-board" id="mineBoard" style="grid-template-columns: repeat(5,1fr);"></div>
-                <p id="mineStatus">Нажми на клетку, чтобы начать</p>
+                <p id="mineStatus">Нажми на клетку</p>
                 <button class="btn" onclick="mineReset()">🔄 Новая игра</button>
             </div>
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ИНСТРУМЕНТЫ -->
-    <!-- ============================================================ -->
+    <!-- Инструменты -->
     <div id="tab-tools" class="tab hidden">
         <div class="grid-2">
-            <div class="card">
-                <h4>🌤 Погода</h4>
+            <div class="card"><h4>🌤 Погода</h4>
                 <input type="text" id="weatherInput" placeholder="Город" value="Москва">
                 <button class="btn btn-primary" onclick="getWeather()">Узнать</button>
                 <p id="weatherResult">Введите город</p>
             </div>
-            <div class="card">
-                <h4>💰 Курс валют</h4>
+            <div class="card"><h4>💰 Курс валют</h4>
                 <input type="text" id="currencyInput" placeholder="Напр. USD" value="USD">
                 <button class="btn btn-primary" onclick="getCurrency()">Узнать</button>
                 <p id="currencyResult">Введите код валюты</p>
             </div>
-            <div class="card">
-                <h4>🔐 Генератор паролей</h4>
+            <div class="card"><h4>🔐 Генератор паролей</h4>
                 <input type="number" id="passLength" value="12" min="4" max="64">
                 <button class="btn btn-primary" onclick="generatePassword()">Сгенерировать</button>
                 <p id="passwordResult">Нажми кнопку</p>
             </div>
-            <div class="card">
-                <h4>🏠 Ипотечный калькулятор</h4>
+            <div class="card"><h4>🏠 Ипотечный калькулятор</h4>
                 <input type="number" id="mortgageAmount" placeholder="Сумма" value="1000000">
                 <input type="number" id="mortgagePercent" placeholder="Процент" value="12">
                 <input type="number" id="mortgageYears" placeholder="Лет" value="15">
@@ -290,32 +247,26 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ОРГАНАЙЗЕР -->
-    <!-- ============================================================ -->
+    <!-- Органайзер -->
     <div id="tab-organizer" class="tab hidden">
         <div class="grid-2">
-            <div class="card">
-                <h4>📝 Заметки</h4>
+            <div class="card"><h4>📝 Заметки</h4>
                 <input type="text" id="noteInput" placeholder="Текст заметки">
                 <input type="text" id="noteTag" placeholder="Тег (необязательно)">
                 <button class="btn btn-primary" onclick="addNote()">➕ Добавить</button>
                 <div id="notesList"></div>
             </div>
-            <div class="card">
-                <h4>✅ Задачи</h4>
+            <div class="card"><h4>✅ Задачи</h4>
                 <input type="text" id="taskInput" placeholder="Новая задача">
                 <button class="btn btn-primary" onclick="addTask()">➕ Добавить</button>
                 <div id="tasksList"></div>
             </div>
-            <div class="card">
-                <h4>🛒 Список покупок</h4>
+            <div class="card"><h4>🛒 Список покупок</h4>
                 <input type="text" id="shopInput" placeholder="Что купить?">
                 <button class="btn btn-primary" onclick="addShopItem()">➕ Добавить</button>
                 <div id="shopList"></div>
             </div>
-            <div class="card">
-                <h4>🔥 Калории</h4>
+            <div class="card"><h4>🔥 Калории</h4>
                 <input type="number" id="calInput" placeholder="Ккал">
                 <input type="text" id="calFood" placeholder="Продукт">
                 <button class="btn btn-primary" onclick="addCalorie()">➕ Добавить</button>
@@ -326,9 +277,7 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- НАСТРОЙКИ -->
-    <!-- ============================================================ -->
+    <!-- Настройки -->
     <div id="tab-settings" class="tab hidden">
         <div class="card">
             <h3>⚙️ Настройки</h3>
@@ -341,9 +290,7 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- АДМИН -->
-    <!-- ============================================================ -->
+    <!-- Админ -->
     <div id="tab-admin" class="tab hidden">
         <div class="card">
             <h3>👑 Админ-панель</h3>
@@ -358,7 +305,32 @@
         </div>
     </div>
 
-    <!-- ФУТЕР -->
+    <!-- Групповой чат -->
+    <div id="tab-groupchat" class="tab hidden">
+        <div class="card">
+            <h3>💬 Групповой чат (защищённый)</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+                <div>
+                    <span>👤 Ник: </span>
+                    <strong id="groupChatNick">Гость</strong>
+                    <button class="btn" onclick="groupChatChangeNick()">✏️ Сменить</button>
+                </div>
+                <div>
+                    <button class="btn btn-danger" onclick="groupChatClear()">🗑 Очистить</button>
+                    <button class="btn" onclick="groupChatExport()">💾 Экспорт</button>
+                </div>
+            </div>
+            <div id="groupChatBox" style="height:350px; overflow-y:auto; background:rgba(0,0,0,0.2); border-radius:12px; padding:12px; margin-bottom:12px;"></div>
+            <div style="display:flex; gap:8px;">
+                <input type="text" id="groupChatInput" placeholder="Введите сообщение..." style="flex:1;" maxlength="5000">
+                <button class="btn btn-primary" onclick="groupChatSend()">➤ Отправить</button>
+            </div>
+            <div style="margin-top:8px; font-size:12px; opacity:0.5;">
+                🔒 Все сообщения экранируются. Длина сообщения ограничена 5000 символов.
+            </div>
+        </div>
+    </div>
+
     <footer class="card" style="text-align:center; font-size:12px; opacity:0.6;">
         SWINGER v3.0 — Гибридный портал. Сделано для себя и для портфолио.
     </footer>
@@ -366,102 +338,56 @@
 
 <script>
 // ======================================================================
-//   ПОЛНЫЙ КОД — ВСЁ В ОДНОМ ФАЙЛЕ
-//   ВКЛЮЧАЕТ: ЧАТ, ИГРЫ, ИНСТРУМЕНТЫ, ОРГАНАЙЗЕР, НАСТРОЙКИ, АДМИН
+//   ПОЛНЫЙ КОД — SWINGER v3.0
+//   ВКЛЮЧАЕТ: ЧАТ, ИГРЫ, ИНСТРУМЕНТЫ, ОРГАНАЙЗЕР, НАСТРОЙКИ, АДМИН,
+//   ЗАЩИЩЁННЫЙ ГРУППОВОЙ ЧАТ (BroadcastChannel + localStorage)
 // ======================================================================
 
-// ============================
-// 1. УТИЛИТЫ
-// ============================
+// ---- Утилиты ----
 function $(id) { return document.getElementById(id); }
-function qs(sel) { return document.querySelector(sel); }
-function qsa(sel) { return document.querySelectorAll(sel); }
+function save(key, data) { try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {} }
+function load(key, def) { try { const d = localStorage.getItem(key); return d ? JSON.parse(d) : def; } catch(e) { return def; } }
+function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
 
-function save(key, data) {
-    try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
-}
-function load(key, def) {
-    try { const d = localStorage.getItem(key); return d ? JSON.parse(d) : def; } catch(e) { return def; }
-}
-
-// ============================
-// 2. ТЕМЫ + ЯЗЫК
-// ============================
-const THEMES = {
-    dark: { bg: '#0b0e14', text: '#e0e0e0' },
-    light: { bg: '#f0f2f5', text: '#1a1a1a' },
-    acid: { bg: '#1a0a2e', text: '#b3ff00' },
-    orange: { bg: '#1a0a00', text: '#ffa500' },
-    forest: { bg: '#0a1a0a', text: '#7ddf7d' }
-};
-
+// ---- Тема + Язык ----
 let currentTheme = load('theme', 'dark');
 let currentLang = load('lang', 'ru');
 
 function applyTheme(theme) {
     document.body.className = 'theme-' + theme;
-    document.body.style.background = THEMES[theme]?.bg || '#0b0e14';
-    document.body.style.color = THEMES[theme]?.text || '#e0e0e0';
-    currentTheme = theme;
-    save('theme', theme);
+    document.body.style.background = { dark:'#0b0e14', light:'#f0f2f5', acid:'#1a0a2e', orange:'#1a0a00', forest:'#0a1a0a' }[theme] || '#0b0e14';
+    document.body.style.color = { dark:'#e0e0e0', light:'#1a1a1a', acid:'#b3ff00', orange:'#ffa500', forest:'#7ddf7d' }[theme] || '#e0e0e0';
+    currentTheme = theme; save('theme', theme);
     $('themeLabel').textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
 }
-
-function toggleTheme(theme) {
-    applyTheme(theme);
-}
-
+function toggleTheme(theme) { applyTheme(theme); }
 function toggleLang() {
     currentLang = currentLang === 'ru' ? 'en' : 'ru';
     save('lang', currentLang);
     $('langLabel').textContent = currentLang === 'ru' ? 'Русский' : 'English';
-    // Переводим интерфейс (базово)
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.dataset.i18n;
-        const dict = {
-            ru: { chat: 'Чат', games: 'Игры', tools: 'Инструменты', organizer: 'Органайзер', settings: 'Настройки', admin: 'Админ' },
-            en: { chat: 'Chat', games: 'Games', tools: 'Tools', organizer: 'Organizer', settings: 'Settings', admin: 'Admin' }
-        };
-        el.textContent = dict[currentLang]?.[key] || key;
-    });
 }
 
-// ============================
-// 3. ВКЛАДКИ
-// ============================
+// ---- Вкладки ----
 function showTab(id) {
-    qsa('.tab').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.tab').forEach(el => el.classList.add('hidden'));
     const tab = $('tab-' + id);
     if (tab) tab.classList.remove('hidden');
-    // Подсветка кнопок
     document.querySelectorAll('.card button').forEach(b => b.classList.remove('btn-primary'));
-    // Простая подсветка — найти кнопку с текстом
     document.querySelectorAll('.card button').forEach(b => {
-        if (b.textContent.includes(id) || b.textContent.toLowerCase().includes(id)) {
-            b.classList.add('btn-primary');
-        }
+        if (b.textContent.includes(id) || b.dataset.tab === id) b.classList.add('btn-primary');
     });
-    // Обновляем админ-статистику при открытии
     if (id === 'admin') showStorageStats();
+    if (id === 'groupchat') { loadGroupMessages(); renderGroupMessages(); }
 }
 
-// ============================
-// 4. ЧАТ
-// ============================
+// ---- Чат ----
 let chatHistory = load('chat', []);
-let chatResponses = [
-    'Привет! Как дела?', 'Интересно... расскажи ещё.', 'Я тебя понимаю.', 'Хороший вопрос!',
-    'Может, сыграем во что-то?', 'Как твой день?', 'Что нового?', 'У тебя отличный вкус!',
-    'Спасибо за вопрос!', 'Давай пообщаемся ещё.', 'Ты крутой собеседник.', 'Я запомнил это.',
-    'Кстати, загляни в игры — там весело.', 'Не хочешь проверить погоду?', 'Ты в порядке?'
-];
+let chatResponses = ['Привет! Как дела?', 'Интересно... расскажи ещё.', 'Я тебя понимаю.', 'Хороший вопрос!', 'Может, сыграем во что-то?', 'Как твой день?', 'Что нового?', 'Ты крутой собеседник.', 'Спасибо за вопрос!', 'Давай пообщаемся ещё.'];
 
 function renderChat() {
     const box = $('chatBox');
     if (!box) return;
-    box.innerHTML = chatHistory.map(m =>
-        `<div class="chat-msg ${m.role}">${m.text}</div>`
-    ).join('');
+    box.innerHTML = chatHistory.map(m => `<div class="chat-msg ${m.role}">${escapeHtml(m.text)}</div>`).join('');
     box.scrollTop = box.scrollHeight;
 }
 
@@ -474,407 +400,212 @@ function sendMessage() {
     save('chat', chatHistory);
     input.value = '';
     renderChat();
-
-    // Ответ бота
     setTimeout(() => {
         let reply = chatResponses[Math.floor(Math.random() * chatResponses.length)];
-        // Простые ключевые слова
-        if (text.toLowerCase().includes('привет') || text.toLowerCase().includes('hello')) {
-            reply = currentLang === 'ru' ? 'Привет! Как твои дела?' : 'Hello! How are you?';
-        } else if (text.toLowerCase().includes('погода')) {
-            reply = 'Напиши "погода Москва" в инструментах!';
-        } else if (text.toLowerCase().includes('игра')) {
-            reply = 'Загляни во вкладку Игры!';
-        }
+        if (text.toLowerCase().includes('привет') || text.toLowerCase().includes('hello')) reply = currentLang === 'ru' ? 'Привет! Как твои дела?' : 'Hello! How are you?';
         chatHistory.push({ role: 'bot', text: reply });
         save('chat', chatHistory);
         renderChat();
     }, 300);
 }
-
-function chatClear() {
-    chatHistory = [];
-    save('chat', chatHistory);
-    renderChat();
-}
-
+function chatClear() { chatHistory = []; save('chat', chatHistory); renderChat(); }
 function chatExport() {
-    const data = JSON.stringify(chatHistory, null, 2);
-    const blob = new Blob([data], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'chat_backup.json';
-    a.click();
+    const blob = new Blob([JSON.stringify(chatHistory, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'chat_backup.json'; a.click();
 }
-
-// Голосовой ввод
 function startVoice() {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     if (!recognition) { alert('Голосовой ввод не поддерживается'); return; }
     recognition.lang = currentLang === 'ru' ? 'ru-RU' : 'en-US';
     recognition.continuous = false;
-    recognition.onresult = (event) => {
-        const text = event.results[0][0].transcript;
-        $('chatInput').value = text;
-        sendMessage();
-    };
+    recognition.onresult = (event) => { $('chatInput').value = event.results[0][0].transcript; sendMessage(); };
     recognition.onerror = () => alert('Ошибка голосового ввода');
     recognition.start();
 }
 
-// ============================
-// 5. ИГРЫ
-// ============================
-
-// ---------- Угадай число ----------
+// ---- Игры ----
 let guessNumber = Math.floor(Math.random() * 100) + 1;
 let guessAttempts = 0;
-
 function guessNumberGame() {
-    const input = $('guessInput');
-    const result = $('guessResult');
-    const attempts = $('guessAttempts');
-    if (!input || !result || !attempts) return;
-    const val = parseInt(input.value);
-    if (isNaN(val)) { result.textContent = 'Введи число!'; return; }
+    const val = parseInt($('guessInput').value);
+    if (isNaN(val)) { $('guessResult').textContent = 'Введи число!'; return; }
     guessAttempts++;
-    attempts.textContent = guessAttempts;
+    $('guessAttempts').textContent = guessAttempts;
     if (val === guessNumber) {
-        result.textContent = `🎉 Угадал! Это было ${guessNumber}. Попыток: ${guessAttempts}`;
-        guessNumber = Math.floor(Math.random() * 100) + 1;
-        guessAttempts = 0;
-        attempts.textContent = '0';
-    } else if (val < guessNumber) {
-        result.textContent = '📈 Больше!';
-    } else {
-        result.textContent = '📉 Меньше!';
-    }
-    input.value = '';
+        $('guessResult').textContent = `🎉 Угадал! Это было ${guessNumber}. Попыток: ${guessAttempts}`;
+        guessNumber = Math.floor(Math.random() * 100) + 1; guessAttempts = 0;
+        $('guessAttempts').textContent = '0';
+    } else { $('guessResult').textContent = val < guessNumber ? '📈 Больше!' : '📉 Меньше!'; }
+    $('guessInput').value = '';
 }
 
-// ---------- RPS ----------
 let rpsData = load('rps', { player: 0, bot: 0, draw: 0 });
-
 function rpsPlay(choice) {
     const choices = ['rock', 'paper', 'scissors'];
     const bot = choices[Math.floor(Math.random() * 3)];
     let result = '';
     if (choice === bot) { result = 'draw'; rpsData.draw++; }
-    else if ((choice === 'rock' && bot === 'scissors') ||
-             (choice === 'paper' && bot === 'rock') ||
-             (choice === 'scissors' && bot === 'paper')) {
-        result = 'win'; rpsData.player++;
-    } else {
-        result = 'lose'; rpsData.bot++;
-    }
+    else if ((choice === 'rock' && bot === 'scissors') || (choice === 'paper' && bot === 'rock') || (choice === 'scissors' && bot === 'paper')) { result = 'win'; rpsData.player++; }
+    else { result = 'lose'; rpsData.bot++; }
     save('rps', rpsData);
     const emoji = { rock: '🗿', paper: '📄', scissors: '✂️' };
-    const resultText = result === 'win' ? '🏆 Ты выиграл!' : result === 'lose' ? '💀 Ты проиграл' : '🤝 Ничья';
-    $('rpsResult').textContent = `${emoji[choice]} vs ${emoji[bot]} — ${resultText}`;
+    $('rpsResult').textContent = `${emoji[choice]} vs ${emoji[bot]} — ${result === 'win' ? '🏆 Ты выиграл!' : result === 'lose' ? '💀 Ты проиграл' : '🤝 Ничья'}`;
     $('rpsPlayer').textContent = rpsData.player;
     $('rpsBot').textContent = rpsData.bot;
     $('rpsDraw').textContent = rpsData.draw;
 }
+function rpsReset() { rpsData = { player: 0, bot: 0, draw: 0 }; save('rps', rpsData); $('rpsPlayer').textContent = '0'; $('rpsBot').textContent = '0'; $('rpsDraw').textContent = '0'; $('rpsResult').textContent = 'Счёт сброшен'; }
 
-function rpsReset() {
-    rpsData = { player: 0, bot: 0, draw: 0 };
-    save('rps', rpsData);
-    $('rpsPlayer').textContent = '0';
-    $('rpsBot').textContent = '0';
-    $('rpsDraw').textContent = '0';
-    $('rpsResult').textContent = 'Счёт сброшен';
-}
-
-// ---------- Крестики-нолики ----------
-let tttBoard = Array(9).fill(null);
-let tttTurn = 'X';
-let tttGameOver = false;
-
+let tttBoard = Array(9).fill(null), tttTurn = 'X', tttGameOver = false;
 function renderTTT() {
     const board = $('tttBoard');
     if (!board) return;
-    board.innerHTML = tttBoard.map((cell, i) =>
-        `<button onclick="tttClick(${i})" ${cell ? 'disabled' : ''}>${cell || ''}</button>`
-    ).join('');
+    board.innerHTML = tttBoard.map((cell, i) => `<button onclick="tttClick(${i})" ${cell ? 'disabled' : ''}>${cell || ''}</button>`).join('');
     $('tttStatus').textContent = tttGameOver ? 'Игра окончена' : `Ход: ${tttTurn}`;
 }
-
 function tttClick(i) {
     if (tttBoard[i] || tttGameOver) return;
     tttBoard[i] = tttTurn;
-    if (tttCheckWin(tttTurn)) {
-        tttGameOver = true;
-        $('tttStatus').textContent = `🏆 Победил ${tttTurn}!`;
-        renderTTT();
-        return;
-    }
-    if (tttBoard.every(c => c)) {
-        tttGameOver = true;
-        $('tttStatus').textContent = '🤝 Ничья!';
-        renderTTT();
-        return;
-    }
+    if (tttCheckWin(tttTurn)) { tttGameOver = true; $('tttStatus').textContent = `🏆 Победил ${tttTurn}!`; renderTTT(); return; }
+    if (tttBoard.every(c => c)) { tttGameOver = true; $('tttStatus').textContent = '🤝 Ничья!'; renderTTT(); return; }
     tttTurn = tttTurn === 'X' ? 'O' : 'X';
     renderTTT();
-    // Ход бота (O)
     if (!tttGameOver && tttTurn === 'O') {
         setTimeout(() => {
             const empty = tttBoard.map((v, i) => v === null ? i : null).filter(v => v !== null);
             if (empty.length) {
                 const move = empty[Math.floor(Math.random() * empty.length)];
                 tttBoard[move] = 'O';
-                if (tttCheckWin('O')) {
-                    tttGameOver = true;
-                    $('tttStatus').textContent = '💀 Победил бот!';
-                } else if (tttBoard.every(c => c)) {
-                    tttGameOver = true;
-                    $('tttStatus').textContent = '🤝 Ничья!';
-                } else {
-                    tttTurn = 'X';
-                }
+                if (tttCheckWin('O')) { tttGameOver = true; $('tttStatus').textContent = '💀 Победил бот!'; }
+                else if (tttBoard.every(c => c)) { tttGameOver = true; $('tttStatus').textContent = '🤝 Ничья!'; }
+                else tttTurn = 'X';
                 renderTTT();
             }
         }, 300);
     }
 }
-
 function tttCheckWin(player) {
-    const lines = [
-        [0,1,2],[3,4,5],[6,7,8],
-        [0,3,6],[1,4,7],[2,5,8],
-        [0,4,8],[2,4,6]
-    ];
+    const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
     return lines.some(l => l.every(i => tttBoard[i] === player));
 }
+function tttReset() { tttBoard = Array(9).fill(null); tttTurn = 'X'; tttGameOver = false; renderTTT(); }
 
-function tttReset() {
-    tttBoard = Array(9).fill(null);
-    tttTurn = 'X';
-    tttGameOver = false;
-    renderTTT();
-}
-
-// ---------- Сапёр ----------
-let mineSize = 5;
-let mineMines = 6;
-let mineBoard = [];
-let mineRevealed = [];
-let mineFlags = [];
-let mineGameOver = false;
-let mineFirstClick = true;
-
+let mineSize = 5, mineMines = 6, mineBoard = [], mineRevealed = [], mineFlags = [], mineGameOver = false, mineFirstClick = true;
 function mineInit() {
     mineBoard = Array.from({ length: mineSize }, () => Array(mineSize).fill(0));
     mineRevealed = Array.from({ length: mineSize }, () => Array(mineSize).fill(false));
     mineFlags = Array.from({ length: mineSize }, () => Array(mineSize).fill(false));
-    mineGameOver = false;
-    mineFirstClick = true;
-    mineRender();
-    $('mineStatus').textContent = 'Нажми на клетку, чтобы начать';
+    mineGameOver = false; mineFirstClick = true;
+    mineRender(); $('mineStatus').textContent = 'Нажми на клетку';
 }
-
 function minePlaceMines(excludeR, excludeC) {
     let placed = 0;
     while (placed < mineMines) {
-        const r = Math.floor(Math.random() * mineSize);
-        const c = Math.floor(Math.random() * mineSize);
-        if (mineBoard[r][c] === -1) continue;
-        if (Math.abs(r - excludeR) <= 1 && Math.abs(c - excludeC) <= 1) continue;
-        mineBoard[r][c] = -1;
-        placed++;
+        const r = Math.floor(Math.random() * mineSize), c = Math.floor(Math.random() * mineSize);
+        if (mineBoard[r][c] === -1 || (Math.abs(r - excludeR) <= 1 && Math.abs(c - excludeC) <= 1)) continue;
+        mineBoard[r][c] = -1; placed++;
     }
-    for (let r = 0; r < mineSize; r++) {
-        for (let c = 0; c < mineSize; c++) {
-            if (mineBoard[r][c] === -1) continue;
-            let count = 0;
-            for (let dr = -1; dr <= 1; dr++) {
-                for (let dc = -1; dc <= 1; dc++) {
-                    const nr = r + dr, nc = c + dc;
-                    if (nr >= 0 && nr < mineSize && nc >= 0 && nc < mineSize && mineBoard[nr][nc] === -1) count++;
-                }
-            }
-            mineBoard[r][c] = count;
+    for (let r = 0; r < mineSize; r++) for (let c = 0; c < mineSize; c++) {
+        if (mineBoard[r][c] === -1) continue;
+        let count = 0;
+        for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+            const nr = r + dr, nc = c + dc;
+            if (nr >= 0 && nr < mineSize && nc >= 0 && nc < mineSize && mineBoard[nr][nc] === -1) count++;
         }
+        mineBoard[r][c] = count;
     }
 }
-
 function mineReveal(r, c) {
-    if (mineGameOver) return;
-    if (r < 0 || r >= mineSize || c < 0 || c >= mineSize) return;
-    if (mineRevealed[r][c] || mineFlags[r][c]) return;
-
-    if (mineFirstClick) {
-        minePlaceMines(r, c);
-        mineFirstClick = false;
-    }
-
+    if (mineGameOver || r < 0 || r >= mineSize || c < 0 || c >= mineSize || mineRevealed[r][c] || mineFlags[r][c]) return;
+    if (mineFirstClick) { minePlaceMines(r, c); mineFirstClick = false; }
     if (mineBoard[r][c] === -1) {
-        mineGameOver = true;
-        $('mineStatus').textContent = '💥 БУМ! Ты проиграл!';
-        for (let rr = 0; rr < mineSize; rr++) {
-            for (let cc = 0; cc < mineSize; cc++) {
-                if (mineBoard[rr][cc] === -1) mineRevealed[rr][cc] = true;
-            }
-        }
-        mineRender();
-        return;
+        mineGameOver = true; $('mineStatus').textContent = '💥 БУМ! Ты проиграл!';
+        for (let rr = 0; rr < mineSize; rr++) for (let cc = 0; cc < mineSize; cc++) if (mineBoard[rr][cc] === -1) mineRevealed[rr][cc] = true;
+        mineRender(); return;
     }
-
     const stack = [[r, c]];
     while (stack.length) {
         const [rr, cc] = stack.pop();
         if (mineRevealed[rr][cc] || mineFlags[rr][cc]) continue;
         mineRevealed[rr][cc] = true;
         if (mineBoard[rr][cc] === 0) {
-            for (let dr = -1; dr <= 1; dr++) {
-                for (let dc = -1; dc <= 1; dc++) {
-                    const nr = rr + dr, nc = cc + dc;
-                    if (nr >= 0 && nr < mineSize && nc >= 0 && nc < mineSize && !mineRevealed[nr][nc] && !mineFlags[nr][nc]) {
-                        stack.push([nr, nc]);
-                    }
-                }
+            for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+                const nr = rr + dr, nc = cc + dc;
+                if (nr >= 0 && nr < mineSize && nc >= 0 && nc < mineSize && !mineRevealed[nr][nc] && !mineFlags[nr][nc]) stack.push([nr, nc]);
             }
         }
     }
-
-    // Проверка победы
     let win = true;
-    for (let rr = 0; rr < mineSize; rr++) {
-        for (let cc = 0; cc < mineSize; cc++) {
-            if (mineBoard[rr][cc] !== -1 && !mineRevealed[rr][cc]) win = false;
-        }
-    }
-    if (win) {
-        mineGameOver = true;
-        $('mineStatus').textContent = '🏆 Ты выиграл!';
-    }
+    for (let rr = 0; rr < mineSize; rr++) for (let cc = 0; cc < mineSize; cc++) if (mineBoard[rr][cc] !== -1 && !mineRevealed[rr][cc]) win = false;
+    if (win) { mineGameOver = true; $('mineStatus').textContent = '🏆 Ты выиграл!'; }
     mineRender();
 }
-
 function mineToggleFlag(r, c) {
-    if (mineGameOver) return;
-    if (r < 0 || r >= mineSize || c < 0 || c >= mineSize) return;
-    if (mineRevealed[r][c]) return;
-    mineFlags[r][c] = !mineFlags[r][c];
-    mineRender();
+    if (mineGameOver || r < 0 || r >= mineSize || c < 0 || c >= mineSize || mineRevealed[r][c]) return;
+    mineFlags[r][c] = !mineFlags[r][c]; mineRender();
 }
-
 function mineRender() {
     const board = $('mineBoard');
     if (!board) return;
     board.innerHTML = '';
-    for (let r = 0; r < mineSize; r++) {
-        for (let c = 0; c < mineSize; c++) {
-            const btn = document.createElement('button');
-            btn.className = '';
-            if (mineRevealed[r][c]) {
-                btn.classList.add('revealed');
-                if (mineBoard[r][c] === -1) {
-                    btn.textContent = '💣';
-                    btn.classList.add('mine');
-                } else if (mineBoard[r][c] > 0) {
-                    btn.textContent = mineBoard[r][c];
-                } else {
-                    btn.textContent = '';
-                }
-            } else if (mineFlags[r][c]) {
-                btn.textContent = '🚩';
-                btn.classList.add('flagged');
-            } else {
-                btn.textContent = '';
-            }
-            btn.onclick = () => mineReveal(r, c);
-            btn.oncontextmenu = (e) => { e.preventDefault(); mineToggleFlag(r, c); };
-            board.appendChild(btn);
-        }
+    for (let r = 0; r < mineSize; r++) for (let c = 0; c < mineSize; c++) {
+        const btn = document.createElement('button');
+        if (mineRevealed[r][c]) {
+            btn.classList.add('revealed');
+            if (mineBoard[r][c] === -1) { btn.textContent = '💣'; btn.classList.add('mine'); }
+            else if (mineBoard[r][c] > 0) btn.textContent = mineBoard[r][c];
+        } else if (mineFlags[r][c]) { btn.textContent = '🚩'; btn.classList.add('flagged'); }
+        btn.onclick = () => mineReveal(r, c);
+        btn.oncontextmenu = (e) => { e.preventDefault(); mineToggleFlag(r, c); };
+        board.appendChild(btn);
     }
 }
+function mineReset() { mineInit(); }
 
-function mineReset() {
-    mineInit();
-}
-
-// ============================
-// 6. ИНСТРУМЕНТЫ
-// ============================
-
-// ---------- Погода (Open-Meteo) ----------
+// ---- Инструменты ----
 async function getWeather() {
     const city = $('weatherInput')?.value || 'Москва';
-    const result = $('weatherResult');
-    if (!result) return;
     try {
         const cacheKey = `weather_${city}`;
         const cached = localStorage.getItem(cacheKey);
         if (cached) {
             const { data, timestamp } = JSON.parse(cached);
-            if (Date.now() - timestamp < 600000) {
-                result.textContent = `🌤 ${data.city}: ${data.temperature}°C, ${data.description}, ветер ${data.wind} м/с`;
-                return;
-            }
+            if (Date.now() - timestamp < 600000) { $('weatherResult').textContent = `🌤 ${data.city}: ${data.temperature}°C, ${data.description}, ветер ${data.wind} м/с`; return; }
         }
-
         const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=ru`);
         if (!geoRes.ok) throw new Error('Ошибка геокодинга');
         const geoData = await geoRes.json();
         if (!geoData.results || geoData.results.length === 0) throw new Error('Город не найден');
         const { latitude, longitude } = geoData.results[0];
-
-        const weatherRes = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&timezone=auto`
-        );
+        const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&timezone=auto`);
         if (!weatherRes.ok) throw new Error('Ошибка погоды');
         const weatherData = await weatherRes.json();
         const { temperature, windspeed, weathercode } = weatherData.current_weather;
-
-        const conditions = {
-            0: 'Ясно', 1: 'Малооблачно', 2: 'Переменная облачность', 3: 'Пасмурно',
-            45: 'Туман', 48: 'Туман с изморозью',
-            51: 'Легкая морось', 53: 'Умеренная морось', 55: 'Сильная морось',
-            61: 'Легкий дождь', 63: 'Умеренный дождь', 65: 'Сильный дождь',
-            71: 'Легкий снег', 73: 'Умеренный снег', 75: 'Сильный снег',
-            80: 'Ливень', 81: 'Умеренный ливень', 82: 'Сильный ливень',
-            95: 'Гроза', 96: 'Гроза с градом', 99: 'Гроза с сильным градом'
-        };
+        const conditions = {0:'Ясно',1:'Малооблачно',2:'Переменная облачность',3:'Пасмурно',45:'Туман',48:'Туман с изморозью',51:'Легкая морось',53:'Умеренная морось',55:'Сильная морось',61:'Легкий дождь',63:'Умеренный дождь',65:'Сильный дождь',71:'Легкий снег',73:'Умеренный снег',75:'Сильный снег',80:'Ливень',81:'Умеренный ливень',82:'Сильный ливень',95:'Гроза',96:'Гроза с градом',99:'Гроза с сильным градом'};
         const description = conditions[weathercode] || 'Неизвестно';
-
         const data = { city: geoData.results[0].name, temperature, wind: windspeed, description };
         localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: Date.now() }));
-        result.textContent = `🌤 ${data.city}: ${data.temperature}°C, ${data.description}, ветер ${data.wind} м/с`;
-    } catch (e) {
-        result.textContent = `❌ Ошибка: ${e.message}`;
-    }
+        $('weatherResult').textContent = `🌤 ${data.city}: ${data.temperature}°C, ${data.description}, ветер ${data.wind} м/с`;
+    } catch (e) { $('weatherResult').textContent = `❌ Ошибка: ${e.message}`; }
 }
-
-// ---------- Курс валют ----------
 async function getCurrency() {
     const code = $('currencyInput')?.value?.toUpperCase() || 'USD';
-    const result = $('currencyResult');
-    if (!result) return;
     try {
         const res = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
         if (!res.ok) throw new Error('Ошибка API');
         const data = await res.json();
         const rate = data.rates[code];
         if (!rate) throw new Error('Валюта не найдена');
-        result.textContent = `1 USD = ${rate} ${code}`;
-    } catch (e) {
-        result.textContent = `❌ Ошибка: ${e.message}`;
-    }
+        $('currencyResult').textContent = `1 USD = ${rate} ${code}`;
+    } catch (e) { $('currencyResult').textContent = `❌ Ошибка: ${e.message}`; }
 }
-
-// ---------- Генератор паролей ----------
 function generatePassword() {
     const len = parseInt($('passLength')?.value) || 12;
     const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=';
     let pass = '';
-    for (let i = 0; i < len; i++) {
-        pass += chars[Math.floor(Math.random() * chars.length)];
-    }
+    for (let i = 0; i < len; i++) pass += chars[Math.floor(Math.random() * chars.length)];
     $('passwordResult').textContent = pass;
 }
-
-// ---------- Ипотечный калькулятор ----------
 function calcMortgage() {
     const amount = parseFloat($('mortgageAmount')?.value) || 1000000;
     const percent = parseFloat($('mortgagePercent')?.value) || 12;
@@ -882,62 +613,33 @@ function calcMortgage() {
     const monthlyRate = percent / 100 / 12;
     const months = years * 12;
     const payment = amount * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
-    const total = payment * months;
-    $('mortgageResult').textContent = `Ежемесячный платёж: ${payment.toFixed(2)} ₽, всего: ${total.toFixed(2)} ₽`;
+    $('mortgageResult').textContent = `Ежемесячный платёж: ${payment.toFixed(2)} ₽, всего: ${(payment * months).toFixed(2)} ₽`;
 }
 
-// ============================
-// 7. ОРГАНАЙЗЕР
-// ============================
-
-// ---------- Заметки ----------
+// ---- Органайзер ----
 let notes = load('notes', []);
-
 function renderNotes() {
     const list = $('notesList');
     if (!list) return;
-    list.innerHTML = notes.map((n, i) =>
-        `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
-            <span>${n.text} ${n.tag ? `#${n.tag}` : ''}</span>
-            <button class="btn btn-danger" onclick="removeNote(${i})">✕</button>
-        </div>`
-    ).join('');
+    list.innerHTML = notes.map((n, i) => `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);"><span>${escapeHtml(n.text)} ${n.tag ? '#'+escapeHtml(n.tag) : ''}</span><button class="btn btn-danger" onclick="removeNote(${i})">✕</button></div>`).join('');
 }
-
 function addNote() {
     const text = $('noteInput')?.value?.trim();
     const tag = $('noteTag')?.value?.trim();
     if (!text) return;
     notes.push({ text, tag });
     save('notes', notes);
-    $('noteInput').value = '';
-    $('noteTag').value = '';
+    $('noteInput').value = ''; $('noteTag').value = '';
     renderNotes();
 }
+function removeNote(i) { notes.splice(i, 1); save('notes', notes); renderNotes(); }
 
-function removeNote(i) {
-    notes.splice(i, 1);
-    save('notes', notes);
-    renderNotes();
-}
-
-// ---------- Задачи ----------
 let tasks = load('tasks', []);
-
 function renderTasks() {
     const list = $('tasksList');
     if (!list) return;
-    list.innerHTML = tasks.map((t, i) =>
-        `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
-            <span style="${t.done ? 'text-decoration:line-through; opacity:0.5;' : ''}">${t.text}</span>
-            <div>
-                <button class="btn btn-success" onclick="toggleTask(${i})">✔</button>
-                <button class="btn btn-danger" onclick="removeTask(${i})">✕</button>
-            </div>
-        </div>`
-    ).join('');
+    list.innerHTML = tasks.map((t, i) => `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);"><span style="${t.done ? 'text-decoration:line-through; opacity:0.5;' : ''}">${escapeHtml(t.text)}</span><div><button class="btn btn-success" onclick="toggleTask(${i})">✔</button><button class="btn btn-danger" onclick="removeTask(${i})">✕</button></div></div>`).join('');
 }
-
 function addTask() {
     const text = $('taskInput')?.value?.trim();
     if (!text) return;
@@ -946,33 +648,15 @@ function addTask() {
     $('taskInput').value = '';
     renderTasks();
 }
+function toggleTask(i) { tasks[i].done = !tasks[i].done; save('tasks', tasks); renderTasks(); }
+function removeTask(i) { tasks.splice(i, 1); save('tasks', tasks); renderTasks(); }
 
-function toggleTask(i) {
-    tasks[i].done = !tasks[i].done;
-    save('tasks', tasks);
-    renderTasks();
-}
-
-function removeTask(i) {
-    tasks.splice(i, 1);
-    save('tasks', tasks);
-    renderTasks();
-}
-
-// ---------- Список покупок ----------
 let shopItems = load('shop', []);
-
 function renderShop() {
     const list = $('shopList');
     if (!list) return;
-    list.innerHTML = shopItems.map((item, i) =>
-        `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);">
-            <span>${item}</span>
-            <button class="btn btn-danger" onclick="removeShopItem(${i})">✕</button>
-        </div>`
-    ).join('');
+    list.innerHTML = shopItems.map((item, i) => `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);"><span>${escapeHtml(item)}</span><button class="btn btn-danger" onclick="removeShopItem(${i})">✕</button></div>`).join('');
 }
-
 function addShopItem() {
     const text = $('shopInput')?.value?.trim();
     if (!text) return;
@@ -981,61 +665,31 @@ function addShopItem() {
     $('shopInput').value = '';
     renderShop();
 }
+function removeShopItem(i) { shopItems.splice(i, 1); save('shop', shopItems); renderShop(); }
 
-function removeShopItem(i) {
-    shopItems.splice(i, 1);
-    save('shop', shopItems);
-    renderShop();
-}
-
-// ---------- Калории ----------
 let calories = load('calories', []);
-
 function renderCalories() {
     const total = calories.reduce((sum, c) => sum + c.amount, 0);
     $('calTotal').textContent = total;
 }
-
 function addCalorie() {
     const amount = parseFloat($('calInput')?.value);
     const food = $('calFood')?.value?.trim() || 'Еда';
     if (isNaN(amount) || amount <= 0) return;
     calories.push({ amount, food, date: new Date().toDateString() });
     save('calories', calories);
-    $('calInput').value = '';
-    $('calFood').value = '';
+    $('calInput').value = ''; $('calFood').value = '';
     renderCalories();
 }
+function calReset() { calories = calories.filter(c => c.date !== new Date().toDateString()); save('calories', calories); renderCalories(); }
 
-function calReset() {
-    calories = calories.filter(c => c.date !== new Date().toDateString());
-    save('calories', calories);
-    renderCalories();
-}
-
-// ============================
-// 8. НАСТРОЙКИ
-// ============================
+// ---- Настройки ----
 function exportProfile() {
-    const data = {
-        chat: chatHistory,
-        notes, tasks, shopItems, calories,
-        rps: rpsData,
-        theme: currentTheme,
-        lang: currentLang,
-        exported: new Date().toISOString()
-    };
+    const data = { chat: chatHistory, notes, tasks, shopItems, calories, rps: rpsData, theme: currentTheme, lang: currentLang, exported: new Date().toISOString() };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'swinger_profile.json';
-    a.click();
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'swinger_profile.json'; a.click();
 }
-
-function importProfile() {
-    $('importFile').click();
-}
-
+function importProfile() { $('importFile').click(); }
 function importProfileFile(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -1049,29 +703,18 @@ function importProfileFile(event) {
             if (data.shopItems) { shopItems = data.shopItems; save('shop', shopItems); renderShop(); }
             if (data.calories) { calories = data.calories; save('calories', calories); renderCalories(); }
             if (data.rps) { rpsData = data.rps; save('rps', rpsData); }
-            if (data.theme) { applyTheme(data.theme); }
+            if (data.theme) applyTheme(data.theme);
             if (data.lang) { currentLang = data.lang; save('lang', currentLang); $('langLabel').textContent = currentLang === 'ru' ? 'Русский' : 'English'; }
             alert('✅ Профиль импортирован!');
-        } catch (err) {
-            alert('❌ Ошибка импорта: ' + err.message);
-        }
+        } catch (err) { alert('❌ Ошибка импорта: ' + err.message); }
     };
     reader.readAsText(file);
 }
+function clearAllData() { if (confirm('Удалить ВСЕ данные?')) { localStorage.clear(); location.reload(); } }
 
-function clearAllData() {
-    if (confirm('Удалить ВСЕ данные? Это необратимо!')) {
-        localStorage.clear();
-        location.reload();
-    }
-}
-
-// ============================
-// 9. АДМИН-ПАНЕЛЬ
-// ============================
+// ---- Админ ----
 function showStorageStats() {
-    let total = 0;
-    let keys = 0;
+    let total = 0, keys = 0;
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         const val = localStorage.getItem(key);
@@ -1082,32 +725,14 @@ function showStorageStats() {
     $('storageKeys').textContent = keys;
     $('adminLog').textContent = `Статистика обновлена: ${new Date().toLocaleString()}`;
 }
-
-function clearStorage() {
-    if (confirm('Очистить весь localStorage?')) {
-        localStorage.clear();
-        showStorageStats();
-        alert('Очищено!');
-    }
-}
-
+function clearStorage() { if (confirm('Очистить весь localStorage?')) { localStorage.clear(); showStorageStats(); alert('Очищено!'); } }
 function backupStorage() {
     const data = {};
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        data[key] = localStorage.getItem(key);
-    }
+    for (let i = 0; i < localStorage.length; i++) { const key = localStorage.key(i); data[key] = localStorage.getItem(key); }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'storage_backup.json';
-    a.click();
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'storage_backup.json'; a.click();
 }
-
-function restoreBackup() {
-    $('backupFile').click();
-}
-
+function restoreBackup() { $('backupFile').click(); }
 function restoreBackupFile(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -1115,71 +740,176 @@ function restoreBackupFile(event) {
     reader.onload = (e) => {
         try {
             const data = JSON.parse(e.target.result);
-            for (const key in data) {
-                localStorage.setItem(key, data[key]);
-            }
-            alert('✅ Бэкап восстановлен! Страница будет перезагружена.');
-            location.reload();
-        } catch (err) {
-            alert('❌ Ошибка восстановления: ' + err.message);
-        }
+            for (const key in data) localStorage.setItem(key, data[key]);
+            alert('✅ Бэкап восстановлен!'); location.reload();
+        } catch (err) { alert('❌ Ошибка восстановления: ' + err.message); }
     };
     reader.readAsText(file);
 }
 
-// ============================
-// 10. ФОН (CANVAS)
-// ============================
+// ---- Групповой чат (защищённый) ----
+const GROUP_STORAGE_KEY = 'groupChat_messages';
+const GROUP_NICK_KEY = 'groupChat_nick';
+const GROUP_SESSION_KEY = 'groupChat_session';
+const GROUP_CHANNEL_NAME = 'swinger_group_chat';
+const MAX_MESSAGE_LENGTH = 5000;
+const MAX_MESSAGES = 500;
+
+let groupMessages = [];
+let groupNick = localStorage.getItem(GROUP_NICK_KEY) || 'Гость';
+let groupSessionId = localStorage.getItem(GROUP_SESSION_KEY) || ('sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8));
+localStorage.setItem(GROUP_SESSION_KEY, groupSessionId);
+
+let groupChannel = null;
+try {
+    groupChannel = new BroadcastChannel(GROUP_CHANNEL_NAME);
+    groupChannel.onmessage = (e) => {
+        const data = e.data;
+        if (data && data.type === 'message' && data.payload) {
+            if (data.payload.sessionId === groupSessionId) return;
+            if (!validateGroupMessage(data.payload)) return;
+            groupMessages.push(data.payload);
+            trimGroupMessages();
+            saveGroupMessages();
+            renderGroupMessages();
+        }
+    };
+} catch(e) { console.warn('BroadcastChannel не поддерживается'); }
+
+function validateGroupMessage(msg) {
+    if (!msg || typeof msg !== 'object') return false;
+    if (typeof msg.text !== 'string' || msg.text.length > MAX_MESSAGE_LENGTH) return false;
+    if (typeof msg.nick !== 'string' || msg.nick.length > 50) return false;
+    if (typeof msg.timestamp !== 'number' || msg.timestamp > Date.now() + 60000) return false;
+    if (typeof msg.sessionId !== 'string' || msg.sessionId.length < 10) return false;
+    if (/<[^>]*>/g.test(msg.text)) return false;
+    return true;
+}
+
+function loadGroupMessages() {
+    try {
+        const data = localStorage.getItem(GROUP_STORAGE_KEY);
+        groupMessages = data ? JSON.parse(data) : [];
+        const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+        groupMessages = groupMessages.filter(m => m.timestamp > weekAgo).filter(validateGroupMessage).slice(-MAX_MESSAGES);
+        saveGroupMessages();
+    } catch(e) { groupMessages = []; }
+}
+
+function saveGroupMessages() {
+    try { localStorage.setItem(GROUP_STORAGE_KEY, JSON.stringify(groupMessages.slice(-MAX_MESSAGES))); } catch(e) {}
+}
+
+function trimGroupMessages() {
+    if (groupMessages.length > MAX_MESSAGES) groupMessages = groupMessages.slice(-MAX_MESSAGES);
+}
+
+function renderGroupMessages() {
+    const box = document.getElementById('groupChatBox');
+    if (!box) return;
+    box.innerHTML = groupMessages.map(msg => {
+        const time = new Date(msg.timestamp).toLocaleTimeString();
+        const isOwn = msg.sessionId === groupSessionId;
+        const safeNick = escapeHtml(msg.nick);
+        const safeText = escapeHtml(msg.text);
+        return `<div style="display:flex; flex-direction:column; align-items:${isOwn ? 'flex-end' : 'flex-start'}; margin:4px 0;">
+            <div style="background:${isOwn ? '#4a6cf7' : 'rgba(255,255,255,0.08)'}; padding:8px 14px; border-radius:16px; max-width:80%; word-wrap:break-word;">
+                <strong style="font-size:12px; opacity:0.6;">${safeNick}</strong>
+                <div>${safeText}</div>
+                <div style="font-size:10px; opacity:0.4; text-align:right;">${time}</div>
+            </div>
+        </div>`;
+    }).join('');
+    box.scrollTop = box.scrollHeight;
+}
+
+function groupChatSend() {
+    const input = document.getElementById('groupChatInput');
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) return;
+    if (text.length > MAX_MESSAGE_LENGTH) {
+        alert(`Сообщение не может быть длиннее ${MAX_MESSAGE_LENGTH} символов`);
+        return;
+    }
+    if (/<[^>]*>/g.test(text)) {
+        alert('Сообщение не должно содержать HTML-теги');
+        return;
+    }
+    const msg = { nick: groupNick, text, timestamp: Date.now(), sessionId: groupSessionId, id: Date.now() + Math.random() };
+    groupMessages.push(msg);
+    trimGroupMessages();
+    saveGroupMessages();
+    renderGroupMessages();
+    input.value = '';
+    if (groupChannel) groupChannel.postMessage({ type: 'message', payload: msg });
+}
+
+function groupChatChangeNick() {
+    const newNick = prompt('Введите новый ник (до 30 символов):', groupNick);
+    if (newNick && newNick.trim()) {
+        const trimmed = newNick.trim().slice(0, 30);
+        if (/<[^>]*>/g.test(trimmed)) { alert('Ник не должен содержать HTML-теги'); return; }
+        groupNick = trimmed;
+        localStorage.setItem(GROUP_NICK_KEY, groupNick);
+        const display = document.getElementById('groupChatNick');
+        if (display) display.textContent = groupNick;
+    }
+}
+
+function groupChatClear() {
+    if (confirm('Очистить всю историю группового чата?')) {
+        groupMessages = [];
+        saveGroupMessages();
+        renderGroupMessages();
+    }
+}
+
+function groupChatExport() {
+    const blob = new Blob([JSON.stringify(groupMessages, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `group_chat_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+}
+
+// Инициализация группового чата
+loadGroupMessages();
+renderGroupMessages();
+document.getElementById('groupChatNick').textContent = groupNick;
+
+// Глобальные функции для группового чата
+window.groupChatSend = groupChatSend;
+window.groupChatChangeNick = groupChatChangeNick;
+window.groupChatClear = groupChatClear;
+window.groupChatExport = groupChatExport;
+
+// ---- Фон Canvas ----
 (function initCanvas() {
     const canvas = document.getElementById('bgCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let w, h, particles = [];
-
-    function resize() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-    }
+    function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
     window.addEventListener('resize', resize);
     resize();
-
-    for (let i = 0; i < 40; i++) {
-        particles.push({
-            x: Math.random() * w,
-            y: Math.random() * h,
-            vx: (Math.random() - 0.5) * 0.3,
-            vy: (Math.random() - 0.5) * 0.3,
-            r: Math.random() * 2 + 1,
-            a: Math.random() * 0.5 + 0.2
-        });
-    }
-
+    for (let i = 0; i < 40; i++) particles.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, r: Math.random() * 2 + 1, a: Math.random() * 0.5 + 0.2 });
     function draw() {
         ctx.clearRect(0, 0, w, h);
         particles.forEach(p => {
-            p.x += p.vx;
-            p.y += p.vy;
+            p.x += p.vx; p.y += p.vy;
             if (p.x < 0 || p.x > w) p.vx *= -1;
             if (p.y < 0 || p.y > h) p.vy *= -1;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
             ctx.fillStyle = `rgba(255,255,255,${p.a})`;
             ctx.fill();
         });
-        // Линии между близкими частицами
-        for (let i = 0; i < particles.length; i++) {
-            for (let j = i + 1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 150) {
-                    ctx.beginPath();
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.strokeStyle = `rgba(255,255,255,${0.05 * (1 - dist/150)})`;
-                    ctx.lineWidth = 0.5;
-                    ctx.stroke();
-                }
+        for (let i = 0; i < particles.length; i++) for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < 150) {
+                ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.strokeStyle = `rgba(255,255,255,${0.05 * (1 - dist/150)})`;
+                ctx.lineWidth = 0.5; ctx.stroke();
             }
         }
         requestAnimationFrame(draw);
@@ -1187,63 +917,29 @@ function restoreBackupFile(event) {
     draw();
 })();
 
-// ============================
-// 11. ИНИЦИАЛИЗАЦИЯ
-// ============================
+// ---- Инициализация ----
 function init() {
     applyTheme(currentTheme);
     $('langLabel').textContent = currentLang === 'ru' ? 'Русский' : 'English';
-    renderChat();
-    renderTTT();
-    mineInit();
-    renderNotes();
-    renderTasks();
-    renderShop();
-    renderCalories();
+    renderChat(); renderTTT(); mineInit(); renderNotes(); renderTasks(); renderShop(); renderCalories();
     $('rpsPlayer').textContent = rpsData.player;
     $('rpsBot').textContent = rpsData.bot;
     $('rpsDraw').textContent = rpsData.draw;
     showTab('chat');
     // Глобальные функции для HTML
-    window.sendMessage = sendMessage;
-    window.startVoice = startVoice;
-    window.chatClear = chatClear;
-    window.chatExport = chatExport;
-    window.guessNumber = guessNumberGame;
-    window.rpsPlay = rpsPlay;
-    window.rpsReset = rpsReset;
-    window.tttClick = tttClick;
-    window.tttReset = tttReset;
-    window.mineReveal = mineReveal;
-    window.mineToggleFlag = mineToggleFlag;
-    window.mineReset = mineReset;
-    window.getWeather = getWeather;
-    window.getCurrency = getCurrency;
-    window.generatePassword = generatePassword;
-    window.calcMortgage = calcMortgage;
-    window.addNote = addNote;
-    window.removeNote = removeNote;
-    window.addTask = addTask;
-    window.toggleTask = toggleTask;
-    window.removeTask = removeTask;
-    window.addShopItem = addShopItem;
-    window.removeShopItem = removeShopItem;
-    window.addCalorie = addCalorie;
-    window.calReset = calReset;
-    window.exportProfile = exportProfile;
-    window.importProfile = importProfile;
-    window.importProfileFile = importProfileFile;
-    window.clearAllData = clearAllData;
-    window.showStorageStats = showStorageStats;
-    window.clearStorage = clearStorage;
-    window.backupStorage = backupStorage;
-    window.restoreBackup = restoreBackup;
-    window.restoreBackupFile = restoreBackupFile;
-    window.toggleTheme = toggleTheme;
-    window.toggleLang = toggleLang;
-    window.showTab = showTab;
-    console.log('🌀 SWINGER v3.0 загружен!');
-    console.log('📌 Все 5 критических проблем исправлены.');
+    window.sendMessage = sendMessage; window.startVoice = startVoice; window.chatClear = chatClear; window.chatExport = chatExport;
+    window.guessNumberGame = guessNumberGame; window.rpsPlay = rpsPlay; window.rpsReset = rpsReset;
+    window.tttClick = tttClick; window.tttReset = tttReset;
+    window.mineReveal = mineReveal; window.mineToggleFlag = mineToggleFlag; window.mineReset = mineReset;
+    window.getWeather = getWeather; window.getCurrency = getCurrency; window.generatePassword = generatePassword; window.calcMortgage = calcMortgage;
+    window.addNote = addNote; window.removeNote = removeNote;
+    window.addTask = addTask; window.toggleTask = toggleTask; window.removeTask = removeTask;
+    window.addShopItem = addShopItem; window.removeShopItem = removeShopItem;
+    window.addCalorie = addCalorie; window.calReset = calReset;
+    window.exportProfile = exportProfile; window.importProfile = importProfile; window.importProfileFile = importProfileFile; window.clearAllData = clearAllData;
+    window.showStorageStats = showStorageStats; window.clearStorage = clearStorage; window.backupStorage = backupStorage; window.restoreBackup = restoreBackup; window.restoreBackupFile = restoreBackupFile;
+    window.toggleTheme = toggleTheme; window.toggleLang = toggleLang; window.showTab = showTab;
+    console.log('🌀 SWINGER v3.0 загружен! Групповой чат защищён.');
 }
 
 document.addEventListener('DOMContentLoaded', init);
