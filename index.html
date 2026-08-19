@@ -3,153 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWINGER — Гибридный портал</title>
+    <title>SWINGER v4</title>
     <style>
+        /* ===== БАЗА ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            transition: background 0.3s, color 0.3s;
-            min-height: 100vh;
-            background: #0b0e14;
-            color: #e0e0e0;
-        }
+        body { font-family: 'Segoe UI', sans-serif; background: #0b0e14; color: #e0e0e0; transition: 0.3s; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
         .hidden { display: none !important; }
-        body.theme-dark { background: #0b0e14; color: #e0e0e0; }
-        body.theme-light { background: #f0f2f5; color: #1a1a1a; }
-        body.theme-acid { background: #1a0a2e; color: #b3ff00; }
-        body.theme-orange { background: #1a0a00; color: #ffa500; }
-        body.theme-forest { background: #0a1a0a; color: #7ddf7d; }
-        .card {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(12px);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        }
-        .theme-light .card { background: rgba(255,255,255,0.7); border-color: rgba(0,0,0,0.08); }
-        .theme-acid .card { border-color: #b3ff00; }
-        .theme-orange .card { border-color: #ffa500; }
-        .theme-forest .card { border-color: #7ddf7d; }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            background: #2a2a3a;
-            color: #fff;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.2s;
-            margin: 4px;
-        }
-        .btn:hover { transform: scale(1.03); background: #3a3a5a; }
+        .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); border-radius: 16px; padding: 24px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.08); }
+        .btn { padding: 10px 20px; border: none; border-radius: 10px; background: #2a2a3a; color: #fff; cursor: pointer; transition: 0.2s; margin: 4px; }
+        .btn:hover { transform: scale(1.03); }
         .btn-primary { background: #4a6cf7; }
-        .btn-primary:hover { background: #5a7cf7; }
         .btn-danger { background: #e74c3c; }
-        .btn-danger:hover { background: #f05a4a; }
         .btn-success { background: #2ecc71; }
-        .btn-success:hover { background: #3ddc81; }
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            background: rgba(255,255,255,0.06);
-            color: inherit;
-            font-size: 14px;
-            margin: 4px 0;
-        }
-        .theme-light input, .theme-light select, .theme-light textarea {
-            background: rgba(0,0,0,0.06);
-            border-color: rgba(0,0,0,0.15);
-        }
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #4a6cf7;
-            box-shadow: 0 0 0 3px rgba(74,108,247,0.2);
-        }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; background: rgba(255,255,255,0.06); color: inherit; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-        @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
-        .chat-box {
-            height: 300px;
-            overflow-y: auto;
-            background: rgba(0,0,0,0.2);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 12px;
-        }
-        .chat-msg {
-            padding: 8px 12px;
-            margin: 4px 0;
-            border-radius: 12px;
-            max-width: 80%;
-        }
+        .chat-box { height: 300px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+        .chat-msg { padding: 8px 12px; margin: 4px 0; border-radius: 12px; max-width: 80%; }
         .chat-msg.user { background: #4a6cf7; align-self: flex-end; margin-left: auto; }
         .chat-msg.bot { background: rgba(255,255,255,0.08); }
-        .game-board {
-            display: grid;
-            gap: 4px;
-            max-width: 300px;
-            margin: 0 auto;
-        }
-        .game-board button {
-            aspect-ratio: 1;
-            font-size: 24px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 8px;
-            cursor: pointer;
-            color: inherit;
-            transition: 0.15s;
-        }
-        .game-board button:hover { background: rgba(255,255,255,0.15); }
-        .game-board button:disabled { opacity: 0.4; cursor: not-allowed; }
-        .mine-board {
-            display: grid;
-            gap: 2px;
-            max-width: 250px;
-            margin: 0 auto;
-        }
-        .mine-board button {
-            aspect-ratio: 1;
-            font-size: 16px;
-            font-weight: bold;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 4px;
-            cursor: pointer;
-            color: inherit;
-        }
-        .mine-board button.revealed { background: rgba(255,255,255,0.05); }
-        .mine-board button.mine { background: #e74c3c; }
-        .mine-board button.flagged { background: #f1c40f; color: #000; }
-        #bgCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-        @media (max-width: 600px) {
-            .container { padding: 12px; }
-            .card { padding: 16px; }
-            .grid-2, .grid-3 { grid-template-columns: 1fr; }
-        }
+        .game-board { display: grid; gap: 4px; max-width: 300px; margin: 0 auto; grid-template-columns: repeat(3,1fr); }
+        .game-board button { aspect-ratio: 1; font-size: 24px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; cursor: pointer; color: inherit; }
+        .mine-board { display: grid; gap: 2px; max-width: 250px; margin: 0 auto; grid-template-columns: repeat(5,1fr); }
+        .mine-board button { aspect-ratio: 1; font-size: 16px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; cursor: pointer; color: inherit; }
+        #bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        @media (max-width:600px){ .grid-2 { grid-template-columns: 1fr; } .container { padding: 12px; } }
     </style>
 </head>
 <body>
-
 <canvas id="bgCanvas"></canvas>
-
 <div class="container" id="app">
     <header class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-        <h1>🌀 SWINGER</h1>
+        <h1>🌀 SWINGER v4</h1>
         <div>
             <button class="btn" onclick="toggleTheme('dark')">🌙</button>
             <button class="btn" onclick="toggleTheme('light')">☀️</button>
@@ -159,7 +44,6 @@
             <button class="btn" onclick="toggleLang()">🌐</button>
         </div>
     </header>
-
     <div class="card" style="display:flex; gap:8px; flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="showTab('chat')">💬 Чат</button>
         <button class="btn" onclick="showTab('games')">🎮 Игры</button>
@@ -167,279 +51,144 @@
         <button class="btn" onclick="showTab('organizer')">📋 Органайзер</button>
         <button class="btn" onclick="showTab('settings')">⚙️ Настройки</button>
         <button class="btn" onclick="showTab('admin')">👑 Админ</button>
-        <button class="btn" data-tab="groupchat" onclick="showTab('groupchat')">💬 Групповой чат</button>
+        <button class="btn" onclick="showTab('groupchat')">💬 Групповой чат</button>
     </div>
 
     <!-- Чат -->
-    <div id="tab-chat" class="tab">
-        <div class="card">
-            <h3>💬 Чат с памятью</h3>
-            <div class="chat-box" id="chatBox"></div>
-            <div style="display:flex; gap:8px;">
-                <input type="text" id="chatInput" placeholder="Напиши что-нибудь..." style="flex:1;">
-                <button class="btn btn-primary" onclick="sendMessage()">➤</button>
-                <button class="btn" onclick="startVoice()">🎤</button>
-            </div>
-            <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
-                <button class="btn btn-success" onclick="chatClear()">🗑 Очистить</button>
-                <button class="btn" onclick="chatExport()">💾 Экспорт</button>
-            </div>
-        </div>
-    </div>
+    <div id="tab-chat" class="tab"><div class="card"><h3>💬 Чат</h3><div class="chat-box" id="chatBox"></div><div style="display:flex; gap:8px;"><input type="text" id="chatInput" placeholder="Напиши..." style="flex:1;"><button class="btn btn-primary" onclick="sendMessage()">➤</button><button class="btn" onclick="startVoice()">🎤</button></div><div style="margin-top:8px;"><button class="btn btn-success" onclick="clearChat()">🗑 Очистить</button><button class="btn" onclick="exportChat()">💾 Экспорт</button></div></div></div>
 
     <!-- Игры -->
-    <div id="tab-games" class="tab hidden">
-        <div class="grid-2">
-            <div class="card"><h4>🎯 Угадай число (1-100)</h4>
-                <input type="number" id="guessInput" placeholder="Твоё число">
-                <button class="btn btn-primary" onclick="guessNumberGame()">Проверить</button>
-                <p id="guessResult">Введи число</p>
-                <p>Попыток: <span id="guessAttempts">0</span></p>
-            </div>
-            <div class="card"><h4>🗿 Камень-ножницы-бумага</h4>
-                <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <button class="btn" onclick="rpsPlay('rock')">🗿</button>
-                    <button class="btn" onclick="rpsPlay('paper')">📄</button>
-                    <button class="btn" onclick="rpsPlay('scissors')">✂️</button>
-                </div>
-                <p id="rpsResult">Нажми на кнопку</p>
-                <p>Ты: <span id="rpsPlayer">0</span> | Бот: <span id="rpsBot">0</span> | Ничьи: <span id="rpsDraw">0</span></p>
-                <button class="btn" onclick="rpsReset()">🔄 Сброс</button>
-            </div>
-            <div class="card"><h4>❌ Крестики-нолики</h4>
-                <div class="game-board" id="tttBoard" style="grid-template-columns: repeat(3,1fr);"></div>
-                <p id="tttStatus">Твой ход</p>
-                <button class="btn" onclick="tttReset()">🔄 Новая игра</button>
-            </div>
-            <div class="card"><h4>💣 Сапёр (5x5)</h4>
-                <div class="mine-board" id="mineBoard" style="grid-template-columns: repeat(5,1fr);"></div>
-                <p id="mineStatus">Нажми на клетку</p>
-                <button class="btn" onclick="mineReset()">🔄 Новая игра</button>
-            </div>
-        </div>
-    </div>
+    <div id="tab-games" class="tab hidden"><div class="grid-2">
+        <div class="card"><h4>🎯 Угадай число</h4><input type="number" id="guessInput" placeholder="Число"><button class="btn btn-primary" onclick="guessGame()">Проверить</button><p id="guessResult">Введи число</p></div>
+        <div class="card"><h4>🗿 RPS</h4><div><button class="btn" onclick="rpsPlay('rock')">🗿</button><button class="btn" onclick="rpsPlay('paper')">📄</button><button class="btn" onclick="rpsPlay('scissors')">✂️</button></div><p id="rpsResult">Нажми</p></div>
+        <div class="card"><h4>❌ Крестики-нолики</h4><div class="game-board" id="tttBoard"></div><p id="tttStatus">Твой ход</p><button class="btn" onclick="tttReset()">🔄</button></div>
+        <div class="card"><h4>💣 Сапёр</h4><div class="mine-board" id="mineBoard"></div><p id="mineStatus">Нажми</p><button class="btn" onclick="mineReset()">🔄</button></div>
+    </div></div>
 
     <!-- Инструменты -->
-    <div id="tab-tools" class="tab hidden">
-        <div class="grid-2">
-            <div class="card"><h4>🌤 Погода</h4>
-                <input type="text" id="weatherInput" placeholder="Город" value="Москва">
-                <button class="btn btn-primary" onclick="getWeather()">Узнать</button>
-                <p id="weatherResult">Введите город</p>
-            </div>
-            <div class="card"><h4>💰 Курс валют</h4>
-                <input type="text" id="currencyInput" placeholder="Напр. USD" value="USD">
-                <button class="btn btn-primary" onclick="getCurrency()">Узнать</button>
-                <p id="currencyResult">Введите код валюты</p>
-            </div>
-            <div class="card"><h4>🔐 Генератор паролей</h4>
-                <input type="number" id="passLength" value="12" min="4" max="64">
-                <button class="btn btn-primary" onclick="generatePassword()">Сгенерировать</button>
-                <p id="passwordResult">Нажми кнопку</p>
-            </div>
-            <div class="card"><h4>🏠 Ипотечный калькулятор</h4>
-                <input type="number" id="mortgageAmount" placeholder="Сумма" value="1000000">
-                <input type="number" id="mortgagePercent" placeholder="Процент" value="12">
-                <input type="number" id="mortgageYears" placeholder="Лет" value="15">
-                <button class="btn btn-primary" onclick="calcMortgage()">Рассчитать</button>
-                <p id="mortgageResult">Заполни поля</p>
-            </div>
-        </div>
-    </div>
+    <div id="tab-tools" class="tab hidden"><div class="grid-2">
+        <div class="card"><h4>🌤 Погода</h4><input type="text" id="weatherInput" placeholder="Город"><button class="btn btn-primary" onclick="fetchWeather()">Узнать</button><p id="weatherResult">Введите город</p></div>
+        <div class="card"><h4>💰 Курс</h4><input type="text" id="currencyInput" placeholder="USD"><button class="btn btn-primary" onclick="fetchCurrency()">Узнать</button><p id="currencyResult">Введите код</p></div>
+        <div class="card"><h4>🔐 Пароль</h4><input type="number" id="passLength" value="12"><button class="btn btn-primary" onclick="generatePassword()">Сгенерировать</button><p id="passwordResult">Нажми</p></div>
+        <div class="card"><h4>🏠 Ипотека</h4><input type="number" id="mortgageAmount" placeholder="Сумма"><input type="number" id="mortgagePercent" placeholder="%"><input type="number" id="mortgageYears" placeholder="Лет"><button class="btn btn-primary" onclick="calcMortgage()">Рассчитать</button><p id="mortgageResult">Заполни</p></div>
+    </div></div>
 
     <!-- Органайзер -->
-    <div id="tab-organizer" class="tab hidden">
-        <div class="grid-2">
-            <div class="card"><h4>📝 Заметки</h4>
-                <input type="text" id="noteInput" placeholder="Текст заметки">
-                <input type="text" id="noteTag" placeholder="Тег (необязательно)">
-                <button class="btn btn-primary" onclick="addNote()">➕ Добавить</button>
-                <div id="notesList"></div>
-            </div>
-            <div class="card"><h4>✅ Задачи</h4>
-                <input type="text" id="taskInput" placeholder="Новая задача">
-                <button class="btn btn-primary" onclick="addTask()">➕ Добавить</button>
-                <div id="tasksList"></div>
-            </div>
-            <div class="card"><h4>🛒 Список покупок</h4>
-                <input type="text" id="shopInput" placeholder="Что купить?">
-                <button class="btn btn-primary" onclick="addShopItem()">➕ Добавить</button>
-                <div id="shopList"></div>
-            </div>
-            <div class="card"><h4>🔥 Калории</h4>
-                <input type="number" id="calInput" placeholder="Ккал">
-                <input type="text" id="calFood" placeholder="Продукт">
-                <button class="btn btn-primary" onclick="addCalorie()">➕ Добавить</button>
-                <p>Норма: <input type="number" id="calNorm" value="2000" style="width:80px;"></p>
-                <p>Сегодня: <span id="calTotal">0</span> ккал</p>
-                <button class="btn" onclick="calReset()">🔄 Сброс дня</button>
-            </div>
-        </div>
-    </div>
+    <div id="tab-organizer" class="tab hidden"><div class="grid-2">
+        <div class="card"><h4>📝 Заметки</h4><input type="text" id="noteInput" placeholder="Текст"><button class="btn btn-primary" onclick="addNote()">➕</button><div id="notesList"></div></div>
+        <div class="card"><h4>✅ Задачи</h4><input type="text" id="taskInput" placeholder="Задача"><button class="btn btn-primary" onclick="addTask()">➕</button><div id="tasksList"></div></div>
+        <div class="card"><h4>🛒 Список покупок</h4><input type="text" id="shopInput" placeholder="Что купить?"><button class="btn btn-primary" onclick="addShopItem()">➕</button><div id="shopList"></div></div>
+        <div class="card"><h4>🔥 Калории</h4><input type="number" id="calInput" placeholder="Ккал"><button class="btn btn-primary" onclick="addCalorie()">➕</button><p>Сегодня: <span id="calTotal">0</span></p></div>
+    </div></div>
 
     <!-- Настройки -->
-    <div id="tab-settings" class="tab hidden">
-        <div class="card">
-            <h3>⚙️ Настройки</h3>
-            <p>Язык: <span id="langLabel">Русский</span></p>
-            <p>Тема: <span id="themeLabel">Тёмная</span></p>
-            <button class="btn" onclick="exportProfile()">💾 Экспорт профиля</button>
-            <button class="btn" onclick="importProfile()">📂 Импорт профиля</button>
-            <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importProfileFile(event)">
-            <button class="btn btn-danger" onclick="clearAllData()">🗑 Очистить все данные</button>
-        </div>
-    </div>
+    <div id="tab-settings" class="tab hidden"><div class="card"><h3>⚙️ Настройки</h3><p>Язык: <span id="langLabel">Русский</span></p><p>Тема: <span id="themeLabel">Тёмная</span></p><button class="btn" onclick="exportProfile()">💾 Экспорт</button><button class="btn" onclick="importProfile()">📂 Импорт</button><button class="btn btn-danger" onclick="clearAllData()">🗑 Очистить всё</button></div></div>
 
     <!-- Админ -->
-    <div id="tab-admin" class="tab hidden">
-        <div class="card">
-            <h3>👑 Админ-панель</h3>
-            <p>Размер localStorage: <span id="storageSize">0</span> байт</p>
-            <p>Количество ключей: <span id="storageKeys">0</span></p>
-            <button class="btn" onclick="showStorageStats()">📊 Обновить</button>
-            <button class="btn btn-danger" onclick="clearStorage()">🗑 Очистить localStorage</button>
-            <button class="btn btn-success" onclick="backupStorage()">💾 Создать бэкап</button>
-            <button class="btn" onclick="restoreBackup()">📂 Восстановить бэкап</button>
-            <input type="file" id="backupFile" accept=".json" style="display:none;" onchange="restoreBackupFile(event)">
-            <pre id="adminLog" style="background:rgba(0,0,0,0.3); padding:12px; border-radius:8px; max-height:200px; overflow:auto; margin-top:12px;"></pre>
-        </div>
-    </div>
+    <div id="tab-admin" class="tab hidden"><div class="card"><h3>👑 Админ</h3><p>Размер: <span id="storageSize">0</span> байт</p><button class="btn" onclick="showStorageStats()">📊 Обновить</button><button class="btn btn-danger" onclick="clearStorage()">🗑 Очистить localStorage</button><button class="btn btn-success" onclick="backupStorage()">💾 Бэкап</button></div></div>
 
     <!-- Групповой чат -->
-    <div id="tab-groupchat" class="tab hidden">
-        <div class="card">
-            <h3>💬 Групповой чат (защищённый)</h3>
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
-                <div>
-                    <span>👤 Ник: </span>
-                    <strong id="groupChatNick">Гость</strong>
-                    <button class="btn" onclick="groupChatChangeNick()">✏️ Сменить</button>
-                </div>
-                <div>
-                    <button class="btn btn-danger" onclick="groupChatClear()">🗑 Очистить</button>
-                    <button class="btn" onclick="groupChatExport()">💾 Экспорт</button>
-                </div>
-            </div>
-            <div id="groupChatBox" style="height:350px; overflow-y:auto; background:rgba(0,0,0,0.2); border-radius:12px; padding:12px; margin-bottom:12px;"></div>
-            <div style="display:flex; gap:8px;">
-                <input type="text" id="groupChatInput" placeholder="Введите сообщение..." style="flex:1;" maxlength="5000">
-                <button class="btn btn-primary" onclick="groupChatSend()">➤ Отправить</button>
-            </div>
-            <div style="margin-top:8px; font-size:12px; opacity:0.5;">
-                🔒 Все сообщения экранируются. Длина сообщения ограничена 5000 символов.
-            </div>
-        </div>
-    </div>
-
-    <footer class="card" style="text-align:center; font-size:12px; opacity:0.6;">
-        SWINGER v3.0 — Гибридный портал. Сделано для себя и для портфолио.
-    </footer>
+    <div id="tab-groupchat" class="tab hidden"><div class="card"><h3>💬 Групповой чат</h3><div id="groupChatBox" style="height:300px; overflow-y:auto; background:rgba(0,0,0,0.2); border-radius:12px; padding:12px; margin-bottom:12px;"></div><div style="display:flex; gap:8px;"><input type="text" id="groupChatInput" placeholder="Сообщение..."><button class="btn btn-primary" onclick="groupChatSend()">➤</button></div></div></div>
 </div>
 
 <script>
-// ======================================================================
-//   ПОЛНЫЙ КОД — SWINGER v3.0
-//   ВКЛЮЧАЕТ: ЧАТ, ИГРЫ, ИНСТРУМЕНТЫ, ОРГАНАЙЗЕР, НАСТРОЙКИ, АДМИН,
-//   ЗАЩИЩЁННЫЙ ГРУППОВОЙ ЧАТ (BroadcastChannel + localStorage)
-// ======================================================================
+// ================================================================
+//   STORAGEMANAGER
+// ================================================================
+const StorageManager = {
+    _prefix: 'swinger_',
+    _version: '2.0.0',
+    get(key, fallback = null) {
+        try {
+            const raw = localStorage.getItem(this._prefix + key);
+            if (!raw) return fallback;
+            const data = JSON.parse(raw);
+            return data._value !== undefined ? data._value : fallback;
+        } catch { return fallback; }
+    },
+    set(key, value) {
+        try {
+            localStorage.setItem(this._prefix + key, JSON.stringify({ _version: this._version, _value: value, _updated: Date.now() }));
+            return true;
+        } catch { return false; }
+    },
+    remove(key) { try { localStorage.removeItem(this._prefix + key); } catch {} },
+    clear() { for (const key of Object.keys(localStorage)) if (key.startsWith(this._prefix)) localStorage.removeItem(key); }
+};
 
-// ---- Утилиты ----
-function $(id) { return document.getElementById(id); }
-function save(key, data) { try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {} }
-function load(key, def) { try { const d = localStorage.getItem(key); return d ? JSON.parse(d) : def; } catch(e) { return def; } }
-function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+// ================================================================
+//   СТАРЫЕ ОБЁРТКИ (для совместимости)
+// ================================================================
+function storageSet(k, v) { return StorageManager.set(k, v); }
+function storageGet(k, d = null) { return StorageManager.get(k, d); }
+function storageRemove(k) { StorageManager.remove(k); }
 
-// ---- Тема + Язык ----
-let currentTheme = load('theme', 'dark');
-let currentLang = load('lang', 'ru');
-
-function applyTheme(theme) {
-    document.body.className = 'theme-' + theme;
-    document.body.style.background = { dark:'#0b0e14', light:'#f0f2f5', acid:'#1a0a2e', orange:'#1a0a00', forest:'#0a1a0a' }[theme] || '#0b0e14';
-    document.body.style.color = { dark:'#e0e0e0', light:'#1a1a1a', acid:'#b3ff00', orange:'#ffa500', forest:'#7ddf7d' }[theme] || '#e0e0e0';
-    currentTheme = theme; save('theme', theme);
-    $('themeLabel').textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
-}
-function toggleTheme(theme) { applyTheme(theme); }
-function toggleLang() {
-    currentLang = currentLang === 'ru' ? 'en' : 'ru';
-    save('lang', currentLang);
-    $('langLabel').textContent = currentLang === 'ru' ? 'Русский' : 'English';
-}
-
-// ---- Вкладки ----
-function showTab(id) {
-    document.querySelectorAll('.tab').forEach(el => el.classList.add('hidden'));
-    const tab = $('tab-' + id);
-    if (tab) tab.classList.remove('hidden');
-    document.querySelectorAll('.card button').forEach(b => b.classList.remove('btn-primary'));
-    document.querySelectorAll('.card button').forEach(b => {
-        if (b.textContent.includes(id) || b.dataset.tab === id) b.classList.add('btn-primary');
-    });
-    if (id === 'admin') showStorageStats();
-    if (id === 'groupchat') { loadGroupMessages(); renderGroupMessages(); }
-}
-
-// ---- Чат ----
-let chatHistory = load('chat', []);
-let chatResponses = ['Привет! Как дела?', 'Интересно... расскажи ещё.', 'Я тебя понимаю.', 'Хороший вопрос!', 'Может, сыграем во что-то?', 'Как твой день?', 'Что нового?', 'Ты крутой собеседник.', 'Спасибо за вопрос!', 'Давай пообщаемся ещё.'];
-
+// ================================================================
+//   ЧАТ
+// ================================================================
+let chatHistory = storageGet('chat', []);
 function renderChat() {
-    const box = $('chatBox');
+    const box = document.getElementById('chatBox');
     if (!box) return;
-    box.innerHTML = chatHistory.map(m => `<div class="chat-msg ${m.role}">${escapeHtml(m.text)}</div>`).join('');
+    box.innerHTML = chatHistory.map(m => `<div class="chat-msg ${m.role}">${m.text}</div>`).join('');
     box.scrollTop = box.scrollHeight;
 }
-
 function sendMessage() {
-    const input = $('chatInput');
+    const input = document.getElementById('chatInput');
     if (!input) return;
     const text = input.value.trim();
     if (!text) return;
     chatHistory.push({ role: 'user', text });
-    save('chat', chatHistory);
+    storageSet('chat', chatHistory);
     input.value = '';
     renderChat();
+    // Простой ответ
     setTimeout(() => {
-        let reply = chatResponses[Math.floor(Math.random() * chatResponses.length)];
-        if (text.toLowerCase().includes('привет') || text.toLowerCase().includes('hello')) reply = currentLang === 'ru' ? 'Привет! Как твои дела?' : 'Hello! How are you?';
+        const reply = ['Привет!', 'Интересно...', 'Расскажи ещё.', 'Хороший вопрос!'][Math.floor(Math.random() * 4)];
         chatHistory.push({ role: 'bot', text: reply });
-        save('chat', chatHistory);
+        storageSet('chat', chatHistory);
         renderChat();
     }, 300);
 }
-function chatClear() { chatHistory = []; save('chat', chatHistory); renderChat(); }
-function chatExport() {
+function clearChat() { chatHistory = []; storageSet('chat', chatHistory); renderChat(); }
+function exportChat() {
     const blob = new Blob([JSON.stringify(chatHistory, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'chat_backup.json'; a.click();
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'chat.json'; a.click();
 }
 function startVoice() {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    if (!recognition) { alert('Голосовой ввод не поддерживается'); return; }
-    recognition.lang = currentLang === 'ru' ? 'ru-RU' : 'en-US';
-    recognition.continuous = false;
-    recognition.onresult = (event) => { $('chatInput').value = event.results[0][0].transcript; sendMessage(); };
-    recognition.onerror = () => alert('Ошибка голосового ввода');
-    recognition.start();
+    const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    if (!rec) { alert('Голосовой ввод не поддерживается'); return; }
+    rec.lang = 'ru-RU';
+    rec.onresult = (e) => { document.getElementById('chatInput').value = e.results[0][0].transcript; sendMessage(); };
+    rec.start();
 }
 
-// ---- Игры ----
+// ================================================================
+//   ИГРЫ (УГАДАЙ ЧИСЛО)
+// ================================================================
 let guessNumber = Math.floor(Math.random() * 100) + 1;
 let guessAttempts = 0;
-function guessNumberGame() {
-    const val = parseInt($('guessInput').value);
-    if (isNaN(val)) { $('guessResult').textContent = 'Введи число!'; return; }
+function guessGame() {
+    const input = document.getElementById('guessInput');
+    const result = document.getElementById('guessResult');
+    if (!input || !result) return;
+    const val = parseInt(input.value);
+    if (isNaN(val)) { result.textContent = 'Введи число!'; return; }
     guessAttempts++;
-    $('guessAttempts').textContent = guessAttempts;
     if (val === guessNumber) {
-        $('guessResult').textContent = `🎉 Угадал! Это было ${guessNumber}. Попыток: ${guessAttempts}`;
-        guessNumber = Math.floor(Math.random() * 100) + 1; guessAttempts = 0;
-        $('guessAttempts').textContent = '0';
-    } else { $('guessResult').textContent = val < guessNumber ? '📈 Больше!' : '📉 Меньше!'; }
-    $('guessInput').value = '';
+        result.textContent = `🎉 Угадал! (${guessNumber}) за ${guessAttempts} попыток`;
+        guessNumber = Math.floor(Math.random() * 100) + 1;
+        guessAttempts = 0;
+    } else {
+        result.textContent = val < guessNumber ? '📈 Больше!' : '📉 Меньше!';
+    }
+    input.value = '';
 }
 
-let rpsData = load('rps', { player: 0, bot: 0, draw: 0 });
+// ================================================================
+//   RPS
+// ================================================================
+let rpsData = storageGet('rps', { player: 0, bot: 0, draw: 0 });
 function rpsPlay(choice) {
     const choices = ['rock', 'paper', 'scissors'];
     const bot = choices[Math.floor(Math.random() * 3)];
@@ -447,27 +196,28 @@ function rpsPlay(choice) {
     if (choice === bot) { result = 'draw'; rpsData.draw++; }
     else if ((choice === 'rock' && bot === 'scissors') || (choice === 'paper' && bot === 'rock') || (choice === 'scissors' && bot === 'paper')) { result = 'win'; rpsData.player++; }
     else { result = 'lose'; rpsData.bot++; }
-    save('rps', rpsData);
+    storageSet('rps', rpsData);
     const emoji = { rock: '🗿', paper: '📄', scissors: '✂️' };
-    $('rpsResult').textContent = `${emoji[choice]} vs ${emoji[bot]} — ${result === 'win' ? '🏆 Ты выиграл!' : result === 'lose' ? '💀 Ты проиграл' : '🤝 Ничья'}`;
-    $('rpsPlayer').textContent = rpsData.player;
-    $('rpsBot').textContent = rpsData.bot;
-    $('rpsDraw').textContent = rpsData.draw;
+    document.getElementById('rpsResult').textContent = `${emoji[choice]} vs ${emoji[bot]} — ${result === 'win' ? '🏆 Ты выиграл!' : result === 'lose' ? '💀 Ты проиграл' : '🤝 Ничья'}`;
 }
-function rpsReset() { rpsData = { player: 0, bot: 0, draw: 0 }; save('rps', rpsData); $('rpsPlayer').textContent = '0'; $('rpsBot').textContent = '0'; $('rpsDraw').textContent = '0'; $('rpsResult').textContent = 'Счёт сброшен'; }
 
-let tttBoard = Array(9).fill(null), tttTurn = 'X', tttGameOver = false;
+// ================================================================
+//   КРЕСТИКИ-НОЛИКИ
+// ================================================================
+let tttBoard = Array(9).fill(null);
+let tttTurn = 'X';
+let tttGameOver = false;
 function renderTTT() {
-    const board = $('tttBoard');
+    const board = document.getElementById('tttBoard');
     if (!board) return;
     board.innerHTML = tttBoard.map((cell, i) => `<button onclick="tttClick(${i})" ${cell ? 'disabled' : ''}>${cell || ''}</button>`).join('');
-    $('tttStatus').textContent = tttGameOver ? 'Игра окончена' : `Ход: ${tttTurn}`;
+    document.getElementById('tttStatus').textContent = tttGameOver ? 'Игра окончена' : `Ход: ${tttTurn}`;
 }
 function tttClick(i) {
     if (tttBoard[i] || tttGameOver) return;
     tttBoard[i] = tttTurn;
-    if (tttCheckWin(tttTurn)) { tttGameOver = true; $('tttStatus').textContent = `🏆 Победил ${tttTurn}!`; renderTTT(); return; }
-    if (tttBoard.every(c => c)) { tttGameOver = true; $('tttStatus').textContent = '🤝 Ничья!'; renderTTT(); return; }
+    if (tttCheckWin(tttTurn)) { tttGameOver = true; document.getElementById('tttStatus').textContent = `🏆 Победил ${tttTurn}!`; renderTTT(); return; }
+    if (tttBoard.every(c => c)) { tttGameOver = true; document.getElementById('tttStatus').textContent = '🤝 Ничья!'; renderTTT(); return; }
     tttTurn = tttTurn === 'X' ? 'O' : 'X';
     renderTTT();
     if (!tttGameOver && tttTurn === 'O') {
@@ -476,8 +226,8 @@ function tttClick(i) {
             if (empty.length) {
                 const move = empty[Math.floor(Math.random() * empty.length)];
                 tttBoard[move] = 'O';
-                if (tttCheckWin('O')) { tttGameOver = true; $('tttStatus').textContent = '💀 Победил бот!'; }
-                else if (tttBoard.every(c => c)) { tttGameOver = true; $('tttStatus').textContent = '🤝 Ничья!'; }
+                if (tttCheckWin('O')) { tttGameOver = true; document.getElementById('tttStatus').textContent = '💀 Бот победил!'; }
+                else if (tttBoard.every(c => c)) { tttGameOver = true; document.getElementById('tttStatus').textContent = '🤝 Ничья!'; }
                 else tttTurn = 'X';
                 renderTTT();
             }
@@ -490,458 +240,312 @@ function tttCheckWin(player) {
 }
 function tttReset() { tttBoard = Array(9).fill(null); tttTurn = 'X'; tttGameOver = false; renderTTT(); }
 
-let mineSize = 5, mineMines = 6, mineBoard = [], mineRevealed = [], mineFlags = [], mineGameOver = false, mineFirstClick = true;
+// ================================================================
+//   САПЁР
+// ================================================================
+let mineSize = 5, mineMines = 5, mineBoard = [], mineRevealed = [], mineFlags = [], mineGameOver = false, mineFirstClick = true;
 function mineInit() {
     mineBoard = Array.from({ length: mineSize }, () => Array(mineSize).fill(0));
     mineRevealed = Array.from({ length: mineSize }, () => Array(mineSize).fill(false));
     mineFlags = Array.from({ length: mineSize }, () => Array(mineSize).fill(false));
-    mineGameOver = false; mineFirstClick = true;
-    mineRender(); $('mineStatus').textContent = 'Нажми на клетку';
+    mineGameOver = false; mineFirstClick = true; mineRender(); document.getElementById('mineStatus').textContent = 'Нажми';
 }
 function minePlaceMines(excludeR, excludeC) {
     let placed = 0;
     while (placed < mineMines) {
         const r = Math.floor(Math.random() * mineSize), c = Math.floor(Math.random() * mineSize);
-        if (mineBoard[r][c] === -1 || (Math.abs(r - excludeR) <= 1 && Math.abs(c - excludeC) <= 1)) continue;
+        if (mineBoard[r][c] === -1 || (Math.abs(r-excludeR) <= 1 && Math.abs(c-excludeC) <= 1)) continue;
         mineBoard[r][c] = -1; placed++;
     }
-    for (let r = 0; r < mineSize; r++) for (let c = 0; c < mineSize; c++) {
+    for (let r=0; r<mineSize; r++) for (let c=0; c<mineSize; c++) {
         if (mineBoard[r][c] === -1) continue;
         let count = 0;
-        for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
-            const nr = r + dr, nc = c + dc;
-            if (nr >= 0 && nr < mineSize && nc >= 0 && nc < mineSize && mineBoard[nr][nc] === -1) count++;
+        for (let dr=-1; dr<=1; dr++) for (let dc=-1; dc<=1; dc++) {
+            const nr = r+dr, nc = c+dc;
+            if (nr>=0 && nr<mineSize && nc>=0 && nc<mineSize && mineBoard[nr][nc] === -1) count++;
         }
         mineBoard[r][c] = count;
     }
 }
 function mineReveal(r, c) {
-    if (mineGameOver || r < 0 || r >= mineSize || c < 0 || c >= mineSize || mineRevealed[r][c] || mineFlags[r][c]) return;
+    if (mineGameOver || r<0 || r>=mineSize || c<0 || c>=mineSize || mineRevealed[r][c] || mineFlags[r][c]) return;
     if (mineFirstClick) { minePlaceMines(r, c); mineFirstClick = false; }
-    if (mineBoard[r][c] === -1) {
-        mineGameOver = true; $('mineStatus').textContent = '💥 БУМ! Ты проиграл!';
-        for (let rr = 0; rr < mineSize; rr++) for (let cc = 0; cc < mineSize; cc++) if (mineBoard[rr][cc] === -1) mineRevealed[rr][cc] = true;
-        mineRender(); return;
-    }
+    if (mineBoard[r][c] === -1) { mineGameOver = true; document.getElementById('mineStatus').textContent = '💥 БУМ!'; for (let rr=0; rr<mineSize; rr++) for (let cc=0; cc<mineSize; cc++) if (mineBoard[rr][cc] === -1) mineRevealed[rr][cc] = true; mineRender(); return; }
     const stack = [[r, c]];
     while (stack.length) {
         const [rr, cc] = stack.pop();
         if (mineRevealed[rr][cc] || mineFlags[rr][cc]) continue;
         mineRevealed[rr][cc] = true;
         if (mineBoard[rr][cc] === 0) {
-            for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
-                const nr = rr + dr, nc = cc + dc;
-                if (nr >= 0 && nr < mineSize && nc >= 0 && nc < mineSize && !mineRevealed[nr][nc] && !mineFlags[nr][nc]) stack.push([nr, nc]);
+            for (let dr=-1; dr<=1; dr++) for (let dc=-1; dc<=1; dc++) {
+                const nr = rr+dr, nc = cc+dc;
+                if (nr>=0 && nr<mineSize && nc>=0 && nc<mineSize && !mineRevealed[nr][nc] && !mineFlags[nr][nc]) stack.push([nr, nc]);
             }
         }
     }
     let win = true;
-    for (let rr = 0; rr < mineSize; rr++) for (let cc = 0; cc < mineSize; cc++) if (mineBoard[rr][cc] !== -1 && !mineRevealed[rr][cc]) win = false;
-    if (win) { mineGameOver = true; $('mineStatus').textContent = '🏆 Ты выиграл!'; }
+    for (let rr=0; rr<mineSize; rr++) for (let cc=0; cc<mineSize; cc++) if (mineBoard[rr][cc] !== -1 && !mineRevealed[rr][cc]) win = false;
+    if (win) { mineGameOver = true; document.getElementById('mineStatus').textContent = '🏆 Ты выиграл!'; }
     mineRender();
 }
-function mineToggleFlag(r, c) {
-    if (mineGameOver || r < 0 || r >= mineSize || c < 0 || c >= mineSize || mineRevealed[r][c]) return;
-    mineFlags[r][c] = !mineFlags[r][c]; mineRender();
-}
 function mineRender() {
-    const board = $('mineBoard');
+    const board = document.getElementById('mineBoard');
     if (!board) return;
     board.innerHTML = '';
-    for (let r = 0; r < mineSize; r++) for (let c = 0; c < mineSize; c++) {
+    for (let r=0; r<mineSize; r++) for (let c=0; c<mineSize; c++) {
         const btn = document.createElement('button');
-        if (mineRevealed[r][c]) {
-            btn.classList.add('revealed');
-            if (mineBoard[r][c] === -1) { btn.textContent = '💣'; btn.classList.add('mine'); }
-            else if (mineBoard[r][c] > 0) btn.textContent = mineBoard[r][c];
-        } else if (mineFlags[r][c]) { btn.textContent = '🚩'; btn.classList.add('flagged'); }
+        if (mineRevealed[r][c]) { if (mineBoard[r][c] === -1) { btn.textContent = '💣'; btn.style.background='#e74c3c'; } else if (mineBoard[r][c]>0) btn.textContent = mineBoard[r][c]; }
+        else if (mineFlags[r][c]) { btn.textContent = '🚩'; btn.style.background='#f1c40f'; }
         btn.onclick = () => mineReveal(r, c);
-        btn.oncontextmenu = (e) => { e.preventDefault(); mineToggleFlag(r, c); };
+        btn.oncontextmenu = (e) => { e.preventDefault(); if (!mineRevealed[r][c]) { mineFlags[r][c] = !mineFlags[r][c]; mineRender(); } };
         board.appendChild(btn);
     }
 }
 function mineReset() { mineInit(); }
 
-// ---- Инструменты ----
-async function getWeather() {
-    const city = $('weatherInput')?.value || 'Москва';
+// ================================================================
+//   ПОГОДА
+// ================================================================
+async function fetchWeather() {
+    const city = document.getElementById('weatherInput').value || 'Москва';
+    const result = document.getElementById('weatherResult');
     try {
-        const cacheKey = `weather_${city}`;
-        const cached = localStorage.getItem(cacheKey);
-        if (cached) {
-            const { data, timestamp } = JSON.parse(cached);
-            if (Date.now() - timestamp < 600000) { $('weatherResult').textContent = `🌤 ${data.city}: ${data.temperature}°C, ${data.description}, ветер ${data.wind} м/с`; return; }
-        }
-        const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=ru`);
-        if (!geoRes.ok) throw new Error('Ошибка геокодинга');
-        const geoData = await geoRes.json();
-        if (!geoData.results || geoData.results.length === 0) throw new Error('Город не найден');
-        const { latitude, longitude } = geoData.results[0];
-        const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&timezone=auto`);
-        if (!weatherRes.ok) throw new Error('Ошибка погоды');
-        const weatherData = await weatherRes.json();
-        const { temperature, windspeed, weathercode } = weatherData.current_weather;
-        const conditions = {0:'Ясно',1:'Малооблачно',2:'Переменная облачность',3:'Пасмурно',45:'Туман',48:'Туман с изморозью',51:'Легкая морось',53:'Умеренная морось',55:'Сильная морось',61:'Легкий дождь',63:'Умеренный дождь',65:'Сильный дождь',71:'Легкий снег',73:'Умеренный снег',75:'Сильный снег',80:'Ливень',81:'Умеренный ливень',82:'Сильный ливень',95:'Гроза',96:'Гроза с градом',99:'Гроза с сильным градом'};
-        const description = conditions[weathercode] || 'Неизвестно';
-        const data = { city: geoData.results[0].name, temperature, wind: windspeed, description };
-        localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: Date.now() }));
-        $('weatherResult').textContent = `🌤 ${data.city}: ${data.temperature}°C, ${data.description}, ветер ${data.wind} м/с`;
-    } catch (e) { $('weatherResult').textContent = `❌ Ошибка: ${e.message}`; }
+        const cached = storageGet('weather_' + city);
+        if (cached && (Date.now() - cached.timestamp < 600000)) { result.textContent = `🌤 ${cached.data.city}: ${cached.data.temp}°C`; return; }
+        const geo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
+        const geoData = await geo.json();
+        if (!geoData.results) throw new Error('Город не найден');
+        const { latitude, longitude, name } = geoData.results[0];
+        const w = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
+        const data = await w.json();
+        const res = { city: name, temp: Math.round(data.current_weather.temperature), wind: Math.round(data.current_weather.windspeed) };
+        storageSet('weather_' + city, { data: res, timestamp: Date.now() });
+        result.textContent = `🌤 ${res.city}: ${res.temp}°C, ветер ${res.wind} м/с`;
+    } catch(e) { result.textContent = `❌ ${e.message}`; }
 }
-async function getCurrency() {
-    const code = $('currencyInput')?.value?.toUpperCase() || 'USD';
+
+// ================================================================
+//   КУРС
+// ================================================================
+async function fetchCurrency() {
+    const code = document.getElementById('currencyInput').value.toUpperCase() || 'USD';
     try {
         const res = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
-        if (!res.ok) throw new Error('Ошибка API');
         const data = await res.json();
-        const rate = data.rates[code];
-        if (!rate) throw new Error('Валюта не найдена');
-        $('currencyResult').textContent = `1 USD = ${rate} ${code}`;
-    } catch (e) { $('currencyResult').textContent = `❌ Ошибка: ${e.message}`; }
-}
-function generatePassword() {
-    const len = parseInt($('passLength')?.value) || 12;
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=';
-    let pass = '';
-    for (let i = 0; i < len; i++) pass += chars[Math.floor(Math.random() * chars.length)];
-    $('passwordResult').textContent = pass;
-}
-function calcMortgage() {
-    const amount = parseFloat($('mortgageAmount')?.value) || 1000000;
-    const percent = parseFloat($('mortgagePercent')?.value) || 12;
-    const years = parseFloat($('mortgageYears')?.value) || 15;
-    const monthlyRate = percent / 100 / 12;
-    const months = years * 12;
-    const payment = amount * monthlyRate * Math.pow(1 + monthlyRate, months) / (Math.pow(1 + monthlyRate, months) - 1);
-    $('mortgageResult').textContent = `Ежемесячный платёж: ${payment.toFixed(2)} ₽, всего: ${(payment * months).toFixed(2)} ₽`;
+        document.getElementById('currencyResult').textContent = `1 USD = ${data.rates[code]} ${code}`;
+    } catch(e) { document.getElementById('currencyResult').textContent = '❌ Ошибка'; }
 }
 
-// ---- Органайзер ----
-let notes = load('notes', []);
+// ================================================================
+//   ПАРОЛЬ
+// ================================================================
+function generatePassword() {
+    const len = parseInt(document.getElementById('passLength').value) || 12;
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    let pass = '';
+    for (let i=0; i<len; i++) pass += chars[Math.floor(Math.random() * chars.length)];
+    document.getElementById('passwordResult').textContent = pass;
+}
+
+// ================================================================
+//   ИПОТЕКА
+// ================================================================
+function calcMortgage() {
+    const amount = parseFloat(document.getElementById('mortgageAmount').value) || 1000000;
+    const percent = parseFloat(document.getElementById('mortgagePercent').value) || 12;
+    const years = parseFloat(document.getElementById('mortgageYears').value) || 15;
+    const r = percent / 100 / 12;
+    const n = years * 12;
+    const payment = amount * r * Math.pow(1+r, n) / (Math.pow(1+r, n) - 1);
+    document.getElementById('mortgageResult').textContent = `Платёж: ${payment.toFixed(2)} ₽`;
+}
+
+// ================================================================
+//   ОРГАНАЙЗЕР
+// ================================================================
+let notes = storageGet('notes', []);
 function renderNotes() {
-    const list = $('notesList');
+    const list = document.getElementById('notesList');
     if (!list) return;
-    list.innerHTML = notes.map((n, i) => `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);"><span>${escapeHtml(n.text)} ${n.tag ? '#'+escapeHtml(n.tag) : ''}</span><button class="btn btn-danger" onclick="removeNote(${i})">✕</button></div>`).join('');
+    list.innerHTML = notes.map((n, i) => `<div style="display:flex; justify-content:space-between; padding:4px 0;"><span>${n}</span><button class="btn btn-danger" onclick="removeNote(${i})">✕</button></div>`).join('');
 }
 function addNote() {
-    const text = $('noteInput')?.value?.trim();
-    const tag = $('noteTag')?.value?.trim();
+    const text = document.getElementById('noteInput').value.trim();
     if (!text) return;
-    notes.push({ text, tag });
-    save('notes', notes);
-    $('noteInput').value = ''; $('noteTag').value = '';
+    notes.push(text);
+    storageSet('notes', notes);
+    document.getElementById('noteInput').value = '';
     renderNotes();
 }
-function removeNote(i) { notes.splice(i, 1); save('notes', notes); renderNotes(); }
+function removeNote(i) { notes.splice(i, 1); storageSet('notes', notes); renderNotes(); }
 
-let tasks = load('tasks', []);
+let tasks = storageGet('tasks', []);
 function renderTasks() {
-    const list = $('tasksList');
+    const list = document.getElementById('tasksList');
     if (!list) return;
-    list.innerHTML = tasks.map((t, i) => `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);"><span style="${t.done ? 'text-decoration:line-through; opacity:0.5;' : ''}">${escapeHtml(t.text)}</span><div><button class="btn btn-success" onclick="toggleTask(${i})">✔</button><button class="btn btn-danger" onclick="removeTask(${i})">✕</button></div></div>`).join('');
+    list.innerHTML = tasks.map((t, i) => `<div style="display:flex; justify-content:space-between; padding:4px 0;"><span style="${t.done?'text-decoration:line-through;opacity:0.5':''}">${t.text}</span><div><button class="btn btn-success" onclick="toggleTask(${i})">✔</button><button class="btn btn-danger" onclick="removeTask(${i})">✕</button></div></div>`).join('');
 }
 function addTask() {
-    const text = $('taskInput')?.value?.trim();
+    const text = document.getElementById('taskInput').value.trim();
     if (!text) return;
     tasks.push({ text, done: false });
-    save('tasks', tasks);
-    $('taskInput').value = '';
+    storageSet('tasks', tasks);
+    document.getElementById('taskInput').value = '';
     renderTasks();
 }
-function toggleTask(i) { tasks[i].done = !tasks[i].done; save('tasks', tasks); renderTasks(); }
-function removeTask(i) { tasks.splice(i, 1); save('tasks', tasks); renderTasks(); }
+function toggleTask(i) { tasks[i].done = !tasks[i].done; storageSet('tasks', tasks); renderTasks(); }
+function removeTask(i) { tasks.splice(i, 1); storageSet('tasks', tasks); renderTasks(); }
 
-let shopItems = load('shop', []);
+let shop = storageGet('shop', []);
 function renderShop() {
-    const list = $('shopList');
+    const list = document.getElementById('shopList');
     if (!list) return;
-    list.innerHTML = shopItems.map((item, i) => `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);"><span>${escapeHtml(item)}</span><button class="btn btn-danger" onclick="removeShopItem(${i})">✕</button></div>`).join('');
+    list.innerHTML = shop.map((s, i) => `<div style="display:flex; justify-content:space-between; padding:4px 0;"><span>${s}</span><button class="btn btn-danger" onclick="removeShopItem(${i})">✕</button></div>`).join('');
 }
 function addShopItem() {
-    const text = $('shopInput')?.value?.trim();
+    const text = document.getElementById('shopInput').value.trim();
     if (!text) return;
-    shopItems.push(text);
-    save('shop', shopItems);
-    $('shopInput').value = '';
+    shop.push(text);
+    storageSet('shop', shop);
+    document.getElementById('shopInput').value = '';
     renderShop();
 }
-function removeShopItem(i) { shopItems.splice(i, 1); save('shop', shopItems); renderShop(); }
+function removeShopItem(i) { shop.splice(i, 1); storageSet('shop', shop); renderShop(); }
 
-let calories = load('calories', []);
+let calories = storageGet('calories', []);
 function renderCalories() {
-    const total = calories.reduce((sum, c) => sum + c.amount, 0);
-    $('calTotal').textContent = total;
+    const total = calories.reduce((s, c) => s + c.amount, 0);
+    document.getElementById('calTotal').textContent = total;
 }
 function addCalorie() {
-    const amount = parseFloat($('calInput')?.value);
-    const food = $('calFood')?.value?.trim() || 'Еда';
+    const amount = parseFloat(document.getElementById('calInput').value);
     if (isNaN(amount) || amount <= 0) return;
-    calories.push({ amount, food, date: new Date().toDateString() });
-    save('calories', calories);
-    $('calInput').value = ''; $('calFood').value = '';
+    calories.push({ amount, date: new Date().toDateString() });
+    storageSet('calories', calories);
+    document.getElementById('calInput').value = '';
     renderCalories();
 }
-function calReset() { calories = calories.filter(c => c.date !== new Date().toDateString()); save('calories', calories); renderCalories(); }
 
-// ---- Настройки ----
+// ================================================================
+//   НАСТРОЙКИ
+// ================================================================
+let currentTheme = storageGet('theme', 'dark');
+let currentLang = storageGet('lang', 'ru');
+function toggleTheme(t) { currentTheme = t; document.body.className = 'theme-' + t; storageSet('theme', t); document.getElementById('themeLabel').textContent = t; }
+function toggleLang() { currentLang = currentLang === 'ru' ? 'en' : 'ru'; storageSet('lang', currentLang); document.getElementById('langLabel').textContent = currentLang === 'ru' ? 'Русский' : 'English'; }
 function exportProfile() {
-    const data = { chat: chatHistory, notes, tasks, shopItems, calories, rps: rpsData, theme: currentTheme, lang: currentLang, exported: new Date().toISOString() };
+    const data = { chat: chatHistory, notes, tasks, shop, calories, theme: currentTheme, lang: currentLang };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'swinger_profile.json'; a.click();
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'profile.json'; a.click();
 }
-function importProfile() { $('importFile').click(); }
-function importProfileFile(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        try {
-            const data = JSON.parse(e.target.result);
-            if (data.chat) { chatHistory = data.chat; save('chat', chatHistory); renderChat(); }
-            if (data.notes) { notes = data.notes; save('notes', notes); renderNotes(); }
-            if (data.tasks) { tasks = data.tasks; save('tasks', tasks); renderTasks(); }
-            if (data.shopItems) { shopItems = data.shopItems; save('shop', shopItems); renderShop(); }
-            if (data.calories) { calories = data.calories; save('calories', calories); renderCalories(); }
-            if (data.rps) { rpsData = data.rps; save('rps', rpsData); }
-            if (data.theme) applyTheme(data.theme);
-            if (data.lang) { currentLang = data.lang; save('lang', currentLang); $('langLabel').textContent = currentLang === 'ru' ? 'Русский' : 'English'; }
-            alert('✅ Профиль импортирован!');
-        } catch (err) { alert('❌ Ошибка импорта: ' + err.message); }
-    };
-    reader.readAsText(file);
+function importProfile() {
+    const input = document.createElement('input'); input.type = 'file'; input.accept = '.json';
+    input.onchange = (e) => {
+        const file = e.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            try {
+                const data = JSON.parse(ev.target.result);
+                if (data.chat) { chatHistory = data.chat; storageSet('chat', chatHistory); renderChat(); }
+                if (data.notes) { notes = data.notes; storageSet('notes', notes); renderNotes(); }
+                if (data.tasks) { tasks = data.tasks; storageSet('tasks', tasks); renderTasks(); }
+                if (data.shop) { shop = data.shop; storageSet('shop', shop); renderShop(); }
+                if (data.calories) { calories = data.calories; storageSet('calories', calories); renderCalories(); }
+                if (data.theme) toggleTheme(data.theme);
+                if (data.lang) toggleLang();
+                alert('✅ Импорт успешен!');
+            } catch { alert('❌ Ошибка импорта'); }
+        }; reader.readAsText(file);
+    }; input.click();
 }
-function clearAllData() { if (confirm('Удалить ВСЕ данные?')) { localStorage.clear(); location.reload(); } }
+function clearAllData() { if (confirm('Удалить всё?')) { localStorage.clear(); location.reload(); } }
 
-// ---- Админ ----
+// ================================================================
+//   АДМИН
+// ================================================================
 function showStorageStats() {
-    let total = 0, keys = 0;
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        const val = localStorage.getItem(key);
-        total += val ? val.length : 0;
-        keys++;
-    }
-    $('storageSize').textContent = total;
-    $('storageKeys').textContent = keys;
-    $('adminLog').textContent = `Статистика обновлена: ${new Date().toLocaleString()}`;
+    let total = 0;
+    for (const key of Object.keys(localStorage)) total += (localStorage.getItem(key)?.length || 0);
+    document.getElementById('storageSize').textContent = total;
 }
-function clearStorage() { if (confirm('Очистить весь localStorage?')) { localStorage.clear(); showStorageStats(); alert('Очищено!'); } }
+function clearStorage() { if (confirm('Очистить localStorage?')) { StorageManager.clear(); alert('Очищено!'); } }
 function backupStorage() {
     const data = {};
-    for (let i = 0; i < localStorage.length; i++) { const key = localStorage.key(i); data[key] = localStorage.getItem(key); }
+    for (const key of Object.keys(localStorage)) data[key] = localStorage.getItem(key);
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'storage_backup.json'; a.click();
-}
-function restoreBackup() { $('backupFile').click(); }
-function restoreBackupFile(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        try {
-            const data = JSON.parse(e.target.result);
-            for (const key in data) localStorage.setItem(key, data[key]);
-            alert('✅ Бэкап восстановлен!'); location.reload();
-        } catch (err) { alert('❌ Ошибка восстановления: ' + err.message); }
-    };
-    reader.readAsText(file);
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup.json'; a.click();
 }
 
-// ---- Групповой чат (защищённый) ----
-const GROUP_STORAGE_KEY = 'groupChat_messages';
-const GROUP_NICK_KEY = 'groupChat_nick';
-const GROUP_SESSION_KEY = 'groupChat_session';
-const GROUP_CHANNEL_NAME = 'swinger_group_chat';
-const MAX_MESSAGE_LENGTH = 5000;
-const MAX_MESSAGES = 500;
-
-let groupMessages = [];
-let groupNick = localStorage.getItem(GROUP_NICK_KEY) || 'Гость';
-let groupSessionId = localStorage.getItem(GROUP_SESSION_KEY) || ('sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8));
-localStorage.setItem(GROUP_SESSION_KEY, groupSessionId);
-
-let groupChannel = null;
+// ================================================================
+//   ГРУППОВОЙ ЧАТ (BroadcastChannel + localStorage)
+// ================================================================
+let groupMessages = storageGet('groupMessages', []);
+let seenIds = new Set(groupMessages.map(m => m.id));
 try {
-    groupChannel = new BroadcastChannel(GROUP_CHANNEL_NAME);
-    groupChannel.onmessage = (e) => {
-        const data = e.data;
-        if (data && data.type === 'message' && data.payload) {
-            if (data.payload.sessionId === groupSessionId) return;
-            if (!validateGroupMessage(data.payload)) return;
-            groupMessages.push(data.payload);
-            trimGroupMessages();
-            saveGroupMessages();
-            renderGroupMessages();
+    const channel = new BroadcastChannel('swinger_group');
+    channel.onmessage = (e) => {
+        if (e.data && e.data.type === 'message' && e.data.payload) {
+            const msg = e.data.payload;
+            if (!seenIds.has(msg.id)) { groupMessages.push(msg); seenIds.add(msg.id); if (groupMessages.length > 500) groupMessages.shift(); storageSet('groupMessages', groupMessages); renderGroupChat(); }
         }
     };
-} catch(e) { console.warn('BroadcastChannel не поддерживается'); }
-
-function validateGroupMessage(msg) {
-    if (!msg || typeof msg !== 'object') return false;
-    if (typeof msg.text !== 'string' || msg.text.length > MAX_MESSAGE_LENGTH) return false;
-    if (typeof msg.nick !== 'string' || msg.nick.length > 50) return false;
-    if (typeof msg.timestamp !== 'number' || msg.timestamp > Date.now() + 60000) return false;
-    if (typeof msg.sessionId !== 'string' || msg.sessionId.length < 10) return false;
-    if (/<[^>]*>/g.test(msg.text)) return false;
-    return true;
-}
-
-function loadGroupMessages() {
-    try {
-        const data = localStorage.getItem(GROUP_STORAGE_KEY);
-        groupMessages = data ? JSON.parse(data) : [];
-        const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-        groupMessages = groupMessages.filter(m => m.timestamp > weekAgo).filter(validateGroupMessage).slice(-MAX_MESSAGES);
-        saveGroupMessages();
-    } catch(e) { groupMessages = []; }
-}
-
-function saveGroupMessages() {
-    try { localStorage.setItem(GROUP_STORAGE_KEY, JSON.stringify(groupMessages.slice(-MAX_MESSAGES))); } catch(e) {}
-}
-
-function trimGroupMessages() {
-    if (groupMessages.length > MAX_MESSAGES) groupMessages = groupMessages.slice(-MAX_MESSAGES);
-}
-
-function renderGroupMessages() {
+} catch(e) {}
+function renderGroupChat() {
     const box = document.getElementById('groupChatBox');
     if (!box) return;
-    box.innerHTML = groupMessages.map(msg => {
-        const time = new Date(msg.timestamp).toLocaleTimeString();
-        const isOwn = msg.sessionId === groupSessionId;
-        const safeNick = escapeHtml(msg.nick);
-        const safeText = escapeHtml(msg.text);
-        return `<div style="display:flex; flex-direction:column; align-items:${isOwn ? 'flex-end' : 'flex-start'}; margin:4px 0;">
-            <div style="background:${isOwn ? '#4a6cf7' : 'rgba(255,255,255,0.08)'}; padding:8px 14px; border-radius:16px; max-width:80%; word-wrap:break-word;">
-                <strong style="font-size:12px; opacity:0.6;">${safeNick}</strong>
-                <div>${safeText}</div>
-                <div style="font-size:10px; opacity:0.4; text-align:right;">${time}</div>
-            </div>
-        </div>`;
-    }).join('');
+    box.innerHTML = groupMessages.map(m => `<div style="padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05);"><strong>${m.nick || 'Гость'}</strong> ${m.text}</div>`).join('');
     box.scrollTop = box.scrollHeight;
 }
-
 function groupChatSend() {
     const input = document.getElementById('groupChatInput');
     if (!input) return;
     const text = input.value.trim();
     if (!text) return;
-    if (text.length > MAX_MESSAGE_LENGTH) {
-        alert(`Сообщение не может быть длиннее ${MAX_MESSAGE_LENGTH} символов`);
-        return;
-    }
-    if (/<[^>]*>/g.test(text)) {
-        alert('Сообщение не должно содержать HTML-теги');
-        return;
-    }
-    const msg = { nick: groupNick, text, timestamp: Date.now(), sessionId: groupSessionId, id: Date.now() + Math.random() };
-    groupMessages.push(msg);
-    trimGroupMessages();
-    saveGroupMessages();
-    renderGroupMessages();
-    input.value = '';
-    if (groupChannel) groupChannel.postMessage({ type: 'message', payload: msg });
+    const msg = { id: Date.now() + '-' + Math.random().toString(36).slice(2, 6), nick: 'Я', text, timestamp: Date.now() };
+    groupMessages.push(msg); seenIds.add(msg.id); if (groupMessages.length > 500) groupMessages.shift(); storageSet('groupMessages', groupMessages); renderGroupChat(); input.value = '';
+    try { new BroadcastChannel('swinger_group').postMessage({ type: 'message', payload: msg }); } catch(e) {}
 }
 
-function groupChatChangeNick() {
-    const newNick = prompt('Введите новый ник (до 30 символов):', groupNick);
-    if (newNick && newNick.trim()) {
-        const trimmed = newNick.trim().slice(0, 30);
-        if (/<[^>]*>/g.test(trimmed)) { alert('Ник не должен содержать HTML-теги'); return; }
-        groupNick = trimmed;
-        localStorage.setItem(GROUP_NICK_KEY, groupNick);
-        const display = document.getElementById('groupChatNick');
-        if (display) display.textContent = groupNick;
-    }
+// ================================================================
+//   ВКЛАДКИ
+// ================================================================
+function showTab(id) {
+    document.querySelectorAll('.tab').forEach(el => el.classList.add('hidden'));
+    const tab = document.getElementById('tab-' + id);
+    if (tab) tab.classList.remove('hidden');
+    document.querySelectorAll('.card button').forEach(b => b.classList.remove('btn-primary'));
+    document.querySelectorAll('.card button').forEach(b => { if (b.textContent.includes(id) || b.textContent.toLowerCase().includes(id)) b.classList.add('btn-primary'); });
+    if (id === 'admin') showStorageStats();
+    if (id === 'groupchat') renderGroupChat();
 }
 
-function groupChatClear() {
-    if (confirm('Очистить всю историю группового чата?')) {
-        groupMessages = [];
-        saveGroupMessages();
-        renderGroupMessages();
-    }
-}
-
-function groupChatExport() {
-    const blob = new Blob([JSON.stringify(groupMessages, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `group_chat_${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-}
-
-// Инициализация группового чата
-loadGroupMessages();
-renderGroupMessages();
-document.getElementById('groupChatNick').textContent = groupNick;
-
-// Глобальные функции для группового чата
-window.groupChatSend = groupChatSend;
-window.groupChatChangeNick = groupChatChangeNick;
-window.groupChatClear = groupChatClear;
-window.groupChatExport = groupChatExport;
-
-// ---- Фон Canvas ----
+// ================================================================
+//   ФОН
+// ================================================================
 (function initCanvas() {
     const canvas = document.getElementById('bgCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let w, h, particles = [];
     function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
-    window.addEventListener('resize', resize);
-    resize();
-    for (let i = 0; i < 40; i++) particles.push({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3, r: Math.random() * 2 + 1, a: Math.random() * 0.5 + 0.2 });
+    window.addEventListener('resize', resize); resize();
+    for (let i=0; i<40; i++) particles.push({ x: Math.random()*w, y: Math.random()*h, vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3, r: Math.random()*2+1, a: Math.random()*0.5+0.2 });
     function draw() {
-        ctx.clearRect(0, 0, w, h);
-        particles.forEach(p => {
-            p.x += p.vx; p.y += p.vy;
-            if (p.x < 0 || p.x > w) p.vx *= -1;
-            if (p.y < 0 || p.y > h) p.vy *= -1;
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255,255,255,${p.a})`;
-            ctx.fill();
-        });
-        for (let i = 0; i < particles.length; i++) for (let j = i + 1; j < particles.length; j++) {
-            const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, dist = Math.sqrt(dx*dx + dy*dy);
-            if (dist < 150) {
-                ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
-                ctx.strokeStyle = `rgba(255,255,255,${0.05 * (1 - dist/150)})`;
-                ctx.lineWidth = 0.5; ctx.stroke();
-            }
-        }
+        ctx.clearRect(0,0,w,h);
+        particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x<0||p.x>w) p.vx*=-1; if (p.y<0||p.y>h) p.vy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(255,255,255,${p.a})`; ctx.fill(); });
         requestAnimationFrame(draw);
-    }
-    draw();
+    } draw();
 })();
 
-// ---- Инициализация ----
+// ================================================================
+//   ИНИЦИАЛИЗАЦИЯ
+// ================================================================
 function init() {
-    applyTheme(currentTheme);
-    $('langLabel').textContent = currentLang === 'ru' ? 'Русский' : 'English';
+    toggleTheme(currentTheme);
+    document.getElementById('langLabel').textContent = currentLang === 'ru' ? 'Русский' : 'English';
     renderChat(); renderTTT(); mineInit(); renderNotes(); renderTasks(); renderShop(); renderCalories();
-    $('rpsPlayer').textContent = rpsData.player;
-    $('rpsBot').textContent = rpsData.bot;
-    $('rpsDraw').textContent = rpsData.draw;
     showTab('chat');
-    // Глобальные функции для HTML
-    window.sendMessage = sendMessage; window.startVoice = startVoice; window.chatClear = chatClear; window.chatExport = chatExport;
-    window.guessNumberGame = guessNumberGame; window.rpsPlay = rpsPlay; window.rpsReset = rpsReset;
-    window.tttClick = tttClick; window.tttReset = tttReset;
-    window.mineReveal = mineReveal; window.mineToggleFlag = mineToggleFlag; window.mineReset = mineReset;
-    window.getWeather = getWeather; window.getCurrency = getCurrency; window.generatePassword = generatePassword; window.calcMortgage = calcMortgage;
-    window.addNote = addNote; window.removeNote = removeNote;
-    window.addTask = addTask; window.toggleTask = toggleTask; window.removeTask = removeTask;
-    window.addShopItem = addShopItem; window.removeShopItem = removeShopItem;
-    window.addCalorie = addCalorie; window.calReset = calReset;
-    window.exportProfile = exportProfile; window.importProfile = importProfile; window.importProfileFile = importProfileFile; window.clearAllData = clearAllData;
-    window.showStorageStats = showStorageStats; window.clearStorage = clearStorage; window.backupStorage = backupStorage; window.restoreBackup = restoreBackup; window.restoreBackupFile = restoreBackupFile;
-    window.toggleTheme = toggleTheme; window.toggleLang = toggleLang; window.showTab = showTab;
-    console.log('🌀 SWINGER v3.0 загружен! Групповой чат защищён.');
 }
-
 document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
